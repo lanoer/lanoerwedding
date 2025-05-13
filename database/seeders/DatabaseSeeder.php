@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             LiveMusicSeeder::class,
             CeremonialSeeder::class,
             CeremonialEventSeeder::class,
+            AboutSeeder::class,
         ]);
     }
 }

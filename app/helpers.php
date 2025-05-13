@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\About;
+use App\Models\CateringPackages;
 use App\Models\CeremonialEvent;
 use App\Models\Comment;
 use App\Models\Contact;
@@ -20,6 +21,7 @@ use App\Models\SocialMedia;
 use App\Models\SoundSystem;
 use App\Models\SubCategory;
 use App\Models\SubServiceCategory;
+use App\Models\TeamLanoer;
 use App\Models\Weddings;
 use Illuminate\Support\Carbon;
 
@@ -284,6 +286,16 @@ if (! function_exists('recycle_bin')) {
         $soundSystems = SoundSystem::onlyTrashed()->get();
         $liveMusics = LiveMusic::onlyTrashed()->get();
         $ceremonialEvents = CeremonialEvent::onlyTrashed()->get();
-        return $events->concat($weddings)->concat($decorations)->concat($soundSystems)->concat($liveMusics)->concat($ceremonialEvents);
+        $fotos = Foto::onlyTrashed()->get();
+        $caterings = CateringPackages::onlyTrashed()->get();
+        $teamLanoers = TeamLanoer::onlyTrashed()->get();
+        return $events->concat($weddings)->concat($decorations)->concat($soundSystems)->concat($liveMusics)->concat($ceremonialEvents)->concat($fotos)->concat($caterings)->concat($teamLanoers);
+    }
+}
+
+if (! function_exists('unread_inbox')) {
+    function unread_inbox()
+    {
+        return Contact::where('isActive', false)->count();
     }
 }

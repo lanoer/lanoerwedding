@@ -21,13 +21,13 @@ class CeremonialEventSeeder extends Seeder
                 'description' => 'Ceremonial',
             ],
             [
-                'ceremonial_id' => 2,
+                'ceremonial_id' => 1,
                 'name' => 'Ceremonial 2',
                 'image' => 'ceremonial.jpg',
                 'description' => 'Ceremonial 2',
             ],
             [
-                'ceremonial_id' => 3,
+                'ceremonial_id' => 1,
                 'name' => 'Ceremonial 3',
                 'image' => 'ceremonial.jpg',
                 'description' => 'Ceremonial 3',

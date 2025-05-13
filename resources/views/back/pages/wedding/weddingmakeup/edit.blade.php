@@ -88,7 +88,7 @@
         $(document).ready(function() {
             $('input[type="file"][name="image"]').ijaboViewer({
                 preview: '#image-previewer',
-                imageShape: 'rectangular',
+                imageShape: '',
                 allowedExtensions: ['jpg', 'jpeg', 'png'],
                 onErrorShape: function(message, element) {
                     alert(message);

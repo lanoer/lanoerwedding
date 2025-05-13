@@ -20,8 +20,9 @@ class CeremonialShow extends Component
 
     protected $listeners = ['deleteCeremonialEventAction'];
 
-    public function mount()
+    public function mount($ceremonial)
     {
+        $this->ceremonial = $ceremonial;
         $this->resetPage();
     }
 
@@ -41,6 +42,7 @@ class CeremonialShow extends Component
 
     public function render()
     {
+
         $ceremonialEvent = CeremonialEvent::where('ceremonial_id', $this->ceremonial->id)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {

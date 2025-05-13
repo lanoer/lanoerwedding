@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('event_makeups_id');
             $table->string('name')->unique();
+            $table->string('slug')->unique();
             $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);

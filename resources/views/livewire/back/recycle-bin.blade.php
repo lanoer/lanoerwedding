@@ -5,7 +5,7 @@
             <div class="mt-2 d-flex gap-3">
                 <div class="position-relative" style="width: 200px;">
                     <select wire:model.live="type" class="form-select">
-                        @foreach (['all', 'events', 'weddings', 'decorations', 'soundSystems', 'liveMusics', 'ceremonialEvents'] as $typeOption)
+                        @foreach (['all', 'events', 'weddings', 'decorations', 'soundSystems', 'liveMusics', 'ceremonialEvents', 'fotos', 'caterings', 'teamLanoers'] as $typeOption)
                             <option value="{{ $typeOption }}">{{ ucfirst($typeOption) }}</option>
                         @endforeach
                     </select>
@@ -104,6 +104,27 @@
                                     'restoreMethod' => 'restoreCeremonialEvent',
                                     'deleteMethod' => 'forceDeleteCeremonialEvent',
                                 ],
+                                'fotos' => [
+                                    'collection' => $fotos,
+                                    'type' => 'Foto',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreFoto',
+                                    'deleteMethod' => 'forceDeleteFoto',
+                                ],
+                                'caterings' => [
+                                    'collection' => $caterings,
+                                    'type' => 'Catering',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreCatering',
+                                    'deleteMethod' => 'forceDeleteCatering',
+                                ],
+                                'teamLanoers' => [
+                                    'collection' => $teamLanoers,
+                                    'type' => 'Team Lanoer',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreTeamLanoer',
+                                    'deleteMethod' => 'forceDeleteTeamLanoer',
+                                ],
                             ];
                         @endphp
 
@@ -111,8 +132,29 @@
                             @forelse($item['collection'] as $model)
                                 <tr>
                                     <td><span class="badge {{ $item['badge'] }}">{{ $item['type'] }}</span></td>
-                                    <td>{{ $model->name }}</td>
-                                    <td>{!! Str::limit($model->description, 10) !!}</td>
+                                    <td>
+                                        @if ($key === 'fotos')
+                                            <img src="{{ asset('storage/back/images/album/foto/' . $model->image) }}"
+                                                alt="{{ $model->name }}" class="img-fluid" style="width: 100px;">
+                                        @elseif ($key === 'teamLanoers')
+                                            <img src="{{ asset('storage/back/images/team/' . $model->image) }}"
+                                                alt="{{ $model->name }}" class="img-fluid" style="width: 100px;">
+                                        @else
+                                            {{ $model->name }}
+                                        @endif
+
+
+                                    </td>
+                                    <td>
+                                        @if ($key === 'fotos')
+                                            {!! Str::limit($model->title, 10) !!}
+                                        @elseif ($key === 'teamLanoers')
+                                            {!! Str::limit($model->name, 10) !!}
+                                        @else
+                                            {!! Str::limit($model->description, 10) !!}
+                                        @endif
+
+                                    </td>
                                     <td>{{ $model->deleted_at->format('d M Y H:i') }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
@@ -162,7 +204,10 @@
             'forceDeleteDecoration': 'forceDeleteDecorationAction',
             'forceDeleteSoundSystem': 'forceDeleteSoundSystemAction',
             'forceDeleteLiveMusic': 'forceDeleteLiveMusicAction',
-            'forceDeleteCeremonialEvent': 'forceDeleteCeremonialEventAction'
+            'forceDeleteCeremonialEvent': 'forceDeleteCeremonialEventAction',
+            'forceDeleteFoto': 'forceDeleteFotoAction',
+            'forceDeleteCatering': 'forceDeleteCateringAction',
+            'forceDeleteTeamLanoer': 'forceDeleteTeamLanoerAction'
         };
 
         Object.keys(deleteHandlers).forEach(eventName => {

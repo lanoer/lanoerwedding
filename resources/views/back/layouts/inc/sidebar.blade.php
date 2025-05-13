@@ -75,41 +75,52 @@
                                     <span>Entertainment</span>
                                 </a>
                             </li>
-                            <li class="{{ Route::is('live.index') ? 'mm-active' : '' }}">
+                        </ul>
+                        <ul class="sub-menu {{ Route::is('documentation.*') ? 'mm-collapse mm-show' : '' }}"
+                            aria-expanded="true">
+                            <li class="{{ Route::is('documentation.index') ? 'mm-active' : '' }}">
+                                <a href="{{ route('documentation.index') }}" class=" waves-effect">
+                                    <span>Documentation</span>
+                                </a>
+
+                            </li>
+                        </ul>
+                        <ul class="sub-menu {{ Route::is('catering.*') ? 'mm-collapse mm-show' : '' }}"
+                            aria-expanded="true">
+                            <li class="{{ Route::is('catering.index') ? 'mm-active' : '' }}">
+                                <a href="{{ route('catering.index') }}" class=" waves-effect">
+                                    <span>Catering</span>
+                                </a>
+
+                            </li>
                         </ul>
                     </li>
                 @endcan
-                {{-- @can('read event')
-                    <li
-                        class="{{ Route::is('event.*') ? 'mm-active' : '' }} {{ Route::is('wedding.*') ? 'mm-active' : '' }}">
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-calendar-check"></i>
-                            <span>Makeup</span>
-                        </a>
-                        <ul class="sub-menu {{ Route::is('event.*') ? 'mm-collapse mm-show' : '' }}" aria-expanded="true">
-                            <li class="{{ Route::is('event.index') ? 'mm-active' : '' }}">
-                                <a href="{{ route('event.index') }}" class=" waves-effect">
-                                    <span>Event Makeup</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="sub-menu {{ Route::is('wedding.*') ? 'mm-collapse mm-show' : '' }}"
-                            aria-expanded="true">
-                            <li class="{{ Route::is('wedding.index') ? 'mm-active' : '' }}">
-                                <a href="{{ route('wedding.index') }}" class=" waves-effect">
-                                    <span>Wedding Makeup</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                    </li>
-                @endcan --}}
-
                 <li class="{{ Route::is('settings.*') ? 'mm-active' : '' }}">
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="mdi mdi-settings"></i>
                         <span>Setting web</span>
                     </a>
+
+                    <ul class="sub-menu {{ Route::is('aboutBackend.*') ? 'mm-collapse mm-show' : '' }}
+                    "
+                        aria-expanded="true">
+                        <li class="{{ Route::is('aboutBackend.index') ? 'mm-active' : '' }}">
+                            <a href="{{ route('aboutBackend.index') }}" class=" waves-effect">
+                                <span>About Us</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="sub-menu {{ Route::is('team.*') ? 'mm-collapse mm-show' : '' }}
+                    "
+                        aria-expanded="true">
+                        <li class="{{ Route::is('team.list') ? 'mm-active' : '' }}">
+                            <a href="{{ route('team.list') }}" class=" waves-effect">
+                                <span>Team Lanoer</span>
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="sub-menu {{ Route::is('settings.*') ? 'mm-collapse mm-show' : '' }}
                     "
                         aria-expanded="true">
@@ -118,10 +129,17 @@
                                 <span>General Setting</span>
                             </a>
                         </li>
-
-
                     </ul>
-
+                </li>
+                <li class="">
+                    <a href="{{ route('inbox.index') }}"
+                        class="waves-effect {{ Route::is('inbox.*') ? 'mm-active' : '' }}">
+                        <i class="mdi mdi-email-outline"></i>
+                        <span>Inbox</span>
+                        <span class="badge bg-danger">
+                            {{ unread_inbox() }}
+                        </span>
+                    </a>
                 </li>
                 <li class="">
                     <a href="{{ route('recycle.index') }}"
@@ -132,7 +150,6 @@
                             </span></span>
                     </a>
                 </li>
-
             </ul>
         </div>
         <!-- Sidebar -->

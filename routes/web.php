@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Back\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Back\AuthController;
+use App\Http\Controllers\Back\CateringController;
+use App\Http\Controllers\Back\ContactController;
 use App\Http\Controllers\Back\DashboardController;
 use App\Http\Controllers\Back\DecorationController;
+use App\Http\Controllers\Back\DocumentationController;
 use App\Http\Controllers\Back\EventController;
 use App\Http\Controllers\Back\PermissionController;
 use App\Http\Controllers\Back\RecycleController;
@@ -14,6 +18,8 @@ use App\Http\Controllers\Back\WeddingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Back\EntertainmentController;
 use App\Http\Controllers\Back\LiveController;
+use App\Http\Controllers\Back\TeamLanoerController;
+use App\Http\Controllers\Front\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,10 +32,24 @@ use App\Http\Controllers\Back\LiveController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
+Route::get('/about', [HomeController::class, 'about'])->name('aboutHome');
+Route::get('/makeups', [HomeController::class, 'makeups'])->name('makeups');
+Route::get('makeup/event/{eventMakeupSlug}', [HomeController::class, 'detailEvent'])->name('makeup.event');
+Route::get('makeup/event/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
+Route::get('makeup/wedding/{weddingMakeupSlug}', [HomeController::class, 'detailWedding'])->name('makeup.wedding');
+Route::get('makeup/wedding/{weddingMakeupSlug}/{slug}', [HomeController::class, 'showWedding'])->name('makeup.wedding.detail');
 
+Route::get('decoration/list', [HomeController::class, 'decorationList'])->name('decoration.list');
+Route::get('decoration/{slug}', [HomeController::class, 'showDecoration'])->name('decoration.detail.show');
+
+Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])->name('entertainment.list');
+Route::get('entertainment/{slug}', [HomeController::class, 'showEntertainment'])->name('entertainment.detail.show');
+
+Route::get('/services', [HomeController::class, 'services'])->name('servicesHome');
+Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolioHome');
+Route::get('/blog', [HomeController::class, 'blog'])->name('blogHome');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contactHome');
 
 
 // ROUTE BACKEND
@@ -90,9 +110,9 @@ Route::middleware('auth:web')->group(function () {
 
     Route::prefix('decoration')->name('decoration.')->group(function () {
         Route::resource('/', DecorationController::class);
-        Route::get('edit/{id}', [DecorationController::class, 'edit'])->name('edit');
-        Route::put('update/{id}', [DecorationController::class, 'update'])->name('update');
-        Route::delete('destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy');
+        // Route::get('edit/{id}', [DecorationController::class, 'edit'])->name('edit');
+        // Route::put('update/{id}', [DecorationController::class, 'update'])->name('update');
+        // Route::delete('destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('entertainment')->name('entertainment.')->group(function () {
@@ -131,9 +151,44 @@ Route::middleware('auth:web')->group(function () {
         Route::put('ceremonial/ceremonialevent/update/{id}', [EntertainmentController::class, 'updateCeremonialEvent'])->name('ceremonialevent.update');
         Route::delete('ceremonial/ceremonialevent/destroy/{id}', [EntertainmentController::class, 'destroyCeremonialEvent'])->name('ceremonialevent.destroy');
     });
+    Route::prefix('documentation')->name('documentation.')->group(function () {
+        Route::resource('/', DocumentationController::class);
+        Route::get('add-foto', [DocumentationController::class, 'addFoto'])->name('add-foto');
+        Route::post('store-foto', [DocumentationController::class, 'storeFoto'])->name('store-foto');
+    });
+
+    Route::prefix('catering')->name('catering.')->group(function () {
+        Route::resource('/', CateringController::class);
+        // Route::get('edit/{id}', [CateringController::class, 'edit'])->name('edit');
+        // Route::put('update/{id}', [CateringController::class, 'update'])->name('update');
+        // Route::delete('destroy/{id}', [CateringController::class, 'destroy'])->name('destroy');
+    });
 
     // recycle
     Route::prefix('recycle')->name('recycle.')->group(function () {
         Route::resource('', RecycleController::class);
     });
+
+    Route::prefix('inbox')->name('inbox.')->group(function () {
+        Route::view('/', 'back.pages.inbox.index')->name('index');
+    });
+
+    Route::prefix('aboutBackend')->name('aboutBackend.')->group(function () {
+        Route::view('/', 'back.pages.about.index')->name('index');
+    });
+
+    Route::prefix('team')->name('team.')->group(function () {
+        Route::view('/list', 'back.pages.team.index')->name('list');
+        Route::resource('/', TeamLanoerController::class);
+        // Route::get('edit/{id}', [TeamLanoerController::class, 'edit'])->name('edit');
+        // Route::put('update/{id}', [TeamLanoerController::class, 'update'])->name('update');
+        // Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+});
+
+
+Route::get('/test/env', function () {
+    dd(env('lanoerwedding')); // Dump 'db' variable value one by one
 });

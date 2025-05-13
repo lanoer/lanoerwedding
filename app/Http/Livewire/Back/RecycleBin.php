@@ -2,12 +2,15 @@
 
 namespace App\Http\Livewire\Back;
 
+use App\Models\CateringPackages;
 use App\Models\CeremonialEvent;
 use App\Models\Event;
 use App\Models\Weddings;
 use App\Models\Decorations;
+use App\Models\Foto;
 use App\Models\LiveMusic;
 use App\Models\SoundSystem;
+use App\Models\TeamLanoer;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,7 +25,7 @@ class RecycleBin extends Component
     public $type = 'all';
     public $startDate = null;
     public $endDate = null;
-    protected $listeners = ['forceDeleteAction', 'forceDeleteWeddingAction', 'forceDeleteDecorationAction', 'forceDeleteSoundSystemAction', 'forceDeleteLiveMusicAction', 'forceDeleteCeremonialEventAction'];
+    protected $listeners = ['forceDeleteAction', 'forceDeleteWeddingAction', 'forceDeleteDecorationAction', 'forceDeleteSoundSystemAction', 'forceDeleteLiveMusicAction', 'forceDeleteCeremonialEventAction', 'forceDeleteFotoAction', 'forceDeleteCateringAction', 'forceDeleteTeamLanoerAction'];
 
 
     public function resetDates()
@@ -100,6 +103,36 @@ class RecycleBin extends Component
             flash()->addSuccess('Ceremonial Event has been restored successfully!');
         }
     }
+
+    public function restoreFoto($id)
+    {
+        $foto = Foto::withTrashed()->find($id);
+
+        if ($foto) {
+            $foto->restore();
+            flash()->addSuccess('Foto has been restored successfully!');
+        }
+    }
+
+    public function restoreCatering($id)
+    {
+        $catering = CateringPackages::withTrashed()->find($id);
+
+        if ($catering) {
+            $catering->restore();
+            flash()->addSuccess('Catering has been restored successfully!');
+        }
+    }
+
+    public function restoreTeamLanoer($id)
+    {
+        $teamLanoer = TeamLanoer::withTrashed()->find($id);
+
+        if ($teamLanoer) {
+            $teamLanoer->restore();
+            flash()->addSuccess('Team Lanoer has been restored successfully!');
+        }
+    }
     public function forceDelete($id)
     {
         $event = Event::withTrashed()->find($id);
@@ -165,6 +198,41 @@ class RecycleBin extends Component
             $this->dispatchBrowserEvent('forceDeleteCeremonialEvent', [
                 'title' => 'Are you sure?',
                 'html' => 'Are you sure you want to delete this ceremonial event permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+    public function forceDeleteFoto($id)
+    {
+        $foto = Foto::withTrashed()->find($id);
+        if ($foto) {
+            $this->dispatchBrowserEvent('forceDeleteFoto', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this foto permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+
+    public function forceDeleteCatering($id)
+    {
+        $catering = CateringPackages::withTrashed()->find($id);
+        if ($catering) {
+            $this->dispatchBrowserEvent('forceDeleteCatering', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this catering package permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+
+    public function forceDeleteTeamLanoer($id)
+    {
+        $teamLanoer = TeamLanoer::withTrashed()->find($id);
+        if ($teamLanoer) {
+            $this->dispatchBrowserEvent('forceDeleteTeamLanoer', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this team lanoer permanently? ',
                 'id' => $id,
             ]);
         }
@@ -358,6 +426,100 @@ class RecycleBin extends Component
             flash()->addError('Something went wrong!');
         }
     }
+    public function forceDeleteTeamLanoerAction($id)
+    {
+        $teamLanoer = TeamLanoer::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/team/';
+        $image = $teamLanoer->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_600_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_600_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_teamLanoer = $teamLanoer->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_teamLanoer) {
+            flash()->addSuccess('Team Lanoer has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
+
+    public function forceDeleteFotoAction($id)
+    {
+        $foto = Foto::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/album/foto/';
+        $image = $foto->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_271_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_foto = $foto->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_foto) {
+            flash()->addSuccess('Foto has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
+    public function forceDeleteCateringAction($id)
+    {
+        $catering = CateringPackages::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/catering/';
+        $image = $catering->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_271_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_catering = $catering->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_catering) {
+            flash()->addSuccess('Catering has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
 
 
     public function render()
@@ -434,6 +596,34 @@ class RecycleBin extends Component
                 return $query->whereRaw('1 = 0');
             })
             ->paginate($this->perPage);
+        $fotos = Foto::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'fotos', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'fotos', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
+
+
+
+        $caterings = CateringPackages::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'caterings', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'caterings', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
+
+        $teamLanoers = TeamLanoer::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'teamLanoers', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'teamLanoers', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
 
         return view('livewire.back.recycle-bin', [
             'events' => $events,
@@ -441,7 +631,10 @@ class RecycleBin extends Component
             'decorations' => $decorations,
             'soundSystems' => $soundSystems,
             'liveMusic' => $liveMusic,
-            'ceremonialEvents' => $ceremonialEvents
+            'ceremonialEvents' => $ceremonialEvents,
+            'fotos' => $fotos,
+            'caterings' => $caterings,
+            'teamLanoers' => $teamLanoers
         ]);
     }
 }

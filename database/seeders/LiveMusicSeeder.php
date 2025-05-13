@@ -21,13 +21,13 @@ class LiveMusicSeeder extends Seeder
                 'description' => 'Live Music',
             ],
             [
-                'lives_id' => 2,
+                'lives_id' => 1,
                 'name' => 'Live Music 2',
                 'image' => 'live_music.jpg',
                 'description' => 'Live Music 2',
             ],
             [
-                'lives_id' => 3,
+                'lives_id' => 1,
                 'name' => 'Live Music 3',
                 'image' => 'live_music.jpg',
                 'description' => 'Live Music 3',

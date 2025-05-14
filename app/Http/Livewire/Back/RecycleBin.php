@@ -4,13 +4,16 @@ namespace App\Http\Livewire\Back;
 
 use App\Models\CateringPackages;
 use App\Models\CeremonialEvent;
+use App\Models\Client;
 use App\Models\Event;
 use App\Models\Weddings;
 use App\Models\Decorations;
 use App\Models\Foto;
 use App\Models\LiveMusic;
+use App\Models\Slider;
 use App\Models\SoundSystem;
 use App\Models\TeamLanoer;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,7 +28,7 @@ class RecycleBin extends Component
     public $type = 'all';
     public $startDate = null;
     public $endDate = null;
-    protected $listeners = ['forceDeleteAction', 'forceDeleteWeddingAction', 'forceDeleteDecorationAction', 'forceDeleteSoundSystemAction', 'forceDeleteLiveMusicAction', 'forceDeleteCeremonialEventAction', 'forceDeleteFotoAction', 'forceDeleteCateringAction', 'forceDeleteTeamLanoerAction'];
+    protected $listeners = ['forceDeleteAction', 'forceDeleteWeddingAction', 'forceDeleteDecorationAction', 'forceDeleteSoundSystemAction', 'forceDeleteLiveMusicAction', 'forceDeleteCeremonialEventAction', 'forceDeleteFotoAction', 'forceDeleteCateringAction', 'forceDeleteTeamLanoerAction', 'forceDeleteSliderAction', 'forceDeleteTestimoniAction', 'forceDeleteClientAction'];
 
 
     public function resetDates()
@@ -133,6 +136,33 @@ class RecycleBin extends Component
             flash()->addSuccess('Team Lanoer has been restored successfully!');
         }
     }
+    public function restoreSlider($id)
+    {
+        $slider = Slider::withTrashed()->find($id);
+
+        if ($slider) {
+            $slider->restore();
+            flash()->addSuccess('Slider has been restored successfully!');
+        }
+    }
+    public function restoreClient($id)
+    {
+        $client = Client::withTrashed()->find($id);
+
+        if ($client) {
+            $client->restore();
+            flash()->addSuccess('Client has been restored successfully!');
+        }
+    }
+    public function restoreTestimoni($id)
+    {
+        $testimoni = Testimonial::withTrashed()->find($id);
+
+        if ($testimoni) {
+            $testimoni->restore();
+            flash()->addSuccess('Testimoni has been restored successfully!');
+        }
+    }
     public function forceDelete($id)
     {
         $event = Event::withTrashed()->find($id);
@@ -233,6 +263,39 @@ class RecycleBin extends Component
             $this->dispatchBrowserEvent('forceDeleteTeamLanoer', [
                 'title' => 'Are you sure?',
                 'html' => 'Are you sure you want to delete this team lanoer permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+    public function forceDeleteSlider($id)
+    {
+        $slider = Slider::withTrashed()->find($id);
+        if ($slider) {
+            $this->dispatchBrowserEvent('forceDeleteSlider', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this slider permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+    public function forceDeleteClient($id)
+    {
+        $client = Client::withTrashed()->find($id);
+        if ($client) {
+            $this->dispatchBrowserEvent('forceDeleteClient', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this client permanently? ',
+                'id' => $id,
+            ]);
+        }
+    }
+    public function forceDeleteTestimoni($id)
+    {
+        $testimoni = Testimonial::withTrashed()->find($id);
+        if ($testimoni) {
+            $this->dispatchBrowserEvent('forceDeleteTestimoni', [
+                'title' => 'Are you sure?',
+                'html' => 'Are you sure you want to delete this testimoni permanently? ',
                 'id' => $id,
             ]);
         }
@@ -520,6 +583,99 @@ class RecycleBin extends Component
             flash()->addError('Something went wrong!');
         }
     }
+    public function forceDeleteSliderAction($id)
+    {
+        $slider = Slider::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/slider/';
+        $image = $slider->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_271_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_slider = $slider->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_slider) {
+            flash()->addSuccess('Slider has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
+    public function forceDeleteClientAction($id)
+    {
+        $client = Client::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/client/';
+        $image = $client->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_271_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_client = $client->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_client) {
+            flash()->addSuccess('Client has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
+    public function forceDeleteTestimoniAction($id)
+    {
+        $testimoni = Testimonial::withTrashed()->find($id);  // Use withTrashed() to find soft deleted records
+        $path = 'back/images/testimoni/';
+        $image = $testimoni->image;
+        if ($image != null && Storage::disk('public')->exists($path . $image)) {
+            // delete resize image
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_75_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $image);
+            }
+            // delete thumbnails
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_271_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $image);
+            }
+            if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
+                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
+            }
+
+
+            // delete post featured image
+            Storage::disk('public')->delete($path . $image);
+        }
+
+        $delete_testimoni = $testimoni->forceDelete();  // Use forceDelete() instead of delete()
+
+        if ($delete_testimoni) {
+            flash()->addSuccess('Testimoni has been successfully deleted!');
+        } else {
+            flash()->addError('Something went wrong!');
+        }
+    }
 
 
     public function render()
@@ -625,6 +781,33 @@ class RecycleBin extends Component
             })
             ->paginate($this->perPage);
 
+
+
+        $sliders = Slider::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'sliders', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'sliders', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
+        $testimonials = Testimonial::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'testimonials', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'testimonials', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
+        $clients = Client::onlyTrashed()
+            ->when($this->type === 'all' || $this->type === 'clients', $queryBuilder)
+            ->when($this->type === 'all' || $this->type === 'clients', function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
+            })
+            ->paginate($this->perPage);
+
         return view('livewire.back.recycle-bin', [
             'events' => $events,
             'weddings' => $weddings,
@@ -634,7 +817,10 @@ class RecycleBin extends Component
             'ceremonialEvents' => $ceremonialEvents,
             'fotos' => $fotos,
             'caterings' => $caterings,
-            'teamLanoers' => $teamLanoers
+            'teamLanoers' => $teamLanoers,
+            'sliders' => $sliders,
+            'testimonials' => $testimonials,
+            'clients' => $clients
         ]);
     }
 }

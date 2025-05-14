@@ -22,8 +22,8 @@
                 <h6>Our Links</h6>
                 <div class="row">
                     <div class="col-6">
-                        <p><a href="">Home</a></p>
-                        <p><a href="">About</a></p>
+                        <p><a href="{{ route('home') }}">Home</a></p>
+                        <p><a href="{{ route('aboutHome') }}">About</a></p>
                     </div>
                     <div class="col-6">
                         <p><a href="">Blog</a></p>

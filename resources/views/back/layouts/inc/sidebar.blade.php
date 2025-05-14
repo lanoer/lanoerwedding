@@ -94,6 +94,24 @@
 
                             </li>
                         </ul>
+                        <ul class="sub-menu {{ Route::is('slider.*') ? 'mm-collapse mm-show' : '' }}" aria-expanded="true">
+                            <li class="{{ Route::is('slider.index') ? 'mm-active' : '' }}">
+                                <a href="{{ route('slider.index') }}" class=" waves-effect">
+                                    <span>Slider</span>
+                                </a>
+                            </li>
+                            <li class="{{ Route::is('testimoni.index') ? 'mm-active' : '' }}">
+                                <a href="{{ route('testimoni.index') }}" class=" waves-effect">
+                                    <span>Testimoni</span>
+                                </a>
+                            </li>
+                            <li class="{{ Route::is('client.index') ? 'mm-active' : '' }}">
+                                <a href="{{ route('client.index') }}" class=" waves-effect">
+                                    <span>Client</span>
+                                </a>
+                            </li>
+                        </ul>
+
                     </li>
                 @endcan
                 <li class="{{ Route::is('settings.*') ? 'mm-active' : '' }}">

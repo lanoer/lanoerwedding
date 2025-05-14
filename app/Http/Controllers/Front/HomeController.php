@@ -121,4 +121,29 @@ class HomeController extends Controller
 
         return view('front.pages.home.entertainment.list', compact('sound', 'soundSystem', 'live', 'liveMusic', 'ceremony', 'ceremonySound', 'teamCreative'));
     }
+
+    public function showEntertainmentSound($soundSystemSlug, $slug)
+    {
+
+        $soundSystem = SoundSystem::where('slug', $soundSystemSlug)->first();
+        $sound = Sound::where('slug', $slug)->first();
+        if (!$soundSystem || !$sound) {
+            abort(404);
+        }
+        $teamCreative = TeamLanoer::get();
+        return view('front.pages.home.entertainment.sound.show', compact('soundSystem', 'sound', 'teamCreative'));
+    }
+    public function showEntertainmentLive($liveMusicSlug, $liveSlug)
+    {
+        $live = Live::where('slug', $liveSlug)->first();
+        $liveMusic = LiveMusic::where('slug', $liveMusicSlug)->first();
+
+        if (!$live || !$liveMusic) {
+            abort(404);
+        }
+
+        $teamCreative = TeamLanoer::get();
+
+        return view('front.pages.home.entertainment.live.show', compact('live', 'liveMusic', 'teamCreative'));
+    }
 }

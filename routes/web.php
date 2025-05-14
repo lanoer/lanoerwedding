@@ -4,6 +4,7 @@ use App\Http\Controllers\Back\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Back\AuthController;
 use App\Http\Controllers\Back\CateringController;
+use App\Http\Controllers\Back\ClientController;
 use App\Http\Controllers\Back\ContactController;
 use App\Http\Controllers\Back\DashboardController;
 use App\Http\Controllers\Back\DecorationController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\Back\WeddingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Back\EntertainmentController;
 use App\Http\Controllers\Back\LiveController;
+use App\Http\Controllers\Back\SliderController;
 use App\Http\Controllers\Back\TeamLanoerController;
+use App\Http\Controllers\Back\TestimoniController;
 use App\Http\Controllers\Front\HomeController;
 
 /*
@@ -43,8 +46,14 @@ Route::get('makeup/wedding/{weddingMakeupSlug}/{slug}', [HomeController::class, 
 Route::get('decoration/list', [HomeController::class, 'decorationList'])->name('decoration.list');
 Route::get('decoration/{slug}', [HomeController::class, 'showDecoration'])->name('decoration.detail.show');
 
-Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])->name('entertainment.list');
-Route::get('entertainment/{slug}', [HomeController::class, 'showEntertainment'])->name('entertainment.detail.show');
+Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])
+    ->name('entertainment.list');
+Route::get('entertainment/{soundSystemSlug}/{slug}', [HomeController::class, 'showEntertainmentSound'])
+    ->name('entertainment.sound.detail.show');
+Route::get('entertainment/{liveSlug}/{liveMusicSlug}', [HomeController::class, 'showEntertainmentLive'])
+    ->name('entertainment.live.detail.show');
+
+
 
 Route::get('/services', [HomeController::class, 'services'])->name('servicesHome');
 Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolioHome');
@@ -54,9 +63,9 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contactHome');
 
 // ROUTE BACKEND
 Route::prefix('auth')->name('auth.')->group(function () {
-    Route::view('/login', 'back.pages.auth.login')->name('login');
-    Route::view('/forgot-password', 'back.pages.auth.forgot')->name('forgot-password');
-    Route::get('/password/reset/{token}', [AuthController::class, 'ResetForm'])->name('reset-form');
+    Route::view('/login', 'back.pages.auth.login')->name('login')->middleware('guest');
+    Route::view('/forgot-password', 'back.pages.auth.forgot')->name('forgot-password')->middleware('guest');
+    Route::get('/password/reset/{token}', [AuthController::class, 'ResetForm'])->name('reset-form')->middleware('guest');
 });
 
 
@@ -186,7 +195,12 @@ Route::middleware('auth:web')->group(function () {
     });
 
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+    Route::resource('slider', SliderController::class);
+    Route::resource('testimoni', TestimoniController::class);
+    Route::resource('client', ClientController::class);
 });
+
 
 
 Route::get('/test/env', function () {

@@ -81,54 +81,21 @@
                     </div>
                     <div class="col-md-7">
                         <div class="owl-carousel owl-theme">
-                            <div class="item-box"> <span class="quote">
-                                    <img src="{{ asset('front/assets/images/quot.png') }}" alt="">
-                                </span>
-                                <p>I had no idea about all the things I had to do to get married / things I needed
-                                    to think about. Rachel explained everything to me and guided me through the
-                                    whole process with enthusiasm and patience. She was wonderful to work with! I
-                                    couldn’t have been happier with her services and upbeat personality!</p>
-                                <div class="info">
-                                    <div class="author-img"> <img src="{{ asset('front/assets/images/team/05.jpg') }}"
-                                            alt="">
-                                    </div>
-                                    <div class="cont">
-                                        <h6>Fredia & Pablo</h6> <span>April 15, 2023 USA</span>
+                            @foreach (testimonials() as $testimoni)
+                                <div class="item-box"> <span class="quote">
+                                        <img src="{{ $testimoni->image }}" alt="">
+                                    </span>
+                                    <p>{!! $testimoni->testimoni !!}</p>
+                                    <div class="info">
+                                        <div class="author-img"> <img src="{{ $testimoni->image }}" alt="">
+                                        </div>
+                                        <div class="cont">
+                                            <h6>{{ $testimoni->name }}</h6> <span>{{ $testimoni->date }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="item-box"> <span class="quote">
-                                    <img src="{{ asset('front/assets/images/quot.png') }}" alt="">
-                                </span>
-                                <p>I had no idea about all the things I had to do to get married / things I needed
-                                    to think about. Rachel explained everything to me and guided me through the
-                                    whole process with enthusiasm and patience. She was wonderful to work with! I
-                                    couldn’t have been happier with her services and upbeat personality!</p>
-                                <div class="info">
-                                    <div class="author-img"> <img src="{{ asset('front/assets/images/team/06.jpg') }}"
-                                            alt="">
-                                    </div>
-                                    <div class="cont">
-                                        <h6>Olivia & Enrico</h6> <span>April 13, 2023 CA</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item-box"> <span class="quote">
-                                    <img src="{{ asset('front/assets/images/quot.png') }}" alt="">
-                                </span>
-                                <p>I had no idea about all the things I had to do to get married / things I needed
-                                    to think about. Rachel explained everything to me and guided me through the
-                                    whole process with enthusiasm and patience. She was wonderful to work with! I
-                                    couldn’t have been happier with her services and upbeat personality!</p>
-                                <div class="info">
-                                    <div class="author-img"> <img src="{{ asset('front/assets/images/team/07.jpg') }}"
-                                            alt="">
-                                    </div>
-                                    <div class="cont">
-                                        <h6>Tammy & Matthew</h6> <span>April 11, 2023 USA</span>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
+
                         </div>
                     </div>
                 </div>
@@ -200,30 +167,12 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12 owl-carousel owl-theme">
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/1.jpg') }}"
-                                    alt=""></a>
-                        </div>
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/2.jpg') }}"
-                                    alt=""></a>
-                        </div>
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/3.jpg') }}"
-                                    alt=""></a>
-                        </div>
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/4.jpg') }}"
-                                    alt=""></a>
-                        </div>
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/5.jpg') }}"
-                                    alt=""></a>
-                        </div>
-                        <div class="client-logo">
-                            <a href="#"><img src="{{ asset('front/assets/images/clients/6.jpg') }}"
-                                    alt=""></a>
-                        </div>
+                        @foreach (clients() as $client)
+                            <div class="client-logo">
+                                <a href="#"><img src="{{ $client->image }}" alt=""></a>
+                            </div>
+                        @endforeach
+
                     </div>
                 </div>
             </div>

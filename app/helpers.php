@@ -3,6 +3,7 @@
 use App\Models\About;
 use App\Models\CateringPackages;
 use App\Models\CeremonialEvent;
+use App\Models\Client;
 use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\ContactHome;
@@ -16,12 +17,14 @@ use App\Models\Post;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Setting;
+use App\Models\Slider;
 use App\Models\Social;
 use App\Models\SocialMedia;
 use App\Models\SoundSystem;
 use App\Models\SubCategory;
 use App\Models\SubServiceCategory;
 use App\Models\TeamLanoer;
+use App\Models\Testimonial;
 use App\Models\Weddings;
 use Illuminate\Support\Carbon;
 
@@ -289,7 +292,9 @@ if (! function_exists('recycle_bin')) {
         $fotos = Foto::onlyTrashed()->get();
         $caterings = CateringPackages::onlyTrashed()->get();
         $teamLanoers = TeamLanoer::onlyTrashed()->get();
-        return $events->concat($weddings)->concat($decorations)->concat($soundSystems)->concat($liveMusics)->concat($ceremonialEvents)->concat($fotos)->concat($caterings)->concat($teamLanoers);
+        $sliders = Slider::onlyTrashed()->get();
+        $testimonials = Testimonial::onlyTrashed()->get();
+        return $events->concat($weddings)->concat($decorations)->concat($soundSystems)->concat($liveMusics)->concat($ceremonialEvents)->concat($fotos)->concat($caterings)->concat($teamLanoers)->concat($sliders)->concat($testimonials);
     }
 }
 
@@ -297,5 +302,24 @@ if (! function_exists('unread_inbox')) {
     function unread_inbox()
     {
         return Contact::where('isActive', false)->count();
+    }
+}
+if (! function_exists('slider')) {
+    function slider()
+    {
+        return Slider::get();
+    }
+}
+if (! function_exists('testimonials')) {
+    function testimonials()
+    {
+        return Testimonial::get();
+    }
+}
+
+if (! function_exists('clients')) {
+    function clients()
+    {
+        return Client::get();
     }
 }

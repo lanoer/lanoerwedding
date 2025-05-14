@@ -5,7 +5,7 @@
             <div class="mt-2 d-flex gap-3">
                 <div class="position-relative" style="width: 200px;">
                     <select wire:model.live="type" class="form-select">
-                        @foreach (['all', 'events', 'weddings', 'decorations', 'soundSystems', 'liveMusics', 'ceremonialEvents', 'fotos', 'caterings', 'teamLanoers'] as $typeOption)
+                        @foreach (['all', 'events', 'weddings', 'decorations', 'soundSystems', 'liveMusics', 'ceremonialEvents', 'fotos', 'caterings', 'teamLanoers', 'sliders', 'testimonials', 'clients'] as $typeOption)
                             <option value="{{ $typeOption }}">{{ ucfirst($typeOption) }}</option>
                         @endforeach
                     </select>
@@ -125,6 +125,27 @@
                                     'restoreMethod' => 'restoreTeamLanoer',
                                     'deleteMethod' => 'forceDeleteTeamLanoer',
                                 ],
+                                'sliders' => [
+                                    'collection' => $sliders,
+                                    'type' => 'Slider',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreSlider',
+                                    'deleteMethod' => 'forceDeleteSlider',
+                                ],
+                                'testimonials' => [
+                                    'collection' => $testimonials,
+                                    'type' => 'Testimoni',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreTestimoni',
+                                    'deleteMethod' => 'forceDeleteTestimoni',
+                                ],
+                                'clients' => [
+                                    'collection' => $clients,
+                                    'type' => 'Client',
+                                    'badge' => 'bg-info',
+                                    'restoreMethod' => 'restoreClient',
+                                    'deleteMethod' => 'forceDeleteClient',
+                                ],
                             ];
                         @endphp
 
@@ -139,6 +160,15 @@
                                         @elseif ($key === 'teamLanoers')
                                             <img src="{{ asset('storage/back/images/team/' . $model->image) }}"
                                                 alt="{{ $model->name }}" class="img-fluid" style="width: 100px;">
+                                        @elseif ($key === 'sliders')
+                                            <img src="{{ asset('storage/back/images/slider/' . $model->image) }}"
+                                                alt="{{ $model->title }}" class="img-fluid" style="width: 100px;">
+                                        @elseif ($key === 'testimonials')
+                                            <img src="{{ asset($model->image) }}" alt="{{ $model->name }}"
+                                                class="img-fluid" style="width: 100px;">
+                                        @elseif ($key === 'clients')
+                                            <img src="{{ $model->image }}" alt="{{ $model->name }}" class="img-fluid"
+                                                style="width: 100px;">
                                         @else
                                             {{ $model->name }}
                                         @endif
@@ -149,6 +179,12 @@
                                         @if ($key === 'fotos')
                                             {!! Str::limit($model->title, 10) !!}
                                         @elseif ($key === 'teamLanoers')
+                                            {!! Str::limit($model->name, 10) !!}
+                                        @elseif ($key === 'sliders')
+                                            {!! Str::limit($model->title, 10) !!}
+                                        @elseif ($key === 'testimonials')
+                                            {!! Str::limit($model->name, 10) !!}
+                                        @elseif ($key === 'clients')
                                             {!! Str::limit($model->name, 10) !!}
                                         @else
                                             {!! Str::limit($model->description, 10) !!}
@@ -207,7 +243,10 @@
             'forceDeleteCeremonialEvent': 'forceDeleteCeremonialEventAction',
             'forceDeleteFoto': 'forceDeleteFotoAction',
             'forceDeleteCatering': 'forceDeleteCateringAction',
-            'forceDeleteTeamLanoer': 'forceDeleteTeamLanoerAction'
+            'forceDeleteTeamLanoer': 'forceDeleteTeamLanoerAction',
+            'forceDeleteSlider': 'forceDeleteSliderAction',
+            'forceDeleteTestimoni': 'forceDeleteTestimoniAction',
+            'forceDeleteClient': 'forceDeleteClientAction'
         };
 
         Object.keys(deleteHandlers).forEach(eventName => {

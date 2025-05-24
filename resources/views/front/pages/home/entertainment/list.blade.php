@@ -72,23 +72,28 @@
                         <div class="position-re o-hidden"> <img
                                 src="{{ asset('storage/back/images/entertainment/live/' . $lv->image) }}" alt="">
                         </div>
-                        <div class="con"> <span class="category">
+                        <div class="con">
+                            <span class="category">
                                 <a href="{{ route('entertainment.live.detail.show', [
                                     'liveSlug' => $live->slug,
-                                    'liveMusicSlug' => $lv->slug,
+                                    'liveSubSlug' => $lv->slug,
                                 ]) }}">
                                     {{ $lv->name }}
                                 </a>
                             </span>
-                            <h5><a href="{{ route('entertainment.live.detail.show', [
+                            <h5>
+                                <a href="{{ route('entertainment.live.detail.show', [
                                     'liveSlug' => $live->slug,
-                                    'liveMusicSlug' => $lv->slug,
-                                ]) }}">{{ $lv->name }}</a>
+                                    'liveSubSlug' => $lv->slug,
+                                ]) }}">{{ $lv->name }}
+                                </a>
                             </h5>
                             <a href="{{ route('entertainment.live.detail.show', [
                                     'liveSlug' => $live->slug,
-                                    'liveMusicSlug' => $lv->slug,
-                                ]) }}"><i class="ti-arrow-right"></i></a>
+                                    'liveSubSlug' => $lv->slug,
+                                ]) }}">
+                                <i class="ti-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -105,18 +110,21 @@
                     </div>
                 </div>
                 <div class="row">
-                    @foreach ($ceremonySound as $ceremony)
+                    @foreach ($ceremonySub as $ce)
                     <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
                         <div class="item mb-30">
                             <div class="position-re o-hidden"> <img
-                                    src="{{ asset('storage/back/images/entertainment/ceremonial/' . $ceremony->image) }}"
+                                    src="{{ asset('storage/back/images/entertainment/ceremonial/' . $ce->image) }}"
                                     alt="">
                             </div>
                             <div class="con"> <span class="category">
-                                    <a href="services-page.html">{{ $ceremony->name }}</a>
+                                    <a href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}">{{
+                                        $ceremony->name }}</a>
                                 </span>
-                                <h5><a href="services-page.html">{{ $ceremony->name }}</a></h5> <a
-                                    href="services-page.html"><i class="ti-arrow-right"></i></a>
+                                <h5><a href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}">{{
+                                        $ce->name }}</a></h5> <a
+                                    href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}"><i
+                                        class="ti-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>

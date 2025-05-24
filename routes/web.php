@@ -48,10 +48,16 @@ Route::get('decoration/{slug}', [HomeController::class, 'showDecoration'])->name
 
 Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])
     ->name('entertainment.list');
+
 Route::get('entertainment/{soundSystemSlug}/{slug}', [HomeController::class, 'showEntertainmentSound'])
     ->name('entertainment.sound.detail.show');
-Route::get('entertainment/{liveSlug}/{liveMusicSlug}', [HomeController::class, 'showEntertainmentLive'])
+
+Route::get('entertainment/{liveSlug}/{liveSubSlug}', [HomeController::class, 'showEntertainmentLive'])
     ->name('entertainment.live.detail.show');
+
+
+Route::get('entertainment/{slug}', [HomeController::class, 'showEntertainmentCeremony'])
+    ->name('entertainment.ceremony.detail.show');
 
 
 

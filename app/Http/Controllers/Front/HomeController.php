@@ -115,11 +115,11 @@ class HomeController extends Controller
         $live = Live::first();
         $liveMusic = LiveMusic::get();
         $ceremony = Ceremonial::first();
-        $ceremonySound = CeremonialEvent::get();
+        $ceremonySub = CeremonialEvent::get();
         $teamCreative = TeamLanoer::get();
 
 
-        return view('front.pages.home.entertainment.list', compact('sound', 'soundSystem', 'live', 'liveMusic', 'ceremony', 'ceremonySound', 'teamCreative'));
+        return view('front.pages.home.entertainment.list', compact('sound', 'soundSystem', 'live', 'liveMusic', 'ceremony', 'ceremonySub', 'teamCreative'));
     }
 
     public function showEntertainmentSound($soundSystemSlug, $slug)
@@ -133,10 +133,10 @@ class HomeController extends Controller
         $teamCreative = TeamLanoer::get();
         return view('front.pages.home.entertainment.sound.show', compact('soundSystem', 'sound', 'teamCreative'));
     }
-    public function showEntertainmentLive($liveMusicSlug, $liveSlug)
+    public function showEntertainmentLive($liveSlug, $liveSubSlug)
     {
         $live = Live::where('slug', $liveSlug)->first();
-        $liveMusic = LiveMusic::where('slug', $liveMusicSlug)->first();
+        $liveMusic = LiveMusic::where('slug', $liveSubSlug)->first();
 
         if (!$live || !$liveMusic) {
             abort(404);
@@ -145,5 +145,18 @@ class HomeController extends Controller
         $teamCreative = TeamLanoer::get();
 
         return view('front.pages.home.entertainment.live.show', compact('live', 'liveMusic', 'teamCreative'));
+    }
+
+
+    public function showEntertainmentCeremony($slug)
+    {
+        $ceremony = Ceremonial::where('slug', $slug)->first();
+        $ceremonySub = CeremonialEvent::where('slug', $ceremony->slug)->first();
+
+        if (!$ceremonySub || !$ceremony) {
+            abort(404);
+        }
+        $teamCreative = TeamLanoer::get();
+        return view('front.pages.home.entertainment.ceremony.show', compact('ceremony', 'ceremonySub', 'teamCreative'));
     }
 }

@@ -38,6 +38,8 @@ use App\Http\Controllers\Front\HomeController;
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/about', [HomeController::class, 'about'])->name('aboutHome');
 Route::get('/makeups', [HomeController::class, 'makeups'])->name('makeups');
+Route::get('/documentation', [HomeController::class, 'documentation'])->name('portofolio');
+Route::get('/documentation/foto/{slug}', [HomeController::class, 'showDocumentation'])->name('documentation.main.show');
 Route::get('makeup/event/{eventMakeupSlug}', [HomeController::class, 'detailEvent'])->name('makeup.event');
 Route::get('makeup/event/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
 Route::get('makeup/wedding/{weddingMakeupSlug}', [HomeController::class, 'detailWedding'])->name('makeup.wedding');
@@ -45,6 +47,9 @@ Route::get('makeup/wedding/{weddingMakeupSlug}/{slug}', [HomeController::class, 
 
 Route::get('decoration/list', [HomeController::class, 'decorationList'])->name('decoration.list');
 Route::get('decoration/{slug}', [HomeController::class, 'showDecoration'])->name('decoration.detail.show');
+
+Route::get('catering/list', [HomeController::class, 'cateringList'])->name('catering.list');
+Route::get('catering/{slug}', [HomeController::class, 'showCatering'])->name('catering.detail.show');
 
 Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])
     ->name('entertainment.list');
@@ -65,6 +70,7 @@ Route::get('/services', [HomeController::class, 'services'])->name('servicesHome
 Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolioHome');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blogHome');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contactHome');
+Route::post('/contact', [HomeController::class, 'contactStore'])->name('contact.store');
 
 
 // ROUTE BACKEND
@@ -100,10 +106,9 @@ Route::middleware('auth:web')->group(function () {
     Route::prefix('makeup')->name('makeup.')->group(function () {
         Route::view('/list', 'back.pages.makeup.list')->name('list');
         // event
-        Route::resource('/', EventController::class);
-        Route::get('event/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
-        Route::put('event/update/{id}', [EventController::class, 'update'])->name('event.update');
-        Route::get('event/show/{id}', [EventController::class, 'show'])->name('event.show');
+        Route::get('event/main/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
+        Route::put('event/main/update/{id}', [EventController::class, 'update'])->name('event.update');
+        Route::get('event/main/show/{id}', [EventController::class, 'show'])->name('event.show');
         Route::get('event/create', [EventController::class, 'create'])->name('event.create');
         Route::get('event/makeup/create', [EventController::class, 'createMakeup'])->name('makeupevent.create');
         Route::post('event/makeup/store', [EventController::class, 'storeMakeup'])->name('makeupevent.store');
@@ -111,23 +116,23 @@ Route::middleware('auth:web')->group(function () {
         Route::put('event/makeup/update/{id}', [EventController::class, 'updateMakeup'])->name('makeupevent.update');
         Route::delete('event/makeup/destroy/{id}', [EventController::class, 'destroyMakeup'])->name('makeupevent.destroy');
         // wedding
-        Route::resource('/', WeddingController::class);
         Route::get('wedding/main/edit/{id}', [WeddingController::class, 'edit'])->name('wedding.edit');
         Route::put('wedding/main/update/{id}', [WeddingController::class, 'update'])->name('wedding.update');
         Route::get('wedding/main/show/{id}', [WeddingController::class, 'show'])->name('wedding.show');
         Route::get('wedding/main/create', [WeddingController::class, 'create'])->name('wedding.create');
-        Route::get('wedding/create', [WeddingController::class, 'createWedding'])->name('weddingmakeup.create');
-        Route::post('wedding/store', [WeddingController::class, 'storeWedding'])->name('weddingmakeup.store');
-        Route::get('wedding/edit/{id}', [WeddingController::class, 'editWedding'])->name('weddingmakeup.edit');
-        Route::put('wedding/update/{id}', [WeddingController::class, 'updateWedding'])->name('weddingmakeup.update');
-        Route::delete('wedding/destroy/{id}', [WeddingController::class, 'destroyWedding'])->name('weddingmakeup.destroy');
+        Route::get('wedding/sub/create', [WeddingController::class, 'createWedding'])->name('weddingmakeup.create');
+        Route::post('wedding/sub/store', [WeddingController::class, 'storeWedding'])->name('weddingmakeup.store');
+        Route::get('wedding/sub/edit/{id}', [WeddingController::class, 'editWedding'])->name('weddingmakeup.edit');
+        Route::put('wedding/sub/update/{id}', [WeddingController::class, 'updateWedding'])->name('weddingmakeup.update');
+        Route::delete('wedding/sub/destroy/{id}', [WeddingController::class, 'destroyWedding'])->name('weddingmakeup.destroy');
+        // Route::resource('/', WeddingController::class);
     });
 
     Route::prefix('decoration')->name('decoration.')->group(function () {
         Route::resource('/', DecorationController::class);
-        // Route::get('edit/{id}', [DecorationController::class, 'edit'])->name('edit');
-        // Route::put('update/{id}', [DecorationController::class, 'update'])->name('update');
-        // Route::delete('destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy');
+        Route::get('main/edit/{id}', [DecorationController::class, 'edit'])->name('edit.decor');
+        Route::put('main/update/{id}', [DecorationController::class, 'update'])->name('update.decor');
+        Route::delete('main/destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy.decor');
     });
 
     Route::prefix('entertainment')->name('entertainment.')->group(function () {
@@ -166,7 +171,7 @@ Route::middleware('auth:web')->group(function () {
         Route::put('ceremonial/ceremonialevent/update/{id}', [EntertainmentController::class, 'updateCeremonialEvent'])->name('ceremonialevent.update');
         Route::delete('ceremonial/ceremonialevent/destroy/{id}', [EntertainmentController::class, 'destroyCeremonialEvent'])->name('ceremonialevent.destroy');
     });
-    Route::prefix('documentation')->name('documentation.')->group(function () {
+    Route::prefix('documentationBack')->name('documentation.')->group(function () {
         Route::resource('/', DocumentationController::class);
         Route::get('add-foto', [DocumentationController::class, 'addFoto'])->name('add-foto');
         Route::post('store-foto', [DocumentationController::class, 'storeFoto'])->name('store-foto');

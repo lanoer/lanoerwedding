@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Intervention\Image\Facades\Image;
 
 class AlbumFoto extends Component
 {
@@ -29,6 +30,8 @@ class AlbumFoto extends Component
     public $title;
 
     public $img;
+
+    public $image;
 
     public $album_id;
 
@@ -80,14 +83,39 @@ class AlbumFoto extends Component
     {
         $this->validate([
             'album_name' => 'required|unique:albums,album_name',
+            'image' => 'nullable|image|max:2048',
         ]);
+
         $album = new Album();
         $album->album_name = $this->album_name;
+
+        if ($this->image) {
+            $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
+
+            // Simpan original
+            $this->image->storeAs('back/images/album/original', $filename, 'public');
+
+            // Resize dan simpan thumbnail (ini yang dipakai di database)
+            $resizedImage = Image::make($this->image->getRealPath())
+                ->fit(520, 400, function ($constraint) {
+                    $constraint->upsize();
+                });
+            $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
+            if (!file_exists($thumbnailDir)) {
+                mkdir($thumbnailDir, 0777, true);
+            }
+            $thumbnailPath = $thumbnailDir . '/' . $filename;
+            $resizedImage->save($thumbnailPath);
+
+            // Simpan nama file resize ke database
+            $album->image = $filename;
+        }
+
         $saved = $album->save();
 
         if ($saved) {
             $this->dispatchBrowserEvent('hideAlbumModal');
-            $this->album_name = null;
+            $this->resetModalForm();
             flash()->addSuccess('New Album has been successfuly added.');
         } else {
             flash()->addError('Something went wrong!');
@@ -109,14 +137,46 @@ class AlbumFoto extends Component
         if ($this->selected_album_id) {
             $this->validate([
                 'album_name' => 'required|unique:albums,album_name,' . $this->selected_album_id,
+                'image' => 'nullable|image|max:2048',
             ]);
 
             $album = Album::findOrFail($this->selected_album_id);
             $album->album_name = $this->album_name;
+
+            if ($this->image) {
+                // Hapus file lama jika ada
+                if ($album->image && \Storage::disk('public')->exists('back/images/album/thumbnail/' . $album->image)) {
+                    \Storage::disk('public')->delete('back/images/album/thumbnail/' . $album->image);
+                }
+                if ($album->image && \Storage::disk('public')->exists('back/images/album/original/' . $album->image)) {
+                    \Storage::disk('public')->delete('back/images/album/original/' . $album->image);
+                }
+
+                $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
+
+                // Simpan original
+                $this->image->storeAs('back/images/album/original', $filename, 'public');
+
+                // Resize dan simpan thumbnail
+                $resizedImage = Image::make($this->image->getRealPath())
+                    ->fit(520, 400, function ($constraint) {
+                        $constraint->upsize();
+                    });
+                $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
+                if (!file_exists($thumbnailDir)) {
+                    mkdir($thumbnailDir, 0777, true);
+                }
+                $thumbnailPath = $thumbnailDir . '/' . $filename;
+                $resizedImage->save($thumbnailPath);
+
+                // Simpan nama file resize ke database
+                $album->image = $filename;
+            }
+
             $updated = $album->save();
             if ($updated) {
                 $this->dispatchBrowserEvent('hideAlbumModal');
-                $this->updateAlbumMode = false;
+                $this->resetModalForm();
                 flash()->addSuccess('Album has been successfuly updated.');
             } else {
                 flash()->addError('Something went wrong!');

@@ -322,4 +322,12 @@ if (! function_exists('clients')) {
     {
         return Client::get();
     }
+
+
+    if (! function_exists('slider')) {
+        function slider()
+        {
+            return Slider::get();
+        }
+    }
 }

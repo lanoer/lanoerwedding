@@ -23,15 +23,15 @@
                 </ul>
 
                 {{-- @if (session()->has('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
                 @endif
 
                 @if (session()->has('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
                 @endif --}}
                 <!-- Tabs Content -->
                 <div class="tab-content" id="myTabContent">
@@ -58,15 +58,15 @@
                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#album_modal">
                                                 <span class="svg-icon svg-icon-3">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect opacity="0.3" x="2" y="2" width="20" height="20"
-                                                            rx="5" fill="currentColor"></rect>
-                                                        <rect x="10.8891" y="17.8033" width="12" height="2"
-                                                            rx="1" transform="rotate(-90 10.8891 17.8033)"
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5"
                                                             fill="currentColor"></rect>
-                                                        <rect x="6.01041" y="10.9247" width="12" height="2"
-                                                            rx="1" fill="currentColor"></rect>
+                                                        <rect x="10.8891" y="17.8033" width="12" height="2" rx="1"
+                                                            transform="rotate(-90 10.8891 17.8033)" fill="currentColor">
+                                                        </rect>
+                                                        <rect x="6.01041" y="10.9247" width="12" height="2" rx="1"
+                                                            fill="currentColor"></rect>
                                                     </svg>
                                                 </span>
                                                 Add Album
@@ -83,6 +83,7 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Album Name</th>
+                                                <th>Album Thumbnail</th>
                                                 <th>N. Of Foto</th>
                                                 <th>Created At</th>
                                                 <th class="w-1">Action</th>
@@ -90,35 +91,35 @@
                                         </thead>
                                         <tbody id="sortable_album">
                                             @forelse ($Albums as $a)
-                                                <tr data-index="{{ $a->id }}"
-                                                    data-ordering="{{ $a->ordering }}">
-                                                    <td>{{ ($Albums->currentPage() - 1) * $Albums->perPage() + $loop->iteration }}
-                                                    </td>
-                                                    <td>{{ $a->album_name }}</td>
-                                                    <td class="text-muted">
-                                                        {{ $a->foto->count() }}
-                                                    </td>
-                                                    <td class="text-muted">
-                                                        {{ $a->created_at->format('d M Y') }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a href="#"
-                                                                wire:click.prevent='editAlbum({{ $a->id }})'
-                                                                class="btn btn-sm btn-primary">Edit</a> &nbsp;
-                                                            <a href="#"
-                                                                wire:click.prevent='deleteAlbum({{ $a->id }})'
-                                                                class="btn btn-sm btn-danger">Delete</a>
+                                            <tr data-index="{{ $a->id }}" data-ordering="{{ $a->ordering }}">
+                                                <td>{{ ($Albums->currentPage() - 1) * $Albums->perPage() +
+                                                    $loop->iteration }}
+                                                </td>
+                                                <td>{{ $a->album_name }}</td>
+                                                <td><img src="{{ asset('storage/back/images/album/thumbnail/' . $a->image) }}"
+                                                        width="60"></td>
+                                                <td class="text-muted">
+                                                    {{ $a->foto->count() }}
+                                                </td>
+                                                <td class="text-muted">
+                                                    {{ $a->created_at->format('d M Y') }}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="#" wire:click.prevent='editAlbum({{ $a->id }})'
+                                                            class="btn btn-sm btn-primary">Edit</a> &nbsp;
+                                                        <a href="#" wire:click.prevent='deleteAlbum({{ $a->id }})'
+                                                            class="btn btn-sm btn-danger">Delete</a>
 
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                             @empty
-                                                <tr>
-                                                    <td colspan="5"><span class="text-danger">Album Not
-                                                            Found!</span>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td colspan="5"><span class="text-danger">Album Not
+                                                        Found!</span>
+                                                </td>
+                                            </tr>
                                             @endforelse
                                         </tbody>
                                     </table>
@@ -144,25 +145,24 @@
                                     <div class="d-flex align-items-center">
                                         <div class="me-3">
                                             <div class="input-icon">
-                                                <input type="text" class="form-control"
-                                                    placeholder="Search video..."
+                                                <input type="text" class="form-control" placeholder="Search video..."
                                                     wire:model.debounce.300ms="searchVideo">
 
                                             </div>
                                         </div>
                                         <div class="card-toolbar">
-                                            <button type="button" class="btn btn-primary btn-sm"
-                                                data-bs-toggle="modal" data-bs-target="#video_modal">
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#video_modal">
                                                 <span class="svg-icon svg-icon-3">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect opacity="0.3" x="2" y="2" width="20"
-                                                            height="20" rx="5" fill="currentColor"></rect>
-                                                        <rect x="10.8891" y="17.8033" width="12" height="2"
-                                                            rx="1" transform="rotate(-90 10.8891 17.8033)"
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5"
                                                             fill="currentColor"></rect>
-                                                        <rect x="6.01041" y="10.9247" width="12" height="2"
-                                                            rx="1" fill="currentColor"></rect>
+                                                        <rect x="10.8891" y="17.8033" width="12" height="2" rx="1"
+                                                            transform="rotate(-90 10.8891 17.8033)" fill="currentColor">
+                                                        </rect>
+                                                        <rect x="6.01041" y="10.9247" width="12" height="2" rx="1"
+                                                            fill="currentColor"></rect>
                                                     </svg>
                                                 </span>
                                                 Add Video
@@ -185,29 +185,27 @@
                                         </thead>
                                         <tbody>
                                             @forelse ($videos as $video)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $video->video_name }}</td>
-                                                    <td class="text-muted">{{ $video->video_url }}</td>
-                                                    <td class="text-muted">
-                                                        {{ $video->created_at->format('d M Y') }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a href="#"
-                                                                wire:click.prevent='editVideo({{ $video->id }})'
-                                                                class="btn btn-sm btn-primary">Edit</a> &nbsp;
-                                                            <button type="button"
-                                                                wire:click="deleteVideo({{ $video->id }})"
-                                                                class="btn btn-sm btn-danger">Delete</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $video->video_name }}</td>
+                                                <td class="text-muted">{{ $video->video_url }}</td>
+                                                <td class="text-muted">
+                                                    {{ $video->created_at->format('d M Y') }}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="#" wire:click.prevent='editVideo({{ $video->id }})'
+                                                            class="btn btn-sm btn-primary">Edit</a> &nbsp;
+                                                        <button type="button" wire:click="deleteVideo({{ $video->id }})"
+                                                            class="btn btn-sm btn-danger">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                             @empty
-                                                <tr>
-                                                    <td colspan="5"><span class="text-danger">No Videos
-                                                            Found!</span></td>
-                                                </tr>
+                                            <tr>
+                                                <td colspan="5"><span class="text-danger">No Videos
+                                                        Found!</span></td>
+                                            </tr>
                                             @endforelse
                                         </tbody>
                                     </table>
@@ -241,18 +239,17 @@
                                                 <select wire:model='album' id="" class="form-control">
                                                     <option value="">-- ALL foto --</option>
                                                     @foreach ($AlbumList as $al)
-                                                        <option value="{{ $al->id }}">{{ $al->album_name }}
-                                                        </option>
+                                                    <option value="{{ $al->id }}">{{ $al->album_name }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                        <a href="{{ route('documentation.add-foto') }}"
-                                            class="btn btn-primary btn-sm" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
-                                                height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                stroke="currentColor" fill="none" stroke-linecap="round"
-                                                stroke-linejoin="round">
+                                        <a href="{{ route('documentation.add-foto') }}" class="btn btn-primary btn-sm"
+                                            type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                 <line x1="12" y1="5" x2="12" y2="19">
                                                 </line>
@@ -276,36 +273,34 @@
                         <div class="container-xl">
                             <div class="row row-cards">
                                 @forelse ($fotos as $foto)
-                                    <div class="col-sm-6 col-lg-4">
-                                        <div class="card card-sm">
-                                            <div class="position-relative">
-                                                <input type="checkbox" wire:model="selectedFotos"
-                                                    value="{{ $foto->id }}"
-                                                    class="position-absolute top-0 start-0 m-2">
-                                                <a href="{{ asset('storage/back/images/album/foto/' . $foto->image) }}"
-                                                    class="d-block" data-id="{{ $foto->id }}"
-                                                    data-fancybox="gallery" data-caption="{{ $foto->title }}">
-                                                    <img src="{{ asset('storage/back/images/album/foto/thumbnails/thumb_' . $foto->image) }}"
-                                                        class="card-img-top">
-                                                </a>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="ms-auto">
-                                                        <a wire:click.prevent='deleteFoto({{ $foto->id }})'
-                                                            href="" class="btn btn-sm btn-danger mt-1 mb-1"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            title="Delete">
-                                                            <i class="bx bx-trash"></i>
-                                                        </a>
-                                                    </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="card card-sm">
+                                        <div class="position-relative">
+                                            <input type="checkbox" wire:model="selectedFotos" value="{{ $foto->id }}"
+                                                class="position-absolute top-0 start-0 m-2">
+                                            <a href="{{ asset('storage/back/images/album/foto/' . $foto->image) }}"
+                                                class="d-block" data-id="{{ $foto->id }}" data-fancybox="gallery"
+                                                data-caption="{{ $foto->title }}">
+                                                <img src="{{ asset('storage/back/images/album/foto/thumbnails/thumb_' . $foto->image) }}"
+                                                    class="card-img-top">
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="ms-auto">
+                                                    <a wire:click.prevent='deleteFoto({{ $foto->id }})' href=""
+                                                        class="btn btn-sm btn-danger mt-1 mb-1" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="Delete">
+                                                        <i class="bx bx-trash"></i>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
+
+                                </div>
                                 @empty
-                                    <span class="text-danger">Not foto fond(s)</span>
+                                <span class="text-danger">Not foto fond(s)</span>
                                 @endforelse
 
                             </div>
@@ -328,14 +323,13 @@
                             <h5 class="modal-title" id="myLargeModalLabel">
                                 {{ $updateAlbumMode ? 'Updated Album' : 'Add Album' }}
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form class="modal-content" method="POST"
-                            @if ($updateAlbumMode) wire:submit.prevent='updateAlbum()' @else wire:submit.prevent='addAlbum()' @endif>
+                        <form class="modal-content" method="POST" @if ($updateAlbumMode)
+                            wire:submit.prevent='updateAlbum()' @else wire:submit.prevent='addAlbum()' @endif>
                             <div class="modal-body">
                                 @if ($updateAlbumMode)
-                                    <input type="hidden" wire:model='selected_album_id'>
+                                <input type="hidden" wire:model='selected_album_id'>
                                 @endif
                                 <div class="mb-3">
                                     <label class="form-label">Album name</label>
@@ -343,15 +337,26 @@
                                         placeholder="Enter album name" wire:model='album_name'>
                                     <span class="text-danger">
                                         @error('album_name')
-                                            {!! $message !!}
+                                        {!! $message !!}
+                                        @enderror
+                                    </span>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Album Thumbnail</label>
+                                    <input type="file" class="form-control" name="example-text-input"
+                                        placeholder="Enter album name" wire:model='image'>
+                                    <span class="text-danger">
+                                        @error('image')
+                                        {!! $message !!}
                                         @enderror
                                     </span>
                                 </div>
                             </div>
                             <div class="modal-footer">
 
-                                <button type="submit"
-                                    class="btn btn-primary">{{ $updateAlbumMode ? 'Update' : 'Save' }}</button>
+                                <button type="submit" class="btn btn-primary">{{ $updateAlbumMode ? 'Update' : 'Save'
+                                    }}</button>
                             </div>
                         </form>
                     </div>
@@ -367,14 +372,13 @@
                             <h5 class="modal-title" id="videoModalLabel">
                                 {{ $updateVideoMode ? 'Update Video' : 'Add Video' }}
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form class="modal-content" method="POST"
-                            @if ($updateVideoMode) wire:submit.prevent='updateVideo()' @else wire:submit.prevent='addVideo()' @endif>
+                        <form class="modal-content" method="POST" @if ($updateVideoMode)
+                            wire:submit.prevent='updateVideo()' @else wire:submit.prevent='addVideo()' @endif>
                             <div class="modal-body">
                                 @if ($updateVideoMode)
-                                    <input type="hidden" wire:model='selected_video_id'>
+                                <input type="hidden" wire:model='selected_video_id'>
                                 @endif
                                 <div class="mb-3">
                                     <label class="form-label">Video Title</label>
@@ -382,24 +386,24 @@
                                         placeholder="Enter video title" wire:model='video_name'>
                                     <span class="text-danger">
                                         @error('video_name')
-                                            {{ $message }}
+                                        {{ $message }}
                                         @enderror
                                     </span>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Video URL</label>
                                     <input type="text" class="form-control" name="video_url"
-                                        placeholder="Enter video URL (YouTube/Vimeo)" wire:model='video_url'>
+                                        placeholder="Enter video URL (YouTube)" wire:model='video_url'>
                                     <span class="text-danger">
                                         @error('video_url')
-                                            {{ $message }}
+                                        {{ $message }}
                                         @enderror
                                     </span>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit"
-                                    class="btn btn-primary">{{ $updateVideoMode ? 'Update' : 'Save' }}</button>
+                                <button type="submit" class="btn btn-primary">{{ $updateVideoMode ? 'Update' : 'Save'
+                                    }}</button>
                             </div>
                         </form>
                     </div>
@@ -409,13 +413,13 @@
 
         </div>
         @push('stylesheets')
-            <link rel="stylesheet" href="/back/assets/vendor/fancybox/dist/jquery.fancybox.min.css" />
+        <link rel="stylesheet" href="/back/assets/vendor/fancybox/dist/jquery.fancybox.min.css" />
         @endpush
         @push('scripts')
-            <script src="/back/assets/vendor/fancybox/dist/jquery.fancybox.min.js"></script>
+        <script src="/back/assets/vendor/fancybox/dist/jquery.fancybox.min.js"></script>
 
-            <script>
-                // Fancybox Config
+        <script>
+            // Fancybox Config
                 $('[data-fancybox="gallery"]').fancybox({
                     buttons: [
                         "slideShow",
@@ -428,11 +432,11 @@
                     loop: false,
                     protect: true
                 });
-            </script>
+        </script>
         @endpush
         @push('scripts')
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('deleteAllButton').addEventListener('click', function() {
                         // Ambil nilai album dari Livewire
                         var album = @this.get('album');
@@ -447,11 +451,11 @@
                         }
                     });
                 });
-            </script>
+        </script>
         @endpush
         @push('scripts')
-            <script>
-                window.addEventListener('hideVideoModal', event => {
+        <script>
+            window.addEventListener('hideVideoModal', event => {
                     $('#video_modal').modal('hide');
                 });
                 window.addEventListener('showVideoModal', event => {
@@ -470,16 +474,16 @@
                         }
                     });
                 });
-            </script>
+        </script>
         @endpush
         @push('scripts')
-            <script>
-                window.addEventListener('confirmDelete', event => {
+        <script>
+            window.addEventListener('confirmDelete', event => {
                     if (confirm('Are you sure you want to delete ' + event.detail.name + '?')) {
                         @this.call('deleteVideoAction', event.detail.id);
                     }
                 });
-            </script>
+        </script>
         @endpush
 
 

@@ -10,7 +10,8 @@
             <li @if (request()->is('/')) class="pwe-active" @endif><a href="/">Home</a></li>
             <li @if (request()->is('about')) class="pwe-active" @endif><a href="{{ route('aboutHome') }}">About</a>
             </li>
-            <li @if (request()->is('makeups') || request()->is('makeup/event/*') || request()->is('makeup/wedding/*')) class="pwe-active" @endif>
+            <li @if (request()->is('makeups') || request()->is('makeup/event/*') || request()->is('makeup/wedding/*'))
+                class="pwe-active" @endif>
                 <a href="{{ route('makeups') }}">Makeups</a>
             </li>
             <li @if (request()->is('decoration/*')) class="pwe-active" @endif><a
@@ -19,9 +20,12 @@
             <li @if (request()->is('entertainment/*')) class="pwe-active" @endif><a
                     href="{{ route('entertainment.list') }}">Entertainment</a>
             </li>
-            <li><a href="">Documentation</a>
+            <li @if (request()->is('portofolio/*')) class="pwe-active"
+
+                @endif><a href="{{ route('portofolio') }}">Documentation</a>
             </li>
-            <li><a href="">Catering</a>
+            <li @if (request()->is('catering/*')) class="pwe-active" @endif><a
+                    href="{{ route('catering.list') }}">Catering</a>
             </li>
             {{--
             <li @if (request()->is('services')) class="pwe-active" @endif><a

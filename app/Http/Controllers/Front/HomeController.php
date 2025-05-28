@@ -4,20 +4,29 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\Album;
+use App\Models\CateringPackages;
 use App\Models\Ceremonial;
 use App\Models\CeremonialEvent;
+use App\Models\Contact;
 use App\Models\Decorations;
 use App\Models\Event;
 use App\Models\EventMakeups;
+use App\Models\Foto;
 use App\Models\Live;
 use App\Models\LiveMusic;
+use App\Models\Slider;
 use App\Models\Sound;
 use App\Models\SoundSystem;
 use App\Models\TeamLanoer;
+use App\Models\Video;
 use App\Models\Wedding;
 use App\Models\WeddingMakeups;
 use App\Models\Weddings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -158,5 +167,81 @@ class HomeController extends Controller
         }
         $teamCreative = TeamLanoer::get();
         return view('front.pages.home.entertainment.ceremony.show', compact('ceremony', 'ceremonySub', 'teamCreative'));
+    }
+
+
+    public function Slider()
+    {
+        $slider = Slider::get();
+        return view('front.pages.home.slider', compact('slider'));
+    }
+    public function documentation()
+    {
+        $album = Album::with('Foto')->paginate(6);
+        $videos = Video::paginate(3);
+
+        return view('front.pages.home.documentation.index', compact('album', 'videos'));
+    }
+
+
+    public function showDocumentation($slug)
+    {
+        $album = Album::where('slug', $slug)->first();
+        $fotos = $album ? $album->Foto()->paginate(3) : collect(); // paginate 6 per page
+        $videos = Video::get();
+        return view('front.pages.home.documentation.show', compact('album', 'fotos', 'videos'));
+    }
+
+
+    public function cateringList()
+    {
+        $catering = CateringPackages::get();
+        $teamCreative = TeamLanoer::get();
+        return view('front.pages.home.catering.list', compact('catering', 'teamCreative'));
+    }
+
+    public function showCatering($slug)
+    {
+        $catering = CateringPackages::where('slug', $slug)->first();
+        $teamCreative = TeamLanoer::get();
+        return view('front.pages.home.catering.show', compact('catering', 'teamCreative'));
+    }
+
+
+    public function contact()
+    {
+        return view('front.pages.home.contact');
+    }
+
+
+    public function contactStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'telp' => 'required',
+            'pesan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        Contact::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'telp' => $request->telp,
+            'url' => $request->url,
+            'pesan' => $request->pesan,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Message sent successfully.'
+        ]);
     }
 }

@@ -26,21 +26,6 @@ class EventController extends Controller
         return view('back.pages.event.eventmakeup.index', compact('eventMakeups', 'weddingMakeups'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -137,14 +122,6 @@ class EventController extends Controller
         $eventMakeups->save();
 
         return redirect()->route('makeup.list')->with('success', 'Event Makeup updated successfully');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
 

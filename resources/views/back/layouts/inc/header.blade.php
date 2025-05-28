@@ -8,10 +8,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- <meta content="{{ webInfo()->web_desc }}" name="description" />
+    {{--
+    <meta content="{{ webInfo()->web_desc }}" name="description" />
     <meta content="{{ webInfo()->web_name }}" name="author" /> --}}
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('back/assets/images/logo.ico') }}">
+    <link rel="shortcut icon" href="{{ webLogo()->logo_favicon }}">
 
     <!-- jquery.vectormap css -->
     <link href="{{ asset('back/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}"

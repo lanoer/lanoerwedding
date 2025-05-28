@@ -75,18 +75,10 @@ class UserRolePermissionSeeder extends Seeder
             $permission = Permission::create(['name' => 'delete post']);
             // end post
 
-            $permission = Permission::create(['name' => 'create category']);
-            $permission = Permission::create(['name' => 'read category']);
-            $permission = Permission::create(['name' => 'update category']);
-            $permission = Permission::create(['name' => 'delete category']);
-            // end category
+            $permission = Permission::create(['name' => 'read pages']);
 
             $permission = Permission::create(['name' => 'read setting']);
-            $permission = Permission::create(['name' => 'read about']);
-            $permission = Permission::create(['name' => 'read service']);
-            $permission = Permission::create(['name' => 'read portfolio']);
-            $permission = Permission::create(['name' => 'read contact']);
-            $permission = Permission::create(['name' => 'read page']);
+
 
             $role_superadmin->givePermissionTo('create role');
             $role_superadmin->givePermissionTo('read role');
@@ -106,14 +98,10 @@ class UserRolePermissionSeeder extends Seeder
             $role_admin->givePermissionTo('update post');
             $role_admin->givePermissionTo('delete post');
 
-            $role_admin->givePermissionTo('create category');
-            $role_admin->givePermissionTo('read category');
-            $role_admin->givePermissionTo('update category');
-            $role_admin->givePermissionTo('delete category');
 
             $role_admin->givePermissionTo('read setting');
             $role_admin->givePermissionTo('read setting');
-            $role_admin->givePermissionTo('read page');
+            $role_admin->givePermissionTo('read pages');
 
             $admin->assignRole('admin');
             $superadmin->assignRole('superadmin');

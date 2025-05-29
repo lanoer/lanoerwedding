@@ -28,8 +28,8 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa2
-          chmod 600 ~/.ssh/id_rsa2
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       - name: Deploy PHP to Server
         if: ${{ success() }}
@@ -50,4 +50,4 @@ jobs:
             php artisan migrate --force
       - name: Copy Build Files to Target Server
         run: |
-          rsync -r -e "ssh -i ~/.ssh/id_rsa2 -p ${{ secrets.SSH_PORT }}" ${{ github.workspace }}/public/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/domains/lanoerwedding.com/public/build
+          rsync -r -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }}" ${{ github.workspace }}/public/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/domains/lanoerwedding.com/lanoerwedding/public/build

@@ -74,10 +74,13 @@ Route::post('/contact', [HomeController::class, 'contactStore'])->name('contact.
 
 
 // ROUTE BACKEND
+
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::view('/login', 'back.pages.auth.login')->name('login')->middleware('guest');
     Route::view('/forgot-password', 'back.pages.auth.forgot')->name('forgot-password')->middleware('guest');
-    Route::get('/password/reset/{token}', [AuthController::class, 'ResetForm'])->name('reset-form')->middleware('guest');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.submit')->middleware('guest');
+    Route::get('/reset-password/{token}', [AuthController::class, 'resetPasswordForm'])->name('reset-password.form')->middleware('guest');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.submit')->middleware('guest');
 });
 
 
@@ -103,29 +106,34 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/change-web-front', [SettingController::class, 'changeWebFront'])->name('change-web-front');
     Route::post('/change-web-front2', [SettingController::class, 'changeWebFront2'])->name('change-web-front2');
 
+    // event
+    Route::prefix('event')->name('event.')->group(function () {
+        Route::get('main/edit/{id}', [EventController::class, 'edit'])->name('main.edit');
+        Route::put('main/update/{id}', [EventController::class, 'update'])->name('main.update');
+        Route::get('main/show/{id}', [EventController::class, 'show'])->name('main.show');
+        Route::get('main/create', [EventController::class, 'create'])->name('main.create');
+        Route::get('sub/create', [EventController::class, 'createMakeup'])->name('sub.create');
+        Route::post('sub/store', [EventController::class, 'storeMakeup'])->name('sub.store');
+        Route::get('sub/edit/{id}', [EventController::class, 'editMakeup'])->name('sub.edit');
+        Route::put('sub/update/{id}', [EventController::class, 'updateMakeup'])->name('sub.update');
+        Route::delete('sub/destroy/{id}', [EventController::class, 'destroyMakeup'])->name('sub.destroy');
+    });
+
+    // wedding
+    Route::prefix('wedding')->name('wedding.')->group(function () {
+        Route::get('main/edit/{id}', [WeddingController::class, 'edit'])->name('main.edit');
+        Route::put('main/update/{id}', [WeddingController::class, 'update'])->name('main.update');
+        Route::get('main/show/{id}', [WeddingController::class, 'show'])->name('main.show');
+        Route::get('main/create', [WeddingController::class, 'create'])->name('main.create');
+        Route::get('sub/create', [WeddingController::class, 'createWedding'])->name('sub.create');
+        Route::post('sub/store', [WeddingController::class, 'storeWedding'])->name('sub.store');
+        Route::get('sub/edit/{id}', [WeddingController::class, 'editWedding'])->name('sub.edit');
+        Route::put('sub/update/{id}', [WeddingController::class, 'updateWedding'])->name('sub.update');
+        Route::delete('sub/destroy/{id}', [WeddingController::class, 'destroyWedding'])->name('sub.destroy');
+    });
+
     Route::prefix('makeup')->name('makeup.')->group(function () {
         Route::view('/list', 'back.pages.makeup.list')->name('list');
-        // event
-        Route::get('event/main/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
-        Route::put('event/main/update/{id}', [EventController::class, 'update'])->name('event.update');
-        Route::get('event/main/show/{id}', [EventController::class, 'show'])->name('event.show');
-        Route::get('event/create', [EventController::class, 'create'])->name('event.create');
-        Route::get('event/makeup/create', [EventController::class, 'createMakeup'])->name('makeupevent.create');
-        Route::post('event/makeup/store', [EventController::class, 'storeMakeup'])->name('makeupevent.store');
-        Route::get('event/makeup/edit/{id}', [EventController::class, 'editMakeup'])->name('makeupevent.edit');
-        Route::put('event/makeup/update/{id}', [EventController::class, 'updateMakeup'])->name('makeupevent.update');
-        Route::delete('event/makeup/destroy/{id}', [EventController::class, 'destroyMakeup'])->name('makeupevent.destroy');
-        // wedding
-        Route::get('wedding/main/edit/{id}', [WeddingController::class, 'edit'])->name('wedding.edit');
-        Route::put('wedding/main/update/{id}', [WeddingController::class, 'update'])->name('wedding.update');
-        Route::get('wedding/main/show/{id}', [WeddingController::class, 'show'])->name('wedding.show');
-        Route::get('wedding/main/create', [WeddingController::class, 'create'])->name('wedding.create');
-        Route::get('wedding/sub/create', [WeddingController::class, 'createWedding'])->name('weddingmakeup.create');
-        Route::post('wedding/sub/store', [WeddingController::class, 'storeWedding'])->name('weddingmakeup.store');
-        Route::get('wedding/sub/edit/{id}', [WeddingController::class, 'editWedding'])->name('weddingmakeup.edit');
-        Route::put('wedding/sub/update/{id}', [WeddingController::class, 'updateWedding'])->name('weddingmakeup.update');
-        Route::delete('wedding/sub/destroy/{id}', [WeddingController::class, 'destroyWedding'])->name('weddingmakeup.destroy');
-        // Route::resource('/', WeddingController::class);
     });
 
     Route::prefix('decoration')->name('decoration.')->group(function () {
@@ -133,39 +141,41 @@ Route::middleware('auth:web')->group(function () {
         Route::get('main/edit/{id}', [DecorationController::class, 'edit'])->name('edit.decor');
         Route::put('main/update/{id}', [DecorationController::class, 'update'])->name('update.decor');
         Route::delete('main/destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy.decor');
+        Route::get('main/create', [DecorationController::class, 'create'])->name('create.decor');
     });
 
     Route::prefix('entertainment')->name('entertainment.')->group(function () {
         Route::resource('/', EntertainmentController::class);
+        // sound
         Route::get('sound/edit/{id}', [EntertainmentController::class, 'edit'])->name('sound.edit');
         Route::put('sound/update/{id}', [EntertainmentController::class, 'update'])->name('sound.update');
         Route::delete('sound/destroy/{id}', [EntertainmentController::class, 'destroy'])->name('sound.destroy');
         Route::get('sound/show/{id}', [EntertainmentController::class, 'show'])->name('sound.show');
-        Route::get('sound/create', [EntertainmentController::class, 'createSound'])->name('sound.create');
-        Route::post('sound/store', [EntertainmentController::class, 'storeSound'])->name('sound.store');
+        Route::get('sound/soundSystem/create', [EntertainmentController::class, 'createSound'])->name('sound.create');
+        Route::post('sound/soundSystem/store', [EntertainmentController::class, 'storeSound'])->name('sound.store');
         // Route::get('sound/show/{id}', [EntertainmentController::class, 'showSound'])->name('soundSystem.show');
         Route::get('sound/soundSystem/edit/{id}', [EntertainmentController::class, 'editSound'])->name('soundSystem.edit');
         Route::put('sound/soundSystem/update/{id}', [EntertainmentController::class, 'updateSound'])->name('soundSystem.update');
         Route::delete('sound/soundSystem/destroy/{id}', [EntertainmentController::class, 'destroySound'])->name('soundSystem.destroy');
 
+        // live
         Route::get('live/edit/{id}', [EntertainmentController::class, 'editLive'])->name('live.edit');
         Route::put('live/update/{id}', [EntertainmentController::class, 'updateLive'])->name('live.update');
         Route::delete('live/destroy/{id}', [EntertainmentController::class, 'destroyLive'])->name('live.destroy');
         Route::get('live/show/{id}', [EntertainmentController::class, 'showLive'])->name('live.show');
-        Route::get('live/create', [EntertainmentController::class, 'createLive'])->name('live.create');
-        Route::post('live/store', [EntertainmentController::class, 'storeLive'])->name('live.store');
+        Route::get('live/livemusic/create', [EntertainmentController::class, 'createLive'])->name('live.create');
+        Route::post('live/livemusic/store', [EntertainmentController::class, 'storeLive'])->name('live.store');
         Route::get('live/livemusic/edit/{id}', [EntertainmentController::class, 'editLiveMusic'])->name('livemusic.edit');
         Route::put('live/livemusic/update/{id}', [EntertainmentController::class, 'updateLiveMusic'])->name('livemusic.update');
         Route::delete('live/livemusic/destroy/{id}', [EntertainmentController::class, 'destroyLiveMusic'])->name('livemusic.destroy');
 
-
-
+        // ceremonial
         Route::get('ceremonial/edit/{id}', [EntertainmentController::class, 'editCeremonial'])->name('ceremonial.edit');
         Route::put('ceremonial/update/{id}', [EntertainmentController::class, 'updateCeremonial'])->name('ceremonial.update');
         Route::delete('ceremonial/destroy/{id}', [EntertainmentController::class, 'destroyCeremonial'])->name('ceremonial.destroy');
         Route::get('ceremonial/show/{id}', [EntertainmentController::class, 'showCeremonial'])->name('ceremonial.show');
-        Route::get('ceremonial/create', [EntertainmentController::class, 'createCeremonial'])->name('ceremonial.create');
-        Route::post('ceremonial/store', [EntertainmentController::class, 'storeCeremonial'])->name('ceremonial.store');
+        Route::get('ceremonial/ceremonialevent/create', [EntertainmentController::class, 'createCeremonial'])->name('ceremonial.create');
+        Route::post('ceremonial/ceremonialevent/store', [EntertainmentController::class, 'storeCeremonial'])->name('ceremonial.store');
 
         Route::get('ceremonial/ceremonialevent/edit/{id}', [EntertainmentController::class, 'editCeremonialEvent'])->name('ceremonialevent.edit');
         Route::put('ceremonial/ceremonialevent/update/{id}', [EntertainmentController::class, 'updateCeremonialEvent'])->name('ceremonialevent.update');
@@ -179,9 +189,11 @@ Route::middleware('auth:web')->group(function () {
 
     Route::prefix('catering')->name('catering.')->group(function () {
         Route::resource('/', CateringController::class);
-        // Route::get('edit/{id}', [CateringController::class, 'edit'])->name('edit');
-        // Route::put('update/{id}', [CateringController::class, 'update'])->name('update');
-        // Route::delete('destroy/{id}', [CateringController::class, 'destroy'])->name('destroy');
+        Route::get('main/create', [CateringController::class, 'create'])->name('main.create');
+        Route::post('main/store', [CateringController::class, 'store'])->name('main.store');
+        Route::get('main/edit/{id}', [CateringController::class, 'edit'])->name('main.edit');
+        Route::put('main/update/{id}', [CateringController::class, 'update'])->name('main.update');
+        Route::delete('main/destroy/{id}', [CateringController::class, 'destroy'])->name('main.destroy');
     });
 
     // recycle
@@ -205,15 +217,8 @@ Route::middleware('auth:web')->group(function () {
         // Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
     });
 
-    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
-
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs');
     Route::resource('slider', SliderController::class);
     Route::resource('testimoni', TestimoniController::class);
     Route::resource('client', ClientController::class);
-});
-
-
-
-Route::get('/test/env', function () {
-    dd(env('lanoerwedding')); // Dump 'db' variable value one by one
 });

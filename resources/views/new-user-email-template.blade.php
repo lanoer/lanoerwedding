@@ -462,7 +462,7 @@
                                             <table id="u_content_text_2"
                                                 style="font-family:arial,helvetica,sans-serif;" role="presentation"
                                                 cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
+                                                <tbody></tbody>
                                                     <tr>
                                                         <td class="v-container-padding-padding"
                                                             style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;"

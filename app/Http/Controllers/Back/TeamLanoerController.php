@@ -10,6 +10,10 @@ use Intervention\Image\Facades\Image;
 
 class TeamLanoerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:read pages');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -34,7 +38,7 @@ class TeamLanoerController extends Controller
         $request->validate(
             [
                 'name' => 'required|unique:team_lanoers,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'image|mimes:jpeg,png,jpg|max:6048',
                 'position' => 'required',
                 'facebook' => 'url',
                 'instagram' => 'url',

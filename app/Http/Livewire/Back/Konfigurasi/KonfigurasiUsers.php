@@ -276,7 +276,7 @@ class KonfigurasiUsers extends Component
                 $query->where('isActive', $this->FilterUserActive);
             });
 
-        if (! empty($this->roleFilter)) {
+        if (!empty($this->roleFilter)) {
             $query->role($this->roleFilter);
         }
 

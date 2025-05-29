@@ -45,12 +45,13 @@ class LoginForm extends Component
             $checkUser = User::where($fieldType, $this->login_id)->first();
             if ($checkUser->blocked == 1) {
                 Auth::guard('web')->logout();
-
                 return redirect()->route('auth.login')->with('fail', 'Your account has been blocked!');
             } elseif ($checkUser->verified == 0) {
                 Auth::guard('web')->logout();
-
                 return redirect()->route('auth.login')->with('fail', 'Akun anda belum diverifikasi, silahkan cek email anda');
+            } elseif ($checkUser->isActive == 0) {
+                Auth::guard('web')->logout();
+                return redirect()->route('auth.login')->with('fail', 'Akun anda tidak aktif, silahkan hubungi administrator');
             } else {
                 if ($this->returnUrl != null) {
                     return redirect()->to($this->returnUrl);

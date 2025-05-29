@@ -201,7 +201,7 @@ class WeddingController extends Controller
 
         $weddingMakeups->save();
 
-        return redirect()->route('makeup.wedding.show', ['id' => 1])->with('success', 'Wedding Makeup created successfully');
+        return redirect()->route('wedding.main.show', ['id' => 1])->with('success', 'Wedding Makeup created successfully');
     }
 
     public function editWedding($id)
@@ -286,7 +286,7 @@ class WeddingController extends Controller
 
         $weddingMakeups->save();
 
-        return redirect()->route('makeup.wedding.show', ['id' => $weddingMakeups->wedding_makeups_id])->with('success', 'Wedding Makeup updated successfully');
+        return redirect()->route('wedding.main.show', ['id' => $weddingMakeups->wedding_makeups_id])->with('success', 'Wedding Makeup updated successfully');
     }
 
     public function destroyWedding($id)

@@ -87,6 +87,7 @@ class UserRolePermissionSeeder extends Seeder
 
 
             $role_superadmin->givePermissionTo('read setting');
+            $role_superadmin->givePermissionTo('read pages');
 
             $role_admin->givePermissionTo('create role');
             $role_admin->givePermissionTo('read role');
@@ -99,7 +100,6 @@ class UserRolePermissionSeeder extends Seeder
             $role_admin->givePermissionTo('delete post');
 
 
-            $role_admin->givePermissionTo('read setting');
             $role_admin->givePermissionTo('read setting');
             $role_admin->givePermissionTo('read pages');
 

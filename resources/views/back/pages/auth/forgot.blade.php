@@ -24,16 +24,33 @@
 
                             <div class="p-2">
 
-                                <form class="form-horizontal" action="index.html">
-
-                                    <div class="alert alert-success text-center mb-4" role="alert">
+                                <form class="form-horizontal" action="{{ route('auth.forgot-password.submit') }}"
+                                    method="post">
+                                    @csrf
+                                    <div class="alert text-danger text-center mb-4" role="alert">
                                         Enter your Email and instructions will be sent to you!
                                     </div>
+                                    {{-- Success Notification --}}
+                                    @if (session('status'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        {{ session('status') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    @endif
 
+                                    {{-- Error Notification --}}
+                                    @if ($errors->any())
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {{ $errors->first() }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    @endif
                                     <div class="mb-3">
                                         <label class="form-label" for="useremail">Email</label>
                                         <input type="email" class="form-control" id="useremail"
-                                            placeholder="Enter email">
+                                            placeholder="Enter email" name="email">
                                     </div>
 
                                     <div class="row mb-0">
@@ -42,7 +59,9 @@
                                                 type="submit">Reset</button>
                                         </div>
                                     </div>
+
                                 </form>
+
                             </div>
 
                         </div>
@@ -52,7 +71,9 @@
                         <p>Remember It ? <a href="{{ route('auth.login') }}" class="fw-medium text-primary"> Sign In
                                 here</a> </p>
                         <p>©
-                            <script>document.write(new Date().getFullYear())</script> {{ config('app.name') }}
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script> {{ config('app.name') }}
                         </p>
                     </div>
 
@@ -63,5 +84,3 @@
 
     <!-- JAVASCRIPT -->
     @include('back.layouts.inc.scripts')
-
-

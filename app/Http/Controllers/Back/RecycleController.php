@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class RecycleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:read pages');
+    }
     /**
      * Display a listing of the resource.
      */

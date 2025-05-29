@@ -1,14 +1,29 @@
 <div>
     <div class="p-2">
+        {{-- Success Notification --}}
+        @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('status') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        {{-- Error Notification --}}
+        @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
         @if (Session::get('fail'))
-            <div class="alert alert-danger" role="alert">
-                {{ Session::get('fail') }}
-            </div>
+        <div class="alert alert-danger" role="alert">
+            {{ Session::get('fail') }}
+        </div>
         @endif
         @if (Session::get('success'))
-            <div class="alert alert-success" role="alert">
-                {!! Session::get('success') !!}
-            </div>
+        <div class="alert alert-success" role="alert">
+            {!! Session::get('success') !!}
+        </div>
         @endif
         <form class="form-horizontal" wire:submit.prevent='LoginHandler()' method="post" autocomplete="off">
             @csrf
@@ -17,7 +32,7 @@
                 <input type="text" class="form-control" id="login_id" placeholder="Enter username or email"
                     wire:model="login_id">
                 @error('login_id')
-                    <span class="text-danger">{{ $message }}</span>
+                <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -43,7 +58,7 @@
 
                 </div>
                 @error('password')
-                    <span class="text-danger">{{ $message }}</span>
+                <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -71,8 +86,8 @@
 
 </div>
 @push('scripts')
-    <script>
-        function toggle() {
+<script>
+    function toggle() {
             let input_toggle = document.getElementById('toggle_button')
             let password_input = document.getElementById('password_input')
 
@@ -90,5 +105,5 @@
         `
             }
         }
-    </script>
+</script>
 @endpush

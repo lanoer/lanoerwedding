@@ -58,82 +58,82 @@
                         </thead>
                         <tbody>
                             @forelse ($clients as $c=>$client)
-                                <tr>
-                                    <td>{{ $c + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url({{ $client->image }});
+                            <tr>
+                                <td>{{ $c + 1 }}</td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url({{ $client->image }});
                                     width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($client->name, 15, ' ...') !!}
-                                        </div>
-                                    </td>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="">
+                                        {!! Str::limit($client->name, 15, ' ...') !!}
+                                    </div>
+                                </td>
 
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
 
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#clientModal{{ $client->id }}" data-bs-placement="top"
-                                                title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('client.edit', [$client->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
+                                        <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#clientModal{{ $client->id }}" data-bs-placement="top"
+                                            title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('client.edit', [$client->id]) }}"
+                                            class="btn btn-sm btn-warning ">Edit</a>
 
-                                            <a href=""
-                                                wire:click.prevent='deleteClient({{ $client->id }}, "{{ $client->name }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                        <a href=""
+                                            wire:click.prevent='deleteClient({{ $client->id }}, "{{ $client->name }}")'
+                                            class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Modal untuk event ini -->
+                            <div class="modal fade" id="clientModal{{ $client->id }}" tabindex="-1"
+                                aria-labelledby="clientModalLabel{{ $client->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="clientModalLabel{{ $client->id }}">
+                                                {{ $client->name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="clientModal{{ $client->id }}" tabindex="-1"
-                                    aria-labelledby="clientModalLabel{{ $client->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="clientModalLabel{{ $client->id }}">
-                                                    {{ $client->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ $client->image }}" class="img-fluid rounded"
-                                                            alt="{{ $client->name }}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img src="{{ $client->image }}" class="img-fluid rounded"
+                                                        alt="{{ $client->name }}">
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h4 class="mb-3">{{ $client->name }}</h4>
+
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Created At:</h6>
+                                                        <p>{{ $client->created_at->format('d M Y H:i') }}</p>
                                                     </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $client->name }}</h4>
-
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $client->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $client->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Updated At:</h6>
+                                                        <p>{{ $client->updated_at->format('d M Y H:i') }}</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No Client found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-danger">No Client found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

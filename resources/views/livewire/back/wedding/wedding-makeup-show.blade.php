@@ -40,7 +40,7 @@
                             entries
                         </div>
                         <div class="ms-auto">
-                            <a href="{{ route('makeup.weddingmakeup.create') }}" class="btn btn-primary">Add
+                            <a href="{{ route('wedding.sub.create') }}" class="btn btn-primary">Add
                                 {{ $weddingMakeups->name }}</a>
                         </div>
                     </div>
@@ -59,88 +59,88 @@
                         </thead>
                         <tbody>
                             @forelse ($weddings as $w=>$wedding)
-                                <tr>
-                                    <td>{{ $w + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url('{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}');
+                            <tr>
+                                <td>{{ $w + 1 }}</td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url('{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}');
                                     width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($wedding->name, 15, ' ...') !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        {!! Str::limit($wedding->description, 15, ' ...') !!}
-                                    </td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="">
+                                        {!! Str::limit($wedding->name, 15, ' ...') !!}
+                                    </div>
+                                </td>
+                                <td class="text-muted">
+                                    {!! Str::limit($wedding->description, 15, ' ...') !!}
+                                </td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
 
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#weddingModal{{ $wedding->id }}"
-                                                data-bs-placement="top" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('makeup.weddingmakeup.edit', [$wedding->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
+                                        <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#weddingModal{{ $wedding->id }}" data-bs-placement="top"
+                                            title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('wedding.sub.edit', [$wedding->id]) }}"
+                                            class="btn btn-sm btn-warning ">Edit</a>
 
-                                            <a href=""
-                                                wire:click.prevent='deleteEvent({{ $wedding->id }}, "{{ $wedding->name }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                        <a href=""
+                                            wire:click.prevent='deleteEvent({{ $wedding->id }}, "{{ $wedding->name }}")'
+                                            class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Modal untuk event ini -->
+                            <div class="modal fade" id="weddingModal{{ $wedding->id }}" tabindex="-1"
+                                aria-labelledby="weddingModalLabel{{ $wedding->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="weddingModalLabel{{ $wedding->id }}">
+                                                {{ $wedding->name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="weddingModal{{ $wedding->id }}" tabindex="-1"
-                                    aria-labelledby="weddingModalLabel{{ $wedding->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="weddingModalLabel{{ $wedding->id }}">
-                                                    {{ $wedding->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
-                                                            class="img-fluid rounded" alt="{{ $wedding->name }}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
+                                                        class="img-fluid rounded" alt="{{ $wedding->name }}">
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h4 class="mb-3">{{ $wedding->name }}</h4>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Description:</h6>
+                                                        <p>{!! $wedding->description !!}</p>
                                                     </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $wedding->name }}</h4>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Description:</h6>
-                                                            <p>{!! $wedding->description !!}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $wedding->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $wedding->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Created At:</h6>
+                                                        <p>{{ $wedding->created_at->format('d M Y H:i') }}</p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Updated At:</h6>
+                                                        <p>{{ $wedding->updated_at->format('d M Y H:i') }}</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No {{ $weddingMakeups->name }}
-                                        found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-danger">No {{ $weddingMakeups->name }}
+                                    found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

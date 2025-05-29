@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 
 class AllInbox extends Component
 {
+
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
@@ -25,7 +26,12 @@ class AllInbox extends Component
         'deleteInboxAction',
         'deleteSelectedInboxAction'
     ];
-
+    public function mount()
+    {
+        if (!auth()->user()->can('read pages')) {
+            abort(403);
+        }
+    }
     public function updatedSelectAll($value)
     {
         if ($value) {

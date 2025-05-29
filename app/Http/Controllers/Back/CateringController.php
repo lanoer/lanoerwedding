@@ -10,6 +10,7 @@ use Intervention\Image\Facades\Image;
 
 class CateringController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */

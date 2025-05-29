@@ -4,11 +4,13 @@ namespace App\Http\Livewire\Back;
 
 use App\Models\CateringPackages;
 use App\Models\Decorations;
+use App\Models\Event;
 use App\Models\EventMakeups;
 use App\Models\LiveMusic;
 use App\Models\SoundSystem;
 use App\Models\User;
 use App\Models\WeddingMakeups;
+use App\Models\Weddings;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -19,8 +21,8 @@ class Home extends Component
     public function mount()
     {
         $this->totalUsers = Cache::remember('totalUsers', 60, fn() => User::count());
-        $this->totalWeddings = Cache::remember('totalWeddings', 60, fn() => WeddingMakeups::count());
-        $this->totalEvent = Cache::remember('totalEvent', 60, fn() => EventMakeups::count());
+        $this->totalWeddings = Cache::remember('totalWeddings', 60, fn() => Weddings::count());
+        $this->totalEvent = Cache::remember('totalEvent', 60, fn() => Event::count());
         $this->totalCatering = Cache::remember('totalCatering', 60, fn() => CateringPackages::count());
         $this->totalDecorations = Cache::remember('totalDecorations', 60, fn() => Decorations::count());
         $this->totalMusic = Cache::remember('totalMusic', 60, fn() => LiveMusic::count());

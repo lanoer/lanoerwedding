@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class AboutController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:read pages');
+    }
+
     /**
      * Display a listing of the resource.
      */

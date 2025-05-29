@@ -8,12 +8,12 @@
                     <h5 class="card-title">{{ $eventMakeups->name }}</h5>
                     <p class="card-text">{!! $eventMakeups->description !!}</p>
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <button class="btn btn-info btn-sm">Total Event Makeup <span
-                                class="badge bg-primary">{{ $eventMakeups->events_count }}</span></button>
-                        <a href="{{ route('makeup.event.show', $eventMakeups->id) }}"
-                            class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Show Details"><i class="bx bx-show"></i></a>
-                        <a href="{{ route('makeup.event.edit', $eventMakeups->id) }}" class="btn btn-warning btn-sm"
+                        <button class="btn btn-info btn-sm">Total Event Makeup <span class="badge bg-primary">{{
+                                $eventMakeups->events_count }}</span></button>
+                        <a href="{{ route('event.main.show', $eventMakeups->id) }}" class="btn btn-primary btn-sm mx-2"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Show Details"><i
+                                class="bx bx-show"></i></a>
+                        <a href="{{ route('event.main.edit', $eventMakeups->id) }}" class="btn btn-warning btn-sm"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Event"><i
                                 class="bx bx-edit"></i></a>
                     </div>
@@ -30,12 +30,12 @@
                     <h5 class="card-title">{{ $weddingMakeups->name }}</h5>
                     <p class="card-text">{!! $weddingMakeups->description !!}</p>
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <button class="btn btn-info btn-sm">Total Wedding Makeup <span
-                                class="badge bg-primary">{{ $weddingMakeups->weddings_count }}</span></button>
-                        <a href="{{ route('makeup.wedding.show', $weddingMakeups->id) }}"
+                        <button class="btn btn-info btn-sm">Total Wedding Makeup <span class="badge bg-primary">{{
+                                $weddingMakeups->weddings_count }}</span></button>
+                        <a href="{{ route('wedding.main.show', $weddingMakeups->id) }}"
                             class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
                             title="Show Details"><i class="bx bx-show"></i></a>
-                        <a href="{{ route('makeup.wedding.edit', $weddingMakeups->id) }}" class="btn btn-warning btn-sm"
+                        <a href="{{ route('wedding.main.edit', $weddingMakeups->id) }}" class="btn btn-warning btn-sm"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Wedding"><i
                                 class="bx bx-edit"></i></a>
                     </div>

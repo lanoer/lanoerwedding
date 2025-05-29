@@ -40,7 +40,7 @@
                             entries
                         </div>
                         <div class="ms-auto">
-                            <a href="{{ route('catering.create') }}" class="btn btn-primary">Add
+                            <a href="{{ route('catering.main.create') }}" class="btn btn-primary">Add
                                 Catering</a>
                         </div>
                     </div>
@@ -59,87 +59,87 @@
                         </thead>
                         <tbody>
                             @forelse ($caterings as $c=>$catering)
-                                <tr>
-                                    <td>{{ $c + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url('{{ asset('storage/back/images/catering/' . $catering->image) }}');
+                            <tr>
+                                <td>{{ $c + 1 }}</td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url('{{ asset('storage/back/images/catering/' . $catering->image) }}');
                                     width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($catering->name, 15, ' ...') !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        {!! Str::limit($catering->description, 15, ' ...') !!}
-                                    </td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="">
+                                        {!! Str::limit($catering->name, 15, ' ...') !!}
+                                    </div>
+                                </td>
+                                <td class="text-muted">
+                                    {!! Str::limit($catering->description, 15, ' ...') !!}
+                                </td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
 
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#cateringModal{{ $catering->id }}"
-                                                data-bs-placement="top" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('catering.edit', [$catering->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
+                                        <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#cateringModal{{ $catering->id }}" data-bs-placement="top"
+                                            title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('catering.main.edit', [$catering->id]) }}"
+                                            class="btn btn-sm btn-warning ">Edit</a>
 
-                                            <a href=""
-                                                wire:click.prevent='deleteCatering({{ $catering->id }}, "{{ $catering->name }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                        <a href=""
+                                            wire:click.prevent='deleteCatering({{ $catering->id }}, "{{ $catering->name }}")'
+                                            class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Modal untuk event ini -->
+                            <div class="modal fade" id="cateringModal{{ $catering->id }}" tabindex="-1"
+                                aria-labelledby="cateringModalLabel{{ $catering->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cateringModalLabel{{ $catering->id }}">
+                                                {{ $catering->name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="cateringModal{{ $catering->id }}" tabindex="-1"
-                                    aria-labelledby="cateringModalLabel{{ $catering->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="cateringModalLabel{{ $catering->id }}">
-                                                    {{ $catering->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ asset('storage/back/images/catering/' . $catering->image) }}"
-                                                            class="img-fluid rounded" alt="{{ $catering->name }}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img src="{{ asset('storage/back/images/catering/' . $catering->image) }}"
+                                                        class="img-fluid rounded" alt="{{ $catering->name }}">
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h4 class="mb-3">{{ $catering->name }}</h4>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Description:</h6>
+                                                        <p>{!! $catering->description !!}</p>
                                                     </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $catering->name }}</h4>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Description:</h6>
-                                                            <p>{!! $catering->description !!}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $catering->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $catering->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Created At:</h6>
+                                                        <p>{{ $catering->created_at->format('d M Y H:i') }}</p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Updated At:</h6>
+                                                        <p>{{ $catering->updated_at->format('d M Y H:i') }}</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No Catering found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-danger">No Catering found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

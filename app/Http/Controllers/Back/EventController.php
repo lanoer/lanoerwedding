@@ -183,7 +183,7 @@ class EventController extends Controller
 
         $eventMakeups->save();
 
-        return redirect()->route('makeup.event.show', ['id' => 1])->with('success', 'Event Makeup created successfully');
+        return redirect()->route('event.main.show', ['id' => 1])->with('success', 'Event Makeup created successfully');
     }
 
     public function editMakeup($id)
@@ -268,7 +268,7 @@ class EventController extends Controller
 
         $eventMakeups->save();
 
-        return redirect()->route('makeup.event.show', ['id' => $eventMakeups->event_makeups_id])->with('success', 'Event Makeup updated successfully');
+        return redirect()->route('event.main.show', ['id' => $eventMakeups->event_makeups_id])->with('success', 'Event Makeup updated successfully');
     }
 
     public function destroyMakeup($id)

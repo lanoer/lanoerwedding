@@ -40,7 +40,7 @@
                             entries
                         </div>
                         <div class="ms-auto">
-                            <a href="{{ route('decoration.create') }}" class="btn btn-primary">Add
+                            <a href="{{ route('decoration.create.decor') }}" class="btn btn-primary">Add
                                 Decoration</a>
                         </div>
                     </div>
@@ -59,87 +59,87 @@
                         </thead>
                         <tbody>
                             @forelse ($decorations as $d=>$decoration)
-                                <tr>
-                                    <td>{{ $d + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url('{{ asset('storage/back/images/decoration/' . $decoration->image) }}');
+                            <tr>
+                                <td>{{ $d + 1 }}</td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url('{{ asset('storage/back/images/decoration/' . $decoration->image) }}');
                                     width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($decoration->name, 15, ' ...') !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        {!! Str::limit($decoration->description, 15, ' ...') !!}
-                                    </td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="">
+                                        {!! Str::limit($decoration->name, 15, ' ...') !!}
+                                    </div>
+                                </td>
+                                <td class="text-muted">
+                                    {!! Str::limit($decoration->description, 15, ' ...') !!}
+                                </td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
 
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#decorationModal{{ $decoration->id }}"
-                                                data-bs-placement="top" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('decoration.edit', [$decoration->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
+                                        <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#decorationModal{{ $decoration->id }}"
+                                            data-bs-placement="top" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('decoration.edit.decor', [$decoration->id]) }}"
+                                            class="btn btn-sm btn-warning ">Edit</a>
 
-                                            <a href=""
-                                                wire:click.prevent='deleteDecoration({{ $decoration->id }}, "{{ $decoration->name }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                        <a href=""
+                                            wire:click.prevent='deleteDecoration({{ $decoration->id }}, "{{ $decoration->name }}")'
+                                            class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Modal untuk event ini -->
+                            <div class="modal fade" id="decorationModal{{ $decoration->id }}" tabindex="-1"
+                                aria-labelledby="decorationModalLabel{{ $decoration->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="decorationModalLabel{{ $decoration->id }}">
+                                                {{ $decoration->name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="decorationModal{{ $decoration->id }}" tabindex="-1"
-                                    aria-labelledby="decorationModalLabel{{ $decoration->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="decorationModalLabel{{ $decoration->id }}">
-                                                    {{ $decoration->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}"
-                                                            class="img-fluid rounded" alt="{{ $decoration->name }}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}"
+                                                        class="img-fluid rounded" alt="{{ $decoration->name }}">
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h4 class="mb-3">{{ $decoration->name }}</h4>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Description:</h6>
+                                                        <p>{!! $decoration->description !!}</p>
                                                     </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $decoration->name }}</h4>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Description:</h6>
-                                                            <p>{!! $decoration->description !!}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $decoration->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $decoration->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Created At:</h6>
+                                                        <p>{{ $decoration->created_at->format('d M Y H:i') }}</p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <h6 class="text-muted">Updated At:</h6>
+                                                        <p>{{ $decoration->updated_at->format('d M Y H:i') }}</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No Decoration found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-danger">No Decoration found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

@@ -11,6 +11,10 @@ use Intervention\Image\Facades\Image;
 
 class DocumentationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:read pages');
+    }
     /**
      * Display a listing of the resource.
      */

@@ -7,7 +7,7 @@
                     <input type="text" class="form-control" placeholder="Enter web name" wire:model='web_name'>
                     <span class="text-danger">
                         @error('web_name')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -16,7 +16,7 @@
                     <input type="text" class="form-control" placeholder="Enter web url" wire:model='web_url'>
                     <span class="text-danger">
                         @error('web_url')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -25,7 +25,7 @@
                     <input type="text" class="form-control" placeholder="Enter web tagline" wire:model='web_tagline'>
                     <span class="text-danger">
                         @error('web_tagline')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -34,17 +34,17 @@
                     <input type="email" class="form-control" placeholder="Enter web email" wire:model='web_email'>
                     <span class="text-danger">
                         @error('web_email')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
                 <div class="mb-3">
-                    <label for="name">Web Email noReply</label>
+                    <label for="name">Web Email Hosting</label>
                     <input type="email" class="form-control" placeholder="Enter web email noReply"
                         wire:model='web_email_noreply'>
                     <span class="text-danger">
                         @error('web_email_noreply')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -53,7 +53,7 @@
                     <input type="number" class="form-control" placeholder="Enter web telp" wire:model='web_telp'>
                     <span class="text-danger">
                         @error('web_telp')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -63,7 +63,7 @@
                         wire:model='web_working_hours'>
                     <span class="text-danger">
                         @error('web_working_hours')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -72,17 +72,16 @@
                     <textarea class="form-control" id="" cols="3" rows="3" wire:model='web_desc'></textarea>
                     <span class="text-danger">
                         @error('web_desc')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
                 <div class="mb-3">
                     <label for="name">Web Keywords</label>
-                    <input type="text" class="form-control" placeholder="Enter web keywords"
-                        wire:model='web_keywords'>
+                    <input type="text" class="form-control" placeholder="Enter web keywords" wire:model='web_keywords'>
                     <span class="text-danger">
                         @error('web_keywords')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -91,7 +90,7 @@
                     <textarea class="form-control" wire:model='web_alamat'></textarea>
                     <span class="text-danger">
                         @error('web_alamat')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>
@@ -108,7 +107,7 @@
                     <input type="text" class="form-control" placeholder="Enter web maps" wire:model='web_maps'>
                     <span class="text-danger">
                         @error('web_maps')
-                            {!! $message !!}
+                        {!! $message !!}
                         @enderror
                     </span>
                 </div>

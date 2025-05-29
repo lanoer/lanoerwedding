@@ -43,6 +43,7 @@ jobs:
           script: |
             cd domains
             cd lanoerwedding.com
+            cd lanoerwedding
             git reset --hard
             git pull
             composer2 install

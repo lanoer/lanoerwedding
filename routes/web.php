@@ -212,9 +212,9 @@ Route::middleware('auth:web')->group(function () {
     Route::prefix('team')->name('team.')->group(function () {
         Route::view('/list', 'back.pages.team.index')->name('list');
         Route::resource('/', TeamLanoerController::class);
-        // Route::get('edit/{id}', [TeamLanoerController::class, 'edit'])->name('edit');
-        // Route::put('update/{id}', [TeamLanoerController::class, 'update'])->name('update');
-        // Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
+        Route::get('edit/{id}', [TeamLanoerController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [TeamLanoerController::class, 'update'])->name('update');
+        Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
     });
 
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs');

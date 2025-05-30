@@ -62,6 +62,13 @@
                 @enderror
             </div>
 
+            <div class="mb-3">
+                {!! app('captcha')->display() !!}
+                @error('g-recaptcha-response')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="customControlInline">
                 <label class="form-check-label" for="customControlInline">Remember
@@ -86,6 +93,7 @@
 
 </div>
 @push('scripts')
+{!! app('captcha')->renderJs() !!}
 <script>
     function toggle() {
             let input_toggle = document.getElementById('toggle_button')

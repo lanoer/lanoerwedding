@@ -62,14 +62,6 @@
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <div class="g-recaptcha" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
-                    data-callback="recaptchaCallback"></div>
-                @error('g_recaptcha_response')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="customControlInline">
                 <label class="form-check-label" for="customControlInline">Remember
@@ -94,12 +86,7 @@
 
 </div>
 @push('scripts')
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
-    function recaptchaCallback(response) {
-        @this.set('g_recaptcha_response', response);
-    }
-
     function toggle() {
             let input_toggle = document.getElementById('toggle_button')
             let password_input = document.getElementById('password_input')

@@ -14,8 +14,6 @@ class LoginForm extends Component
 
     public $returnUrl;
 
-    public $g_recaptcha_response;
-
     public function mount()
     {
         $this->returnUrl = request()->returnUrl;
@@ -27,14 +25,11 @@ class LoginForm extends Component
         $rules = [
             'login_id' => 'required|exists:users,' . $fieldType,
             'password' => 'required|min:5',
-            'g_recaptcha_response' => 'required|captcha',
         ];
         $messages = [
             'login_id.required' => 'Email or Username is required',
             'login_id.exists' => 'This ' . $fieldType . ' is not registered',
             'password.required' => 'Enter your password',
-            'g_recaptcha_response.required' => 'Captcha wajib diisi',
-            'g_recaptcha_response.captcha' => 'Captcha tidak valid',
         ];
 
         if ($fieldType == 'email') {

@@ -63,6 +63,8 @@
             </div>
 
             <div class="mb-3">
+                <div class="g-recaptcha" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
+                    data-callback="recaptchaCallback"></div>
                 @error('g_recaptcha_response')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -92,13 +94,11 @@
 
 </div>
 @push('scripts')
-<script src="https://www.google.com/recaptcha/api.js?render={{ env('NOCAPTCHA_SITEKEY') }}"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
-    grecaptcha.ready(function() {
-        grecaptcha.execute('{{ env('NOCAPTCHA_SITEKEY') }}', {action: 'login'}).then(function(token) {
-            @this.set('g_recaptcha_response', token);
-        });
-    });
+    function recaptchaCallback(response) {
+        @this.set('g_recaptcha_response', response);
+    }
 
     function toggle() {
             let input_toggle = document.getElementById('toggle_button')

@@ -27,7 +27,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 150px;">
-            <a href="https://wa.me/62{{ webInfo()->web_telp }}" target="_blank" class="btn cta-animate-btn"
+            <a href="https://wa.me/{{ webInfo()->web_telp }}" target="_blank" class="btn cta-animate-btn"
                 style="background-color: #a2783a; color: #fff; border: none; font-size: 1.2rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24"
                     style="margin-right: 8px;">

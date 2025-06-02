@@ -223,7 +223,22 @@ class HomeController extends Controller
         $teamCreative = TeamLanoer::get();
         return view('front.pages.home.weddings.show', compact('weddingMakeup', 'wedding', 'teamCreative', 'articleSchema', 'data'));
     }
+    public function detailWedding($weddingMakeupSlug)
+    {
+        $weddingMakeup = WeddingMakeups::where('slug', $weddingMakeupSlug)
+            ->with('weddings') // eager load relasi events
+            ->first();
+        if ($weddingMakeup) {
+            views($weddingMakeup)->record();
+        }
+        if (!$weddingMakeup) {
+            abort(404);
+        }
 
+        $teamCreative = TeamLanoer::get();
+
+        return view('front.pages.home.weddings.detail', compact('weddingMakeup', 'teamCreative'));
+    }
     public function decorationList()
     {
         $decoration = Decorations::get();

@@ -65,6 +65,7 @@
     <div class="text-center">
         {{ $fotos->links('pagination::simple-bootstrap-4') }}
     </div>
+    @include('front.layouts.inc.cta')
     <!-- Clients -->
     @include('front.layouts.inc.clients')
 

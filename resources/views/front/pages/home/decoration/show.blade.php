@@ -50,6 +50,7 @@
             </div>
         </div>
     </div>
+    @include('front.layouts.inc.cta')
     <!-- Team -->
     @include('front.layouts.inc.team')
 

@@ -11,12 +11,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Spatie\Activitylog\Models\Activity;
 
 class AuthController extends Controller
 {
     public function logout()
     {
         Auth::guard('web')->logout();
+        activity()
+            ->causedBy(auth()->user())
+            ->log('User logged out');
 
         return redirect()->route('auth.login');
     }

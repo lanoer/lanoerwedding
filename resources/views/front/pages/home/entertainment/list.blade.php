@@ -38,14 +38,14 @@
                         </div>
                         <div class="con"> <span class="category">
                                 <a
-                                    href="{{ route('entertainment.sound.detail.show', ['soundSystemSlug' => $s->slug, 'slug' => $sound->slug]) }}">{{
+                                    href="{{ route('entertainment.sound.detail.show', ['slug' => $sound->slug, 'soundSystemSlug' => $s->slug]) }}">{{
                                     $sound->name }}</a>
                             </span>
                             <h5><a
-                                    href="{{ route('entertainment.sound.detail.show', ['soundSystemSlug' => $s->slug, 'slug' => $sound->slug]) }}">{{
+                                    href="{{ route('entertainment.sound.detail.show', ['slug' => $sound->slug, 'soundSystemSlug' => $s->slug]) }}">{{
                                     $s->name }}</a>
                             </h5> <a
-                                href="{{ route('entertainment.sound.detail.show', ['soundSystemSlug' => $s->slug, 'slug' => $sound->slug]) }}"><i
+                                href="{{ route('entertainment.sound.detail.show', ['slug' => $sound->slug, 'soundSystemSlug' => $s->slug]) }}"><i
                                     class="ti-arrow-right"></i>
                             </a>
                         </div>
@@ -118,12 +118,14 @@
                                     alt="">
                             </div>
                             <div class="con"> <span class="category">
-                                    <a href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}">{{
+                                    <a
+                                        href="{{ route('entertainment.ceremony.detail.show', ['ceremonySlug' => $ce->ceremonial->slug, 'ceremonySubSlug' => $ce->slug]) }}">{{
                                         $ceremony->name }}</a>
                                 </span>
-                                <h5><a href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}">{{
+                                <h5><a
+                                        href="{{ route('entertainment.ceremony.detail.show', ['ceremonySlug' => $ce->ceremonial->slug, 'ceremonySubSlug' => $ce->slug]) }}">{{
                                         $ce->name }}</a></h5> <a
-                                    href="{{ route('entertainment.ceremony.detail.show', $ce->slug) }}"><i
+                                    href="{{ route('entertainment.ceremony.detail.show', ['ceremonySlug' => $ce->ceremonial->slug, 'ceremonySubSlug' => $ce->slug]) }}"><i
                                         class="ti-arrow-right"></i></a>
                             </div>
                         </div>

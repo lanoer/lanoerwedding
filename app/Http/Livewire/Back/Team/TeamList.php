@@ -35,6 +35,9 @@ class TeamList extends Component
         $team->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Team has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted team ' . $team->name);
     }
 
     public function render()

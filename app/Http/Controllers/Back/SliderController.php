@@ -91,6 +91,10 @@ class SliderController extends Controller
             ]);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created slider');
+
         return redirect()->route('slider.index')->with('success', 'Slider berhasil disimpan');
     }
 
@@ -200,6 +204,10 @@ class SliderController extends Controller
 
 
         $slider->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated slider');
 
         return redirect()->route('slider.index')->with('success', 'Slider updated successfully');
     }

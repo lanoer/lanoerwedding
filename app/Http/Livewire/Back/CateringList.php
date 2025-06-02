@@ -35,6 +35,9 @@ class CateringList extends Component
         $catering->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Catering has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted catering ' . $catering->name);
     }
 
     public function render()

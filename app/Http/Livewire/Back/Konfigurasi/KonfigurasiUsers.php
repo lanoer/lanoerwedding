@@ -152,8 +152,9 @@ class KonfigurasiUsers extends Component
                 $this->resetInputFields();
                 $this->dispatchBrowserEvent('hide_add_user_modal');
 
-                // Log aktivitas
-
+                activity()
+                    ->causedBy(auth()->user())
+                    ->log('Created user ' . $this->name);
             } catch (\Exception $e) {
                 DB::rollback();
                 flash()->addError('An error occurred: ' . $e->getMessage());
@@ -235,6 +236,9 @@ class KonfigurasiUsers extends Component
 
         $user->delete();
         flash()->addSuccess('User has been successfully deleted.');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted user ' . $user->name);
     }
 
     public function deleteSelectedUser()
@@ -258,6 +262,9 @@ class KonfigurasiUsers extends Component
                 $user->delete();
             }
             flash()->addSuccess('User has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted selected users');
         } else {
             flash()->addError('User cannot be deleted.');
         }

@@ -5,7 +5,8 @@
         </div>
         <ul class="blog-cat">
             @foreach (categories() as $item)
-                <li><a href="{{ route('blog.category', $item->slug) }}">{{ $item->subcategory_name }} <span>{{$item->posts->count()}}</span></a></li>
+            <li><a href="{{ route('blog.category', $item->slug) }}">{{ $item->subcategory_name }}
+                    <span>{{$item->posts->count()}}</span></a></li>
             @endforeach
         </ul>
     </div>

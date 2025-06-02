@@ -43,8 +43,14 @@ class SocialMedia extends Component
 
         if ($this->social_media->wasRecentlyCreated) {
             flash()->addSuccess('Social media has been successfully created.');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Created social media');
         } else {
             flash()->addSuccess('Social media has been successfully updated.');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Updated social media');
         }
     }
 

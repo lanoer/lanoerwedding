@@ -35,6 +35,9 @@ class DecorationList extends Component
         $decoration->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Decoration has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted decoration ' . $decoration->name);
     }
 
     public function render()

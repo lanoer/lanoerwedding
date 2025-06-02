@@ -95,6 +95,10 @@ class UserController extends Controller
                 'picture' => $new_picture_name,
             ]);
 
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Updated profile picture');
+
             return response()->json(['status' => 1, 'msg' => 'Your profile picture has been successfully updated.']);
         } else {
             return response()->json(['status' => 0, 'msg' => 'Something went wrong, try again later']);

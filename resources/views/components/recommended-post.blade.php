@@ -1,19 +1,13 @@
-<div>
-    <div class="sidebar-widget popular-posts mt-3">
-        <div class="sidebar-title">
-            <h4>Recommended Posts</h4>
+<div class="pwe-sidebar-block pwe-sidebar-block-latest-posts">
+    <div class="pwe-sidebar-block-title"> Recommended Posts </div>
+    <div class="pwe-sidebar-block-content">
+        @foreach (recommended_post() as $post)
+        <div class="latest">
+            <a href="{{ route('blog.detail', $post->slug) }}" class="clearfix">
+                <div class="txt1">{{ $post->post_title }}</div>
+                <div class="txt2">{{ date_formatter($post->created_at) }}</div>
+            </a>
         </div>
-@foreach (recommended_post() as $post)
-
-        <article class="post">
-            <figure class="post-thumb"><img src="{{ asset('storage/back/images/post_images/thumbnails/thumb_' . $post->featured_image) }}"
-                alt="{{ $post->post_title }}">
-                <a
-                    href="{{ route('blog.detail', $post->slug) }}" class="overlay-box"><span
-                        class="icon"></span></a></figure>
-            <div class="text"><a href="{{ route('blog.detail', $post->slug) }}">{{ $post->post_title }}</a></div>
-            <div class="post-info">{{ date_formatter($post->created_at) }}</div>
-        </article>
-    @endforeach
-</div>
+        @endforeach
+    </div>
 </div>

@@ -35,6 +35,9 @@ class ClientList extends Component
         $client->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Client has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted client ' . $client->name);
     }
 
     public function render()

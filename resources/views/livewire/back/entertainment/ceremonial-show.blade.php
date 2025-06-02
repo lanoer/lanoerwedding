@@ -59,89 +59,58 @@
                         </thead>
                         <tbody>
                             @forelse ($ceremonialEvent as $s=>$ce)
-                                <tr>
-                                    <td>{{ $s + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url('{{ asset('storage/back/images/entertainment/ceremonial/' . $ce->image) }}');
+                            <tr>
+                                <td>{{ $s + 1 }}</td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url('{{ asset('storage/back/images/entertainment/ceremonial/' . $ce->image) }}');
                                     width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($ce->name, 15, ' ...') !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        {!! Str::limit($ce->description, 15, ' ...') !!}
-                                    </td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#ceremonialEventModal{{ $ce->id }}"
-                                                data-bs-placement="top" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('entertainment.ceremonialevent.edit', [$ce->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
-
-                                            <a href=""
-                                                wire:click.prevent='deleteCeremonialEvent({{ $ce->id }}, "{{ $ce->name }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="ceremonialEventModal{{ $ce->id }}" tabindex="-1"
-                                    aria-labelledby="ceremonialEventModalLabel{{ $ce->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title"
-                                                    id="ceremonialEventModalLabel{{ $ce->id }}">
-                                                    {{ $ce->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ asset('storage/back/images/entertainment/ceremonial/' . $ce->image) }}"
-                                                            class="img-fluid rounded" alt="{{ $ce->name }}">
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $ce->name }}</h4>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Description:</h6>
-                                                            <p>{!! $ce->description !!}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $ce->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $ce->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
                                     </div>
-                                </div>
+                                </td>
+                                <td>
+                                    <div class="">
+                                        {!! Str::limit($ce->name, 15, ' ...') !!}
+                                    </div>
+                                </td>
+                                <td class="text-muted">
+                                    {!! Str::limit($ce->description, 15, ' ...') !!}
+                                </td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <a href="{{ route('entertainment.ceremony.detail.show', ['ceremonySlug' => $ce->ceremonial->slug, 'ceremonySubSlug' => $ce->slug]) }}"
+                                            class="btn btn-sm btn-primary mx-1" target="_blank" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-info mx-1"
+                                            onclick="copyToClipboard('{{ route('entertainment.ceremony.detail.show', ['ceremonySlug' => $ce->ceremonial->slug, 'ceremonySubSlug' => $ce->slug]) }}')"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Copy URL">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+
+                                        <a href="{{ route('entertainment.ceremonialevent.edit', [$ce->id]) }}"
+                                            class="btn btn-sm btn-warning " data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <a href=""
+                                            wire:click.prevent='deleteCeremonialEvent({{ $ce->id }}, "{{ $ce->name }}")'
+                                            class="btn btn-sm btn-danger" style="margin-left: 3px"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No {{ $ceremonial->name }}
-                                        found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-danger">No {{ $ceremonial->name }}
+                                    found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -156,3 +125,24 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+    function copyToClipboard(url) {
+            // Buat elemen textarea sementara
+            var textarea = document.createElement("textarea");
+            textarea.value = url;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                // Salin teks ke clipboard
+                document.execCommand('copy');
+                alert('URL copied to clipboard');
+            } catch (err) {
+                alert('Failed to copy URL');
+            }
+            // Hapus elemen textarea sementara
+            document.body.removeChild(textarea);
+        }
+</script>
+@endpush

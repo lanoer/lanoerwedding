@@ -38,6 +38,9 @@ class LiveShow extends Component
         $liveMusic->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Live Music has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted live music ' . $liveMusic->name);
     }
 
     public function render()

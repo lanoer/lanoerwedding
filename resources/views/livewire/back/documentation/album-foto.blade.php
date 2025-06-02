@@ -325,16 +325,18 @@
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form class="modal-content" method="POST" @if ($updateAlbumMode)
-                            wire:submit.prevent='updateAlbum()' @else wire:submit.prevent='addAlbum()' @endif>
+                        <form method="POST"
+                            action="{{ $updateAlbumMode ? route('albums.update', $selected_album_id) : route('albums.store') }}"
+                            enctype="multipart/form-data">
+                            @csrf
                             <div class="modal-body">
                                 @if ($updateAlbumMode)
                                 <input type="hidden" wire:model='selected_album_id'>
                                 @endif
                                 <div class="mb-3">
                                     <label class="form-label">Album name</label>
-                                    <input type="text" class="form-control" name="example-text-input"
-                                        placeholder="Enter album name" wire:model='album_name'>
+                                    <input type="text" class="form-control" placeholder="Enter album name"
+                                        name="album_name" value="{{ $album_name }}">
                                     <span class="text-danger">
                                         @error('album_name')
                                         {!! $message !!}
@@ -344,8 +346,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Album Thumbnail</label>
-                                    <input type="file" class="form-control" name="example-text-input"
-                                        placeholder="Enter album name" wire:model='image'>
+                                    <input type="file" class="form-control" placeholder="Enter album name" name="image">
                                     <span class="text-danger">
                                         @error('image')
                                         {!! $message !!}
@@ -362,6 +363,15 @@
                     </div>
                 </div>
             </div>
+
+            @if ($errors->has('album_name') || $errors->has('image'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                        var myModal = new bootstrap.Modal(document.getElementById('album_modal'));
+                        myModal.show();
+                    });
+            </script>
+            @endif
 
             {{-- Video Modal --}}
             <div wire:ignore.self class="modal fade" id="video_modal" tabindex="-1" role="dialog"

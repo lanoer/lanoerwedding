@@ -22,6 +22,9 @@ class UserStatus extends Component
     {
         $this->model->setAttribute($this->field, $value)->save();
         flash()->addSuccess('User has been successfuly updated');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated user status ' . $this->model->name);
     }
 
     public function render()

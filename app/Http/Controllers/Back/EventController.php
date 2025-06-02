@@ -121,6 +121,10 @@ class EventController extends Controller
 
         $eventMakeups->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated event makeup');
+
         return redirect()->route('makeup.list')->with('success', 'Event Makeup updated successfully');
     }
 
@@ -182,6 +186,10 @@ class EventController extends Controller
         }
 
         $eventMakeups->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created event makeup');
 
         return redirect()->route('event.main.show', ['id' => 1])->with('success', 'Event Makeup created successfully');
     }
@@ -267,6 +275,10 @@ class EventController extends Controller
         }
 
         $eventMakeups->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated event makeup');
 
         return redirect()->route('event.main.show', ['id' => $eventMakeups->event_makeups_id])->with('success', 'Event Makeup updated successfully');
     }

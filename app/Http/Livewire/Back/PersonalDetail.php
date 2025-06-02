@@ -79,8 +79,9 @@ class PersonalDetail extends Component
             'jenis_kelamin' => $this->jenis_kelamin,
         ]);
 
-        // Log aktivitas
-
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated personal detail');
 
         $this->emit('updateUserProfile');
         $this->emit('updateTopHeader');

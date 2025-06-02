@@ -7,7 +7,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 owl-carousel owl-theme animate-box" data-animate-effect="fadeInLeft">
-                @foreach ($teamCreative as $team)
+                @foreach (teamCreative() as $team)
                 <div class="item">
                     <div class="img"> <img
                             src="{{ asset('storage/back/images/team/thumbnails/thumb_600_' . $team->image) }}" alt="">

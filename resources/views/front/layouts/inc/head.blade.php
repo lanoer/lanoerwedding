@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title')</title>
+    <base href="/">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @stack('meta')
+    @stack('schema')
     <link rel="icon" type="image/png" href="{{ webLogo()->logo_favicon }}" />
     <link rel="stylesheet" href="{{ asset('front/assets/css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('front/assets/css/themify-icons.css') }}">
@@ -18,4 +22,5 @@
     <link rel="stylesheet" href="{{ asset('front/assets/css/custom.css') }}">
     @stack('css')
     @livewireStyles
+    @include('feed::links')
 </head>

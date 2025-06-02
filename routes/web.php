@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Back\AboutController;
+use App\Http\Controllers\back\AlbumController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Back\AuthController;
 use App\Http\Controllers\Back\CateringController;
@@ -19,10 +20,13 @@ use App\Http\Controllers\Back\WeddingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Back\EntertainmentController;
 use App\Http\Controllers\Back\LiveController;
+use App\Http\Controllers\Back\PostController;
 use App\Http\Controllers\Back\SliderController;
 use App\Http\Controllers\Back\TeamLanoerController;
 use App\Http\Controllers\Back\TestimoniController;
+use App\Http\Controllers\front\BlogController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\front\SitemapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +45,7 @@ Route::get('/makeups', [HomeController::class, 'makeups'])->name('makeups');
 Route::get('/documentation', [HomeController::class, 'documentation'])->name('portofolio');
 Route::get('/documentation/foto/{slug}', [HomeController::class, 'showDocumentation'])->name('documentation.main.show');
 Route::get('makeup/event/{eventMakeupSlug}', [HomeController::class, 'detailEvent'])->name('makeup.event');
-Route::get('makeup/event/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
+Route::get('makeup/event/show/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
 Route::get('makeup/wedding/{weddingMakeupSlug}', [HomeController::class, 'detailWedding'])->name('makeup.wedding');
 Route::get('makeup/wedding/{weddingMakeupSlug}/{slug}', [HomeController::class, 'showWedding'])->name('makeup.wedding.detail');
 
@@ -54,14 +58,14 @@ Route::get('catering/{slug}', [HomeController::class, 'showCatering'])->name('ca
 Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])
     ->name('entertainment.list');
 
-Route::get('entertainment/{soundSystemSlug}/{slug}', [HomeController::class, 'showEntertainmentSound'])
+Route::get('entertainment/detail/sound/{slug}/{soundSystemSlug}', [HomeController::class, 'showEntertainmentSound'])
     ->name('entertainment.sound.detail.show');
 
-Route::get('entertainment/{liveSlug}/{liveSubSlug}', [HomeController::class, 'showEntertainmentLive'])
+Route::get('entertainment/detail/live/{liveSlug}/{liveSubSlug}', [HomeController::class, 'showEntertainmentLive'])
     ->name('entertainment.live.detail.show');
 
 
-Route::get('entertainment/{slug}', [HomeController::class, 'showEntertainmentCeremony'])
+Route::get('entertainment/detail/ceremony/{ceremonySlug}/{ceremonySubSlug}', [HomeController::class, 'showEntertainmentCeremony'])
     ->name('entertainment.ceremony.detail.show');
 
 
@@ -72,7 +76,15 @@ Route::get('/blog', [HomeController::class, 'blog'])->name('blogHome');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contactHome');
 Route::post('/contact', [HomeController::class, 'contactStore'])->name('contact.store');
 
-
+Route::view('/blog', 'front.pages.home.blog.index')->name('blog');
+Route::get('/blog/{any}', [BlogController::class, 'blogDetail'])->name('blog.detail');
+Route::get('/blog/category/{any}', [BlogController::class, 'categoryPost'])->name('blog.category');
+Route::get('/blog/tag/{any}', [BlogController::class, 'tagPost'])->name('blog.tag');
+Route::get('/blog/{any}', [BlogController::class, 'readPost'])->name('blog.detail');
+Route::get('/search', [BlogController::class, 'searchBlog'])->name('blog.search');
+Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [HomeController::class, 'robotsTxt']);
 // ROUTE BACKEND
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -211,7 +223,7 @@ Route::middleware('auth:web')->group(function () {
 
     Route::prefix('team')->name('team.')->group(function () {
         Route::view('/list', 'back.pages.team.index')->name('list');
-        Route::resource('/', TeamLanoerController::class);
+        // Route::resource('/', TeamLanoerController::class);
         Route::get('edit/{id}', [TeamLanoerController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [TeamLanoerController::class, 'update'])->name('update');
         Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
@@ -221,4 +233,26 @@ Route::middleware('auth:web')->group(function () {
     Route::resource('slider', SliderController::class);
     Route::resource('testimoni', TestimoniController::class);
     Route::resource('client', ClientController::class);
+
+    Route::feeds();
+
+    Route::prefix('posts')->name('posts.')->group(function () {
+        Route::view('/categories', 'back.pages.posts.categories')->name('categories')->middleware('can:read category');
+        Route::view('/add-post', 'back.pages.posts.add-post')->name('add-posts')->middleware('can:create post');
+        Route::post('/create', [PostController::class, 'createPost'])->name('create');
+        Route::view('/all-post', 'back.pages.posts.all_posts')->name('all_posts')
+            ->middleware('can:read post');
+        Route::get('/edit-posts', [PostController::class, 'editPost'])->name('edit-posts')
+            ->middleware('can:update post');
+        Route::post('/update-post', [PostController::class, 'updatePost'])->name('update-post')
+            ->middleware('can:update post');
+        Route::post('/post-upload', [PostController::class, 'contentImage'])->name('post-upload')
+            ->middleware('can:create post');
+    });
+
+    Route::view('/comments', 'back.pages.comment.index')->name('comments');
+
+
+    Route::post('/albums', [AlbumController::class, 'store'])->name('albums.store');
+    Route::post('/albums/{id}', [AlbumController::class, 'update'])->name('albums.update');
 });

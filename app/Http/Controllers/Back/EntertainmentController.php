@@ -134,6 +134,10 @@ class EntertainmentController extends Controller
 
         $sound->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated sound');
+
         return redirect()->route('entertainment.index')->with('success', 'Sound updated successfully');
     }
 
@@ -204,6 +208,10 @@ class EntertainmentController extends Controller
         }
 
         $soundSystem->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created sound system');
 
         return redirect()->route('entertainment.sound.show', ['id' => 1])->with('success', 'Sound System created successfully');
     }
@@ -290,6 +298,10 @@ class EntertainmentController extends Controller
 
         $soundSystem->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated sound system');
+
         return redirect()->route('entertainment.sound.show', ['id' => $soundSystem->sounds_id])->with('success', 'Sound System updated successfully');
     }
 
@@ -370,6 +382,10 @@ class EntertainmentController extends Controller
 
         $live->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated live');
+
         return redirect()->route('entertainment.index')->with('success', 'Live Music updated successfully');
     }
 
@@ -438,6 +454,10 @@ class EntertainmentController extends Controller
         }
 
         $liveMusic->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created live');
 
         return redirect()->route('entertainment.live.show', ['id' => 1])->with('success', 'Live Music created successfully');
     }
@@ -524,6 +544,10 @@ class EntertainmentController extends Controller
 
         $liveMusic->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated live music');
+
         return redirect()->route('entertainment.live.show', ['id' => $liveMusic->lives_id])->with('success', 'Live Music updated successfully');
     }
 
@@ -606,6 +630,10 @@ class EntertainmentController extends Controller
 
         $ceremonial->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated ceremonial');
+
         return redirect()->route('entertainment.index')->with('success', 'Ceremonial updated successfully');
     }
 
@@ -673,6 +701,10 @@ class EntertainmentController extends Controller
         }
 
         $ceremonialEvent->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created ceremonial');
 
         return redirect()->route('entertainment.ceremonial.show', ['id' => 1])->with('success', 'Ceremonial created successfully');
     }
@@ -759,6 +791,10 @@ class EntertainmentController extends Controller
         }
 
         $ceremonialEvent->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated ceremonial event');
 
         return redirect()->route('entertainment.ceremonial.show', ['id' => $ceremonialEvent->ceremonial_id])->with('success', 'Ceremonial Event updated successfully');
     }

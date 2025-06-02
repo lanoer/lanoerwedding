@@ -79,6 +79,10 @@ class DocumentationController extends Controller
             Foto::insert($insert);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created foto');
+
         return response()->json(['success' => 'Foto berhasil disimpan']);
     }
     /**

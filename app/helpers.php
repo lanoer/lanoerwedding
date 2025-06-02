@@ -66,13 +66,13 @@ if (! function_exists('webSosmed')) {
     }
 }
 
-if (! function_exists('lates_home_4post')) {
-    function lates_home_4post()
+if (! function_exists('lates_home_3post')) {
+    function lates_home_3post()
     {
         return Post::where('isActive', 1)
             ->with('author', 'subcategory')
             ->orderBy('created_at', 'desc')
-            ->paginate(6);
+            ->paginate(3);
     }
 }
 
@@ -199,34 +199,7 @@ if (! function_exists('categoriesProducts')) {
     }
 }
 
-if (! function_exists('tags')) {
-    function tags($except = null, $limit = null)
-    {
-        $tags = Service::whereNotNull('service_tags')
-            ->pluck('service_tags')
-            ->toArray();
 
-        $allTags = [];
-
-        foreach ($tags as $tagList) {
-            $splitTags = explode(',', $tagList);
-            foreach ($splitTags as $tag) {
-                $allTags[] = trim($tag);
-            }
-        }
-        $uniqueTags = array_unique($allTags);
-
-        if (! is_null($except)) {
-            $uniqueTags = array_diff($uniqueTags, (array) $except);
-        }
-
-        if (! is_null($limit)) {
-            $uniqueTags = array_slice($uniqueTags, 0, $limit);
-        }
-
-        return $uniqueTags;
-    }
-}
 
 if (! function_exists('random_services')) {
     function random_services($limit = 3)
@@ -328,6 +301,12 @@ if (! function_exists('clients')) {
         function slider()
         {
             return Slider::get();
+        }
+    }
+    if (! function_exists('teamCreative')) {
+        function teamCreative()
+        {
+            return TeamLanoer::get();
         }
     }
 }

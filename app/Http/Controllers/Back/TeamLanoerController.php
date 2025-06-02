@@ -97,6 +97,10 @@ class TeamLanoerController extends Controller
 
         $team->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created team lanoer');
+
         return redirect()->route('team.list')->with('success', 'Team Lanoer created successfully');
     }
 
@@ -221,6 +225,10 @@ class TeamLanoerController extends Controller
         }
 
         $team->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated team lanoer');
 
         return redirect()->route('team.list')->with('success', 'Team Lanoer updated successfully');
     }

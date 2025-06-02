@@ -100,3 +100,23 @@
 .input-wrapper svg {
     display: block;
 }
+.avatar.photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e0e0e0;
+    background: #fff;
+    margin-right: 10px;
+}
+
+.user-avatar {
+    border-color: #007bff;
+    background: #e3f0ff;
+}
+
+.admin-avatar {
+    border-color: #ffc107;
+    background: #fffbe6;
+    box-shadow: 0 0 8px #ffe082;
+}

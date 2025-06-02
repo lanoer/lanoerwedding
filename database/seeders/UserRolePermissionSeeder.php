@@ -75,9 +75,17 @@ class UserRolePermissionSeeder extends Seeder
             $permission = Permission::create(['name' => 'delete post']);
             // end post
 
+            $permission = Permission::create(['name' => 'create category']);
+            $permission = Permission::create(['name' => 'read category']);
+            $permission = Permission::create(['name' => 'update category']);
+            $permission = Permission::create(['name' => 'delete category']);
+            // end post
+
             $permission = Permission::create(['name' => 'read pages']);
 
             $permission = Permission::create(['name' => 'read setting']);
+
+            $permission = Permission::create(['name' => 'read contact']);
 
 
             $role_superadmin->givePermissionTo('create role');
@@ -88,7 +96,7 @@ class UserRolePermissionSeeder extends Seeder
 
             $role_superadmin->givePermissionTo('read setting');
             $role_superadmin->givePermissionTo('read pages');
-
+            $role_superadmin->givePermissionTo('read contact');
             $role_admin->givePermissionTo('create role');
             $role_admin->givePermissionTo('read role');
             $role_admin->givePermissionTo('update role');
@@ -99,10 +107,26 @@ class UserRolePermissionSeeder extends Seeder
             $role_admin->givePermissionTo('update post');
             $role_admin->givePermissionTo('delete post');
 
+            $role_admin->givePermissionTo('create category');
+            $role_admin->givePermissionTo('read category');
+            $role_admin->givePermissionTo('update category');
+            $role_admin->givePermissionTo('delete category');
+
+            $role_superadmin->givePermissionTo('create post');
+            $role_superadmin->givePermissionTo('read post');
+            $role_superadmin->givePermissionTo('update post');
+            $role_superadmin->givePermissionTo('delete post');
+
+            $role_superadmin->givePermissionTo('create category');
+            $role_superadmin->givePermissionTo('read category');
+            $role_superadmin->givePermissionTo('update category');
+            $role_superadmin->givePermissionTo('delete category');
+
 
             $role_admin->givePermissionTo('read setting');
             $role_admin->givePermissionTo('read pages');
 
+            $role_admin->givePermissionTo('read contact');
             $admin->assignRole('admin');
             $superadmin->assignRole('superadmin');
             $ceo->assignRole('ceo');

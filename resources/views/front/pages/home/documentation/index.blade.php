@@ -68,12 +68,31 @@
             <div class="row">
                 @foreach ($videos as $v)
                 <div class="col-md-4">
+                    <style>
+                        .video-responsive {
+                            position: relative;
+                            padding-bottom: 56.25%;
+                            padding-top: 25px;
+                            height: 0;
+                            overflow: hidden;
+                        }
+
+                        .video-responsive iframe {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 12px;
+                        }
+                    </style>
                     <div class="item animate-box" data-animate-effect="fadeInLeft">
                         <div class="portfolio-img">
-                            <iframe width="520" height="400" src="{{ $v->video_url }}" title="YouTube video player"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <div class="video-responsive">
+                                <iframe src="{{ $v->video_url }}" title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            </div>
                         </div>
                         <div class="content">
                             <h5>

@@ -38,6 +38,9 @@ class CeremonialShow extends Component
         $ceremonialEvent->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Ceremonial Event has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted ceremonial event ' . $ceremonialEvent->name);
     }
 
     public function render()

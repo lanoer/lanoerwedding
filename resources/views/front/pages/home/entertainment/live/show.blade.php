@@ -1,7 +1,12 @@
 @extends('front.layouts.pages-home')
 
 @section('pageTitle', isset($pageTitle) ? $pageTitle : 'Entertainment ' . $live->name)
-
+@push('meta')
+{!! SEO::generate() !!}
+@endpush
+@push('schema')
+{!! $articleSchema->toScript() !!}
+@endpush
 @section('content')
 <div id="pwe-main">
     <!-- Banner Title -->
@@ -12,7 +17,7 @@
             <div class="banner-head-padding banner-head-margin">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12"> <span class="heading-meta">Entertainment {{ $sound->name }}</span>
+                        <div class="col-md-12"> <span class="heading-meta">Entertainment</span>
                             <h2 class="pwe-heading animate-box" data-animate-effect="fadeInLeft">Entertainment
                                 {{ $live->name }}</h2>
                         </div>
@@ -22,6 +27,13 @@
         </div>
     </div>
     <!-- About Us -->
+    <style>
+        .about-section ul,
+        .about-section ol {
+            list-style: initial;
+            margin-left: 1.5em;
+        }
+    </style>
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">
             <div class="row">

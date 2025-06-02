@@ -56,11 +56,17 @@ class LoginForm extends Component
                 if ($this->returnUrl != null) {
                     return redirect()->to($this->returnUrl);
                 } else {
+                    activity()
+                        ->causedBy(auth()->user())
+                        ->log('Login success');
                     return redirect()->route('home');
                 }
             }
         } else {
             session()->flash('fail', 'Incorrect Email/Username or Password');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Failed login');
         }
     }
 

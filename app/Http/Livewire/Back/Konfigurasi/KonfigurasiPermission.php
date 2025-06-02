@@ -60,6 +60,9 @@ class KonfigurasiPermission extends Component
         flash()->addSuccess('Permission berhasil ditambahkan.');
         $this->dispatchBrowserEvent('close-modal');
         $this->reset('permissionName');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created permission ' . $this->permissionName);
     }
 
     public function showModal($roleId)

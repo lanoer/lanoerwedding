@@ -77,8 +77,9 @@ class AllInbox extends Component
         $inbox = Contact::where('id', $id)->first();
         $inbox->delete();
         $this->showToastr('Inbox has been successfuly deleted.', 'info');
-        // Log aktivitas
-
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted inbox ' . $inbox->name);
     }
 
     public function showToastr($message, $type)

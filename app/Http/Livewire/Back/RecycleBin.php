@@ -66,6 +66,9 @@ class RecycleBin extends Component
         if ($wedding) {
             $wedding->restore();
             flash()->addSuccess('Wedding has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored wedding ' . $wedding->name);
         }
     }
 
@@ -76,6 +79,9 @@ class RecycleBin extends Component
         if ($decoration) {
             $decoration->restore();
             flash()->addSuccess('Decoration has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored decoration ' . $decoration->name);
         }
     }
 
@@ -86,6 +92,9 @@ class RecycleBin extends Component
         if ($soundSystem) {
             $soundSystem->restore();
             flash()->addSuccess('Sound System has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored sound system ' . $soundSystem->name);
         }
     }
     public function restoreLiveMusic($id)
@@ -95,6 +104,9 @@ class RecycleBin extends Component
         if ($liveMusic) {
             $liveMusic->restore();
             flash()->addSuccess('Live Music has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored live music ' . $liveMusic->name);
         }
     }
     public function restoreCeremonialEvent($id)
@@ -104,6 +116,9 @@ class RecycleBin extends Component
         if ($ceremonialEvent) {
             $ceremonialEvent->restore();
             flash()->addSuccess('Ceremonial Event has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored ceremonial event ' . $ceremonialEvent->name);
         }
     }
 
@@ -114,6 +129,9 @@ class RecycleBin extends Component
         if ($foto) {
             $foto->restore();
             flash()->addSuccess('Foto has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored foto ' . $foto->name);
         }
     }
 
@@ -124,6 +142,9 @@ class RecycleBin extends Component
         if ($catering) {
             $catering->restore();
             flash()->addSuccess('Catering has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored catering ' . $catering->name);
         }
     }
 
@@ -134,6 +155,9 @@ class RecycleBin extends Component
         if ($teamLanoer) {
             $teamLanoer->restore();
             flash()->addSuccess('Team Lanoer has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored team lanoer ' . $teamLanoer->name);
         }
     }
     public function restoreSlider($id)
@@ -143,6 +167,9 @@ class RecycleBin extends Component
         if ($slider) {
             $slider->restore();
             flash()->addSuccess('Slider has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored slider ' . $slider->name);
         }
     }
     public function restoreClient($id)
@@ -152,6 +179,9 @@ class RecycleBin extends Component
         if ($client) {
             $client->restore();
             flash()->addSuccess('Client has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored client ' . $client->name);
         }
     }
     public function restoreTestimoni($id)
@@ -161,6 +191,9 @@ class RecycleBin extends Component
         if ($testimoni) {
             $testimoni->restore();
             flash()->addSuccess('Testimoni has been restored successfully!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Restored testimoni ' . $testimoni->name);
         }
     }
     public function forceDelete($id)
@@ -328,6 +361,9 @@ class RecycleBin extends Component
 
         if ($delete_event) {
             flash()->addSuccess('Event has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted event ' . $event->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -360,6 +396,9 @@ class RecycleBin extends Component
 
         if ($delete_wedding) {
             flash()->addSuccess('Wedding has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted wedding ' . $wedding->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -391,6 +430,9 @@ class RecycleBin extends Component
 
         if ($delete_decoration) {
             flash()->addSuccess('Decoration has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted decoration ' . $decoration->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -423,6 +465,9 @@ class RecycleBin extends Component
 
         if ($delete_soundSystem) {
             flash()->addSuccess('Sound System has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted sound system ' . $soundSystem->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -454,6 +499,9 @@ class RecycleBin extends Component
 
         if ($delete_liveMusic) {
             flash()->addSuccess('Live Music has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted live music ' . $liveMusic->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -485,6 +533,9 @@ class RecycleBin extends Component
 
         if ($delete_ceremonialEvent) {
             flash()->addSuccess('Ceremonial Event has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted ceremonial event ' . $ceremonialEvent->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -516,6 +567,9 @@ class RecycleBin extends Component
 
         if ($delete_teamLanoer) {
             flash()->addSuccess('Team Lanoer has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted team lanoer ' . $teamLanoer->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -548,6 +602,9 @@ class RecycleBin extends Component
 
         if ($delete_foto) {
             flash()->addSuccess('Foto has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted foto ' . $foto->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -579,6 +636,9 @@ class RecycleBin extends Component
 
         if ($delete_catering) {
             flash()->addSuccess('Catering has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted catering ' . $catering->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -610,6 +670,9 @@ class RecycleBin extends Component
 
         if ($delete_slider) {
             flash()->addSuccess('Slider has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted slider ' . $slider->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -641,6 +704,9 @@ class RecycleBin extends Component
 
         if ($delete_client) {
             flash()->addSuccess('Client has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted client ' . $client->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -672,6 +738,9 @@ class RecycleBin extends Component
 
         if ($delete_testimoni) {
             flash()->addSuccess('Testimoni has been successfully deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted testimoni ' . $testimoni->name);
         } else {
             flash()->addError('Something went wrong!');
         }

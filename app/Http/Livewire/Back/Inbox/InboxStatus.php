@@ -28,6 +28,9 @@ class InboxStatus extends Component
 
         $this->model->setAttribute($this->field, $value)->save();
         flash()->addSuccess('Inbox has been successfully read');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Read inbox ' . $this->model->name);
     }
 
     public function render()

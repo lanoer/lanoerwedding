@@ -67,6 +67,9 @@ class GeneralSetting extends Component
         if ($update) {
             flash()->addSuccess('General settings successfuly updated');
             $this->emit('updateAdminFooter');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Updated general settings');
         } else {
             flash()->addError('Something wrong!');
         }

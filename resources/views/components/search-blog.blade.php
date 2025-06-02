@@ -1,36 +1,32 @@
 <div>
     <style>
         #search-button {
-            background: rgb(11, 90, 219);
             color: #fff;
             border: none;
             cursor: pointer;
         }
 
-        #search-button:hover {
-            background: rgb(8, 150, 252);
-        }
+
 
         .spinner {
             display: none;
         }
     </style>
-    <div class="sidebar-widget search-box">
-        <form method="get" action="{{ route('blog.search') }}" id="search-form">
-            <div class="form-group">
-                <input type="search" name="query" placeholder="Search..." required="">
-                <button type="submit" id="search-button" class="search-button">
-                    <span class="icon fa fa-search"></span>
-                    <span class="spinner fa fa-spinner fa-spin"></span>
-                </button>
-            </div>
+    <div class="pwe-sidebar-block pwe-sidebar-block-search">
+        <form method="get" action="{{ route('blog.search') }}" id="search-form" class="pwe-sidebar-search-form">
+            <input type="search" name="query" class="form-control search-field" id="search" placeholder="Search..."
+                required>
+            <button type="submit" id="search-button" class="ti-arrow-right pwe-sidebar-search-submit">
+                <span class="icon fa fa-search"></span>
+                <span class="spinner fa fa-spinner fa-spin"></span>
+            </button>
         </form>
     </div>
 </div>
 
 @push('scriptsFront')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('#search-form').on('submit', function() {
                 var searchButton = $('#search-button');
                 var icon = searchButton.find('.icon');
@@ -49,5 +45,5 @@
                 });
             });
         });
-    </script>
+</script>
 @endpush

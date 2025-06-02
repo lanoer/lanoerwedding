@@ -77,6 +77,10 @@ class TestimoniController extends Controller
             ]);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created testimoni');
+
         return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil disimpan');
     }
 
@@ -176,6 +180,10 @@ class TestimoniController extends Controller
         }
 
         $testimoni->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated testimoni');
 
         return redirect()->route('testimoni.index')->with('success', 'Testimoni updated successfully');
     }

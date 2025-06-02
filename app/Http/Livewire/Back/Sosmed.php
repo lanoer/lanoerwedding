@@ -32,8 +32,9 @@ class Sosmed extends Component
             'tik' => $this->tik,
         ]);
 
-        // Log aktivitas
-
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated sosial media');
 
         $this->showToastr('Sosial media successfuly updated', 'success');
     }

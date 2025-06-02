@@ -49,6 +49,9 @@ class KonfigurasiRole extends Component
             $this->dispatchBrowserEvent('hideRoleModal');
             $this->resetModalForm();
             flash()->addSuccess('New Role has been successfuly added.');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Created role ' . $this->name);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -81,6 +84,9 @@ class KonfigurasiRole extends Component
                 $this->dispatchBrowserEvent('hideRoleModal');
                 $this->updateRoleMode = false;
                 flash()->addSuccess('Role has been successfuly updated.');
+                activity()
+                    ->causedBy(auth()->user())
+                    ->log('Updated role ' . $this->name);
             } else {
                 flash()->addError('Something went wrong!');
             }
@@ -103,6 +109,9 @@ class KonfigurasiRole extends Component
 
         $role->delete();
         flash()->addInfo('Role has been successfuly deleted.');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted role ' . $role->name);
     }
 
     public function render()

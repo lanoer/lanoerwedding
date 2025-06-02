@@ -72,6 +72,9 @@ class EventMakeupShow extends Component
         $event->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Event has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted event ' . $event->name);
     }
 
     public function render()

@@ -82,6 +82,10 @@ class DecorationController extends Controller
 
         $decoration->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created decoration');
+
         return redirect()->route('decoration.index')->with('success', 'Decoration created successfully');
     }
 
@@ -176,6 +180,10 @@ class DecorationController extends Controller
         }
 
         $decoration->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated decoration');
 
         return redirect()->route('decoration.index')->with('success', 'Decoration updated successfully');
     }

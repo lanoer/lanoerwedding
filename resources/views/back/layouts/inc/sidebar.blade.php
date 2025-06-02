@@ -99,6 +99,26 @@
                     </ul>
                 </li>
 
+                <!-- posts & categories -->
+                <li class="{{ Route::is('posts.*') ? 'mm-active' : '' }}">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-file-document-outline"></i>
+                        <span>Posts & Categories</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+
+                        <li class="{{ Route::is('posts.categories') ? 'mm-active' : '' }}">
+                            <a href="{{ route('posts.categories') }}"><span>Categories</span></a>
+                        </li>
+                        <li class="{{ Route::is('posts.add-posts') ? 'mm-active' : '' }}">
+                            <a href="{{ route('posts.add-posts') }}"><span>Add Post</span></a>
+                        </li>
+                        <li class="{{ Route::is('posts.all_posts') ? 'mm-active' : '' }}">
+                            <a href="{{ route('posts.all_posts') }}"><span>All Post</span></a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Settings & Configuration -->
                 <li class="menu-title">Settings & Tools</li>
                 <li class="{{ Route::is('settings.*') ? 'mm-active' : '' }}">
@@ -116,6 +136,7 @@
 
                 <!-- Communication & Maintenance -->
                 <li class="menu-title">Communication & Maintenance</li>
+                @can('read contact')
                 <li>
                     <a href="{{ route('inbox.index') }}"
                         class="waves-effect {{ Route::is('inbox.*') ? 'mm-active' : '' }}">
@@ -124,6 +145,17 @@
                         <span class="badge bg-danger">{{ unread_inbox() }}</span>
                     </a>
                 </li>
+                <li class="{{ Route::is('comments') ? 'mm-active' : '' }}">
+                    <a href="{{ route('comments') }}" class="waves-effect">
+                        <i class="mdi mdi-comment-text-multiple"></i>
+                        <span class="badge rounded-pill bg-info float-end">{{ approved_comment()->count() }}</span>
+                        <span>Comments</span>
+                    </a>
+                </li>
+                @endcan
+
+
+
                 <li>
                     <a href="{{ route('recycle.index') }}"
                         class="waves-effect {{ Route::is('recycle.*') ? 'mm-active' : '' }}">

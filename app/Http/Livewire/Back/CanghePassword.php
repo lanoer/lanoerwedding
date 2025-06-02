@@ -40,6 +40,9 @@ class CanghePassword extends Component
         if ($query) {
             $this->showToastr('Your password has been successfuly updated.', 'success');
             $this->current_password = $this->new_password = $this->confirm_password = null;
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Updated password');
         } else {
             $this->showToastr('Something went wrong', 'error');
         }

@@ -35,6 +35,9 @@ class SliderList extends Component
         $slider->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Slider has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted slider ' . $slider->title);
     }
 
     public function render()

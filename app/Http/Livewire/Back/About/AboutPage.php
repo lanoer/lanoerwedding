@@ -108,6 +108,10 @@ class AboutPage extends Component
 
         $saved = $about->save();
         if ($saved) {
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Updated about');
+
             flash()->addSuccess('About has been successfully updated.');
         } else {
             flash()->addError('Something went wrong!');

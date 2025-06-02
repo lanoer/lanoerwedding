@@ -26,7 +26,7 @@
                         <p><a href="{{ route('aboutHome') }}">About</a></p>
                     </div>
                     <div class="col-6">
-                        <p><a href="">Blog</a></p>
+                        <p><a href="{{ route('blog') }}">Blog</a></p>
                         <p><a href="">Contact</a></p>
                     </div>
                 </div>

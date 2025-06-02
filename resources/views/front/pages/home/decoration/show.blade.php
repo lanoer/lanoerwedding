@@ -1,7 +1,12 @@
 @extends('front.layouts.pages-home')
 
 @section('pageTitle', isset($decoration->name) ? $decoration->name : 'Decorations')
-
+@push('meta')
+{!! SEO::generate() !!}
+@endpush
+@push('schema')
+{!! $articleSchema->toScript() !!}
+@endpush
 @section('content')
 <div id="pwe-main">
     <!-- Banner Title -->
@@ -21,7 +26,13 @@
             </div>
         </div>
     </div>
-
+    <style>
+        .about-section ul,
+        .about-section ol {
+            list-style: initial;
+            margin-left: 1.5em;
+        }
+    </style>
     <!-- About Us -->
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">

@@ -37,6 +37,9 @@ class WeddingMakeupShow extends Component
         $wedding->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Wedding has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted wedding ' . $wedding->name);
     }
 
     public function render()

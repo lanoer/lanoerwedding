@@ -38,11 +38,14 @@ class SoundShow extends Component
         $sound->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Sound has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted sound ' . $sound->name);
     }
 
     public function render()
     {
-        $sounds = SoundSystem::where('sounds_id', $this->sound->id)
+        $sounds = SoundSystem::with('sounds')
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
@@ -52,7 +55,7 @@ class SoundShow extends Component
             ->paginate($this->perPage);
 
         return view('livewire.back.entertainment.sound-show', [
-            'sounds' => $sounds
+            'sounds' => $sounds // sebenarnya ini SoundSystem
         ]);
     }
 }

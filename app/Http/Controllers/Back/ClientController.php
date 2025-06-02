@@ -72,6 +72,10 @@ class ClientController extends Controller
             ]);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created client');
+
         return redirect()->route('client.index')->with('success', 'Client berhasil disimpan');
     }
 
@@ -164,6 +168,10 @@ class ClientController extends Controller
         // Update description if provided
 
         $client->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated client');
 
         return redirect()->route('client.index')->with('success', 'Client updated successfully');
     }

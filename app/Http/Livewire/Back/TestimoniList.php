@@ -35,6 +35,9 @@ class TestimoniList extends Component
         $testimoni->delete(); // This will now perform a soft delete
 
         flash()->addSuccess('Testimoni has been moved to trash!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted testimoni ' . $testimoni->name);
     }
 
     public function render()

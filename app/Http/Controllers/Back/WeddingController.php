@@ -131,6 +131,10 @@ class WeddingController extends Controller
 
         $weddingMakeups->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated wedding makeup');
+
         return redirect()->route('makeup.list')->with('success', 'Wedding Makeup updated successfully');
     }
 
@@ -200,6 +204,10 @@ class WeddingController extends Controller
         }
 
         $weddingMakeups->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created wedding makeup');
 
         return redirect()->route('wedding.main.show', ['id' => 1])->with('success', 'Wedding Makeup created successfully');
     }
@@ -285,6 +293,10 @@ class WeddingController extends Controller
         }
 
         $weddingMakeups->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated wedding makeup');
 
         return redirect()->route('wedding.main.show', ['id' => $weddingMakeups->wedding_makeups_id])->with('success', 'Wedding Makeup updated successfully');
     }

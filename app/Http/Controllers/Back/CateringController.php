@@ -86,6 +86,10 @@ class CateringController extends Controller
 
         $catering->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created catering');
+
         return redirect()->route('catering.index')->with('success', 'Catering created successfully');
     }
 
@@ -182,6 +186,10 @@ class CateringController extends Controller
         }
 
         $catering->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated catering');
 
         return redirect()->route('catering.index')->with('success', 'Catering updated successfully');
     }

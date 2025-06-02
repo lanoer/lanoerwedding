@@ -79,48 +79,51 @@ class AlbumFoto extends Component
         $this->oldImg = null;
     }
 
-    public function addAlbum()
-    {
-        $this->validate([
-            'album_name' => 'required|unique:albums,album_name',
-            'image' => 'nullable|image|max:2048',
-        ]);
+    // public function addAlbum()
+    // {
+    //     $this->validate([
+    //         'album_name' => 'required|unique:albums,album_name',
+    //         'image' => 'nullable|image|max:2048',
+    //     ]);
 
-        $album = new Album();
-        $album->album_name = $this->album_name;
+    //     $album = new Album();
+    //     $album->album_name = $this->album_name;
 
-        if ($this->image) {
-            $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
+    //     if ($this->image) {
+    //         $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
 
-            // Simpan original
-            $this->image->storeAs('back/images/album/original', $filename, 'public');
+    //         // Simpan original
+    //         $this->image->storeAs('back/images/album/original', $filename, 'public');
 
-            // Resize dan simpan thumbnail (ini yang dipakai di database)
-            $resizedImage = Image::make($this->image->getRealPath())
-                ->fit(520, 400, function ($constraint) {
-                    $constraint->upsize();
-                });
-            $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
-            if (!file_exists($thumbnailDir)) {
-                mkdir($thumbnailDir, 0777, true);
-            }
-            $thumbnailPath = $thumbnailDir . '/' . $filename;
-            $resizedImage->save($thumbnailPath);
+    //         // Resize dan simpan thumbnail (ini yang dipakai di database)
+    //         $resizedImage = Image::make($this->image->getRealPath())
+    //             ->fit(520, 400, function ($constraint) {
+    //                 $constraint->upsize();
+    //             });
+    //         $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
+    //         if (!file_exists($thumbnailDir)) {
+    //             mkdir($thumbnailDir, 0777, true);
+    //         }
+    //         $thumbnailPath = $thumbnailDir . '/' . $filename;
+    //         $resizedImage->save($thumbnailPath);
 
-            // Simpan nama file resize ke database
-            $album->image = $filename;
-        }
+    //         // Simpan nama file resize ke database
+    //         $album->image = $filename;
+    //     }
+    //     $saved = $album->save();
+    //     // dd($album);
 
-        $saved = $album->save();
-
-        if ($saved) {
-            $this->dispatchBrowserEvent('hideAlbumModal');
-            $this->resetModalForm();
-            flash()->addSuccess('New Album has been successfuly added.');
-        } else {
-            flash()->addError('Something went wrong!');
-        }
-    }
+    //     if ($saved) {
+    //         $this->dispatchBrowserEvent('hideAlbumModal');
+    //         $this->resetModalForm();
+    //         flash()->addSuccess('New Album has been successfuly added.');
+    //         activity()
+    //             ->causedBy(auth()->user())
+    //             ->log('Created album ' . $album->album_name);
+    //     } else {
+    //         flash()->addError('Something went wrong!');
+    //     }
+    // }
 
     public function editAlbum($id)
     {
@@ -132,57 +135,60 @@ class AlbumFoto extends Component
         $this->dispatchBrowserEvent('showalbumModal');
     }
 
-    public function updateAlbum()
-    {
-        if ($this->selected_album_id) {
-            $this->validate([
-                'album_name' => 'required|unique:albums,album_name,' . $this->selected_album_id,
-                'image' => 'nullable|image|max:2048',
-            ]);
+    // public function updateAlbum()
+    // {
+    //     if ($this->selected_album_id) {
+    //         $this->validate([
+    //             'album_name' => 'required|unique:albums,album_name,' . $this->selected_album_id,
+    //             'image' => 'nullable|image|max:2048',
+    //         ]);
 
-            $album = Album::findOrFail($this->selected_album_id);
-            $album->album_name = $this->album_name;
+    //         $album = Album::findOrFail($this->selected_album_id);
+    //         $album->album_name = $this->album_name;
 
-            if ($this->image) {
-                // Hapus file lama jika ada
-                if ($album->image && \Storage::disk('public')->exists('back/images/album/thumbnail/' . $album->image)) {
-                    \Storage::disk('public')->delete('back/images/album/thumbnail/' . $album->image);
-                }
-                if ($album->image && \Storage::disk('public')->exists('back/images/album/original/' . $album->image)) {
-                    \Storage::disk('public')->delete('back/images/album/original/' . $album->image);
-                }
+    //         if ($this->image) {
+    //             // Hapus file lama jika ada
+    //             if ($album->image && \Storage::disk('public')->exists('back/images/album/thumbnail/' . $album->image)) {
+    //                 \Storage::disk('public')->delete('back/images/album/thumbnail/' . $album->image);
+    //             }
+    //             if ($album->image && \Storage::disk('public')->exists('back/images/album/original/' . $album->image)) {
+    //                 \Storage::disk('public')->delete('back/images/album/original/' . $album->image);
+    //             }
 
-                $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
+    //             $filename = uniqid() . '.' . $this->image->getClientOriginalExtension();
 
-                // Simpan original
-                $this->image->storeAs('back/images/album/original', $filename, 'public');
+    //             // Simpan original
+    //             $this->image->storeAs('back/images/album/original', $filename, 'public');
 
-                // Resize dan simpan thumbnail
-                $resizedImage = Image::make($this->image->getRealPath())
-                    ->fit(520, 400, function ($constraint) {
-                        $constraint->upsize();
-                    });
-                $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
-                if (!file_exists($thumbnailDir)) {
-                    mkdir($thumbnailDir, 0777, true);
-                }
-                $thumbnailPath = $thumbnailDir . '/' . $filename;
-                $resizedImage->save($thumbnailPath);
+    //             // Resize dan simpan thumbnail
+    //             $resizedImage = Image::make($this->image->getRealPath())
+    //                 ->fit(520, 400, function ($constraint) {
+    //                     $constraint->upsize();
+    //                 });
+    //             $thumbnailDir = storage_path('app/public/back/images/album/thumbnail');
+    //             if (!file_exists($thumbnailDir)) {
+    //                 mkdir($thumbnailDir, 0777, true);
+    //             }
+    //             $thumbnailPath = $thumbnailDir . '/' . $filename;
+    //             $resizedImage->save($thumbnailPath);
 
-                // Simpan nama file resize ke database
-                $album->image = $filename;
-            }
+    //             // Simpan nama file resize ke database
+    //             $album->image = $filename;
+    //         }
 
-            $updated = $album->save();
-            if ($updated) {
-                $this->dispatchBrowserEvent('hideAlbumModal');
-                $this->resetModalForm();
-                flash()->addSuccess('Album has been successfuly updated.');
-            } else {
-                flash()->addError('Something went wrong!');
-            }
-        }
-    }
+    //         $updated = $album->save();
+    //         if ($updated) {
+    //             $this->dispatchBrowserEvent('hideAlbumModal');
+    //             $this->resetModalForm();
+    //             flash()->addSuccess('Album has been successfuly updated.');
+    //             activity()
+    //                 ->causedBy(auth()->user())
+    //                 ->log('Updated album ' . $album->album_name);
+    //         } else {
+    //             flash()->addError('Something went wrong!');
+    //         }
+    //     }
+    // }
 
     public function deleteAlbum($id)
     {
@@ -203,6 +209,9 @@ class AlbumFoto extends Component
         } else {
             $album->delete();
             flash()->addSuccess('Album has been successfuly deleted.');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted album ' . $album->album_name);
         }
     }
 
@@ -257,6 +266,9 @@ class AlbumFoto extends Component
         $delete_foto = $foto->delete();
         if ($delete_foto) {
             flash()->addSuccess('Foto has been successfuly deleted!');
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Deleted foto ' . $foto->title);
         } else {
             flash()->addError('Something went wrong!');
         }
@@ -293,6 +305,9 @@ class AlbumFoto extends Component
         }
         $this->selectedFotos = [];
         flash()->addSuccess('Selected fotos have been successfully deleted!');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Deleted selected fotos');
     }
 
     public function selectAllFotos()
@@ -316,7 +331,7 @@ class AlbumFoto extends Component
     {
         $this->validate([
             'video_name' => 'required',
-            'video_url' => 'required|url'
+            'video_url' => 'required'
         ]);
 
         Video::create([
@@ -327,6 +342,9 @@ class AlbumFoto extends Component
         $this->resetVideoInputs();
         $this->dispatchBrowserEvent('hideVideoModal');
         flash()->addSuccess('Video added successfully');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Created video ' . $this->video_name);
     }
 
     public function editVideo($id)
@@ -355,6 +373,9 @@ class AlbumFoto extends Component
         $this->resetVideoInputs();
         $this->dispatchBrowserEvent('hideVideoModal');
         flash()->addSuccess('Video updated successfully');
+        activity()
+            ->causedBy(auth()->user())
+            ->log('Updated video ' . $this->video_name);
     }
 
     public function deleteVideo($id)
@@ -378,6 +399,9 @@ class AlbumFoto extends Component
 
             if ($deleted) {
                 flash()->addSuccess('Video deleted successfully');
+                activity()
+                    ->causedBy(auth()->user())
+                    ->log('Deleted video ' . $video->video_name);
             } else {
                 flash()->addError('Failed to delete video');
             }

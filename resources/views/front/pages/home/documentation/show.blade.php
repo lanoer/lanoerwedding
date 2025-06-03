@@ -63,7 +63,7 @@
         }
     </style>
     <div class="text-center">
-        {{ $fotos->links('pagination::simple-bootstrap-4') }}
+        {{ $fotos->links('pagination::custom') }}
     </div>
     @include('front.layouts.inc.cta')
     <!-- Clients -->

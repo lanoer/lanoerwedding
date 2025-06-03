@@ -20,9 +20,8 @@
             <li @if (request()->is('entertainment/*')) class="pwe-active" @endif><a
                     href="{{ route('entertainment.list') }}">Entertainment</a>
             </li>
-            <li @if (request()->is('portofolio/*')) class="pwe-active"
-
-                @endif><a href="{{ route('portofolio') }}">Documentation</a>
+            <li @if (request()->is('documentation') || request()->is('documentation/*')) class="pwe-active" @endif>
+                <a href="{{ route('portofolio') }}">Documentation</a>
             </li>
             <li @if (request()->is('catering/*')) class="pwe-active" @endif><a
                     href="{{ route('catering.list') }}">Catering</a>

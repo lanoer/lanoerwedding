@@ -24,9 +24,9 @@ use App\Http\Controllers\Back\PostController;
 use App\Http\Controllers\Back\SliderController;
 use App\Http\Controllers\Back\TeamLanoerController;
 use App\Http\Controllers\Back\TestimoniController;
-use App\Http\Controllers\front\BlogController;
+use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\HomeController;
-use App\Http\Controllers\front\SitemapController;
+use App\Http\Controllers\Front\SitemapController;
 
 /*
 |--------------------------------------------------------------------------

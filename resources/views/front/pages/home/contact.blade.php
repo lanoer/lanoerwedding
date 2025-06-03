@@ -1,6 +1,6 @@
 @extends('front.layouts.pages-home')
 
-@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Home')
+@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Contact')
 
 @section('content')
 <div id="pwe-main">

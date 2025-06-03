@@ -35,6 +35,17 @@
             list-style: initial;
             margin-left: 1.5em;
         }
+
+        .post-section .animate-box p a {
+            color: #243cf0;
+            /* Warna link */
+            text-decoration: underline;
+        }
+
+        .post-section .animate-box p a:hover {
+            color: #081680;
+            /* Warna saat hover */
+        }
     </style>
     <div class="post-section pt-0 pb-60">
         <div class="container-fluid">

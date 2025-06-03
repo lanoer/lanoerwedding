@@ -42,10 +42,6 @@ Lanoer Wedding & Event Organizer adalah penyedia layanan profesional yang mengkh
 5. Komitmen terhadap kepuasan klien
 6. Inovasi dalam setiap konsep acara
 
-## Testimoni Klien 💝
-
-"Lanoer Wedding & Event Organizer telah membantu mewujudkan pernikahan impian kami dengan sempurna. Tim yang profesional dan pelayanan yang memuaskan!" - [Nama Klien]
-
 ---
 
 _Bersama Lanoer Wedding & Event Organizer, wujudkan momen spesial Anda menjadi kenangan yang tak terlupakan!_ ✨

@@ -29,9 +29,7 @@
     {!! web_seo()->gtag_analytics !!}
     {!! web_seo()->gtag_header !!}
     {!! web_seo()->bing !!}
-    {!! web_seo()->duckduckgo !!}
     {!! web_seo()->yandex !!}
-    {!! web_seo()->baidu !!}
 
 
 </head>

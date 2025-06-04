@@ -90,17 +90,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-group row mb-2">
-                            <label for="baidu" class="col-sm-2 col-form-label">Baidu</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="baidu" id="baidu"
-                                    class="form-control @error('baidu') is-invalid @enderror" wire:model="baidu"
-                                    placeholder="Masukkan kode Baidu">
-                                @error('baidu')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
+
                         <div class="form-group row mb-2">
                             <label for="pinterest" class="col-sm-2 col-form-label">Pinterest</label>
                             <div class="col-sm-10">

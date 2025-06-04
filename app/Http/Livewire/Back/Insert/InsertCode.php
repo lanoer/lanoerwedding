@@ -45,9 +45,7 @@ class InsertCode extends Component
                 'gtag_header' => $this->gtag_header,
                 'gtag_body' => $this->gtag_body,
                 'bing' => $this->bing,
-                'duckduckgo' => $this->duckduckgo,
                 'yandex' => $this->yandex,
-                'baidu' => $this->baidu,
                 'pinterest' => $this->pinterest,
                 'gsc' => $this->gsc,
             ]

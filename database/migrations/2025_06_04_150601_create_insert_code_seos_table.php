@@ -19,9 +19,7 @@ return new class extends Migration
             $table->text('gtag_header')->nullable();
             $table->text('gtag_body')->nullable();
             $table->text('bing')->nullable();
-            $table->text('duckduckgo')->nullable();
             $table->text('yandex')->nullable();
-            $table->text('baidu')->nullable();
             $table->text('pinterest')->nullable();
             $table->timestamps();
         });

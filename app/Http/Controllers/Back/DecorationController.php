@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
 use App\Models\Decorations;
+use App\Models\DecorationImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -34,59 +35,76 @@ class DecorationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'name' => 'required|unique:decorations,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
-            ],
-            [
-                'name.required' => 'Nama harus diisi',
-                'name.unique' => 'Nama sudah ada',
-                'image.image' => 'Gambar harus berupa gambar',
-                'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
-                'image.max' => 'Gambar harus berukuran maksimal 2MB',
-            ]
-        );
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'name.required' => 'Name harus diisi',
+            'name.string' => 'Name harus berupa string',
+            'name.max' => 'Name maksimal 255 karakter',
+            'description.required' => 'Description harus diisi',
+            'description.string' => 'Description harus berupa string',
+            'main_image.required' => 'image utama harus diisi',
+            'main_image.image' => 'image utama harus berupa gambar',
+            'main_image.mimes' => 'image utama harus berupa gambar JPG, JPEG, PNG',
+            'main_image.max' => 'image utama harus berukuran maksimal 2MB',
+            'gallery.*.image' => 'image gallery harus berupa gambar',
+            'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
+            'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
+        ]);
 
+        // Simpan main image
+        $mainImageName = null;
+        if ($request->hasFile('main_image')) {
+            $mainImage = $request->file('main_image');
+            $mainImageName = 'decoration-main-' . time() . '-' . $mainImage->getClientOriginalName();
+            $mainImagePath = 'back/images/decoration/' . $mainImageName;
+
+            // Simpan original
+            Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
+
+            // Simpan thumbnail
+            $thumbPath = 'back/images/decoration/thumbnails/thumb_271_' . $mainImageName;
+            $img = Image::make($mainImage->getRealPath())->fit(271, 266);
+            Storage::disk('public')->put($thumbPath, (string) $img->encode());
+        }
+
+        // Simpan data decoration
         $decoration = new Decorations();
         $decoration->name = $request->name;
         $decoration->description = $request->description;
-
-        if ($request->hasFile('image')) {
-            $path = 'back/images/decoration/';
-
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'decoration-' . time() . '' . $filename;
-
-            // Simpan file ukuran asli
-            $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
-
-            // Buat dan simpan thumbnail
-            $post_thumbnails_path = $path . 'thumbnails';
-            if (!Storage::disk('public')->exists($post_thumbnails_path)) {
-                Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
-            }
-
-            // Create thumbnails with different sizes
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(75, 75)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_75_' . $new_filename));
-
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
-
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
-
-            $decoration->image = $new_filename;
-        }
-
+        $decoration->image = $mainImageName;
         $decoration->save();
+
+        // Simpan multiple images (gallery)
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $galleryImageName = 'decoration-gallery-' . time() . '-' . $file->getClientOriginalName();
+                $galleryImagePath = 'back/images/decoration/gallery/' . $galleryImageName;
+
+                // Simpan original
+                Storage::disk('public')->put($galleryImagePath, file_get_contents($file));
+
+                // Simpan thumbnail
+                $galleryThumbPath = 'back/images/decoration/gallery/thumbnails/thumb_271_' . $galleryImageName;
+                $img = Image::make($file->getRealPath())->fit(271, 266);
+                Storage::disk('public')->put($galleryThumbPath, (string) $img->encode());
+
+                // Simpan ke tabel decoration_images
+                DecorationImage::create([
+                    'decoration_id' => $decoration->id,
+                    'image' => $galleryImageName,
+                ]);
+            }
+        }
 
         activity()
             ->causedBy(auth()->user())
             ->log('Created decoration');
 
-        return redirect()->route('decoration.index')->with('success', 'Decoration created successfully');
+        return response()->json(['success' => 'Decoration berhasil disimpan']);
     }
 
     /**
@@ -102,7 +120,7 @@ class DecorationController extends Controller
      */
     public function edit($id)
     {
-        $decoration = Decorations::find($id);
+        $decoration = Decorations::with('images')->find($id);
         return view('back.pages.decoration.edit', compact('decoration'));
     }
 
@@ -113,79 +131,61 @@ class DecorationController extends Controller
     {
         $decoration = Decorations::find($id);
 
-        // Validate only the fields that are present in the request
-        $validationRules = [];
-        $validationMessages = [];
+        $request->validate([
+            'name' => 'required|string|max:255|unique:decorations,name,' . $id,
+            'description' => 'required|string',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-        if ($request->has('name')) {
-            $validationRules['name'] = 'required|unique:decorations,name,' . $id;
-            $validationMessages['name.required'] = 'Name harus diisi';
-            $validationMessages['name.unique'] = 'Name sudah ada';
-        }
+        $decoration->name = $request->name;
+        $decoration->description = $request->description;
 
-        if ($request->hasFile('image')) {
-            $validationRules['image'] = 'image|mimes:jpeg,png,jpg|max:2048';
-            $validationMessages['image.image'] = 'Image harus berupa gambar';
-            $validationMessages['image.mimes'] = 'Image harus berupa gambar JPG, JPEG, PNG';
-            $validationMessages['image.max'] = 'Image harus berukuran maksimal 2MB';
-        }
+        // Update main image jika ada
+        if ($request->hasFile('main_image')) {
+            $mainImage = $request->file('main_image');
+            $mainImageName = 'decoration-main-' . time() . '-' . $mainImage->getClientOriginalName();
+            $mainImagePath = 'back/images/decoration/' . $mainImageName;
 
-        $request->validate($validationRules, $validationMessages);
-
-        // Update name if provided
-        if ($request->has('name')) {
-            $decoration->name = $request->name;
-        }
-
-        // Update image if provided
-        if ($request->hasFile('image')) {
-            $path = 'back/images/decoration/';
-
-            // Delete old images
+            // Hapus gambar lama
             if ($decoration->image) {
-                // Delete original image
-                Storage::disk('public')->delete($path . $decoration->image);
-
-                // Delete thumbnails
-                Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $decoration->image);
-                Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $decoration->image);
-                Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $decoration->image);
+                Storage::disk('public')->delete('back/images/decoration/' . $decoration->image);
+                Storage::disk('public')->delete('back/images/decoration/thumbnails/thumb_271_' . $decoration->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'decoration-' . time() . '' . $filename;
+            Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
+            $thumbPath = 'back/images/decoration/thumbnails/thumb_271_' . $mainImageName;
+            $img = Image::make($mainImage->getRealPath())->fit(271, 266);
+            Storage::disk('public')->put($thumbPath, (string) $img->encode());
 
-            // Simpan file ukuran asli
-            $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
-
-            // Buat dan simpan thumbnail
-            $post_thumbnails_path = $path . 'thumbnails';
-            if (!Storage::disk('public')->exists($post_thumbnails_path)) {
-                Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
-            }
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(75, 75)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_75_' . $new_filename));
-
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
-
-            $decoration->image = $new_filename;
-        }
-
-        // Update description if provided
-        if ($request->has('description')) {
-            $decoration->description = $request->description;
+            $decoration->image = $mainImageName;
         }
 
         $decoration->save();
+
+        // Simpan gallery baru jika ada
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $galleryImageName = 'decoration-gallery-' . time() . '-' . $file->getClientOriginalName();
+                $galleryImagePath = 'back/images/decoration/gallery/' . $galleryImageName;
+
+                Storage::disk('public')->put($galleryImagePath, file_get_contents($file));
+                $galleryThumbPath = 'back/images/decoration/gallery/thumbnails/thumb_271_' . $galleryImageName;
+                $img = Image::make($file->getRealPath())->fit(271, 266);
+                Storage::disk('public')->put($galleryThumbPath, (string) $img->encode());
+
+                DecorationImage::create([
+                    'decoration_id' => $decoration->id,
+                    'image' => $galleryImageName,
+                ]);
+            }
+        }
 
         activity()
             ->causedBy(auth()->user())
             ->log('Updated decoration');
 
-        return redirect()->route('decoration.index')->with('success', 'Decoration updated successfully');
+        return response()->json(['success' => 'Decoration updated successfully']);
     }
 
     /**
@@ -194,5 +194,15 @@ class DecorationController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function deleteGalleryImage($id)
+    {
+        $image = DecorationImage::findOrFail($id);
+        Storage::disk('public')->delete('back/images/decoration/gallery/' . $image->image);
+        Storage::disk('public')->delete('back/images/decoration/gallery/thumbnails/thumb_271_' . $image->image);
+        $image->delete();
+
+        return response()->json(['success' => 'Image deleted']);
     }
 }

@@ -215,7 +215,34 @@ class EntertainmentController extends Controller
 
         return redirect()->route('entertainment.sound.show', ['id' => 1])->with('success', 'Sound System created successfully');
     }
+    public function soundContentImage(Request $request)
+    {
+        $soundSystem = new SoundSystem();
+        $soundSystem->id = 0;
+        $soundSystem->exists = true;
+        $images = $soundSystem->addMediaFromRequest('upload')
+            ->toMediaCollection('sound_content');
 
+        $resizedImageUrl = $images->getUrl('resized');
+
+        return response()->json([
+            'url' => $resizedImageUrl,
+        ]);
+    }
+    public function liveContentImage(Request $request)
+    {
+        $liveMusic = new LiveMusic();
+        $liveMusic->id = 0;
+        $liveMusic->exists = true;
+        $images = $liveMusic->addMediaFromRequest('upload')
+            ->toMediaCollection('live_content');
+
+        $resizedImageUrl = $images->getUrl('resized');
+
+        return response()->json([
+            'url' => $resizedImageUrl,
+        ]);
+    }
     public function editSound(string $id)
     {
         $soundSystem = SoundSystem::find($id);

@@ -131,6 +131,12 @@
                         <li class="{{ Route::is('settings.index') ? 'mm-active' : '' }}">
                             <a href="{{ route('settings.index') }}"><span>General Settings</span></a>
                         </li>
+                        <li class="{{ Route::is('insert-code') ? 'mm-active' : '' }}">
+                            <a href="{{ route('insert-code') }}" class=" waves-effect">
+                                <span>Insert code</span>
+                            </a>
+
+                        </li>
                     </ul>
                 </li>
 

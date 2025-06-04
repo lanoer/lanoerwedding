@@ -22,4 +22,10 @@ class Decorations extends Model implements Viewable
             ]
         ];
     }
+
+
+    public function images()
+    {
+        return $this->hasMany(DecorationImage::class, 'decoration_id');
+    }
 }

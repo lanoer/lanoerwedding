@@ -2,7 +2,9 @@
 <aside id="pwe-aside">
     <!-- Logo -->
     <h1 id="pwe-logo">
-        <a href="/">LR<i>®</i><span>weddings <small>&#8226;</small> events</span></a>
+        <a href="/"><img src="{{ webLogo()->logo_front }}" alt="Logo" class="img-fluid"
+                style="width: 70px; height: 70px;">
+            <span>weddings <small>&#8226;</small> events</span></a>
     </h1>
     <!-- Menu -->
     <nav id="pwe-main-menu">

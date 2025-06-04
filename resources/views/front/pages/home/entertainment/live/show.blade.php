@@ -38,15 +38,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 text-center"> <img
-                        src="{{ asset('storage/back/images/entertainment/live/' . $live->image) }}"
+                        src="{{ asset('storage/back/images/entertainment/live/' . $liveMusic->image) }}"
                         class="img-fluid mb-30 animate-box" data-animate-effect="fadeInLeft" alt="">
                     <h4 class="pwe-about-subheading animate-box" data-animate-effect="fadeInUp">To Know Us is to Love
                         Us!</h4>
                 </div>
                 <div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-                    <h3 class="pwe-about-heading">{{ $live->name }}</h3>
-                    <h4 class="pwe-about-subheading">{{ $live->desc_singkat }}</h4>
-                    <p>{!! $live->description !!}</p>
+                    <h3 class="pwe-about-heading">{{ $liveMusic->name }}</h3>
+                    {{-- <h4 class="pwe-about-subheading">{{ $liveMusic->desc_singkat }}</h4> --}}
+                    <p>{!! $liveMusic->description !!}</p>
                 </div>
             </div>
         </div>

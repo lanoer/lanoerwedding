@@ -37,9 +37,20 @@
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6 text-center"> <img
-                        src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}"
+                <div class="col-md-6 text-center">
+                    <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}"
                         class="img-fluid mb-30 animate-box" data-animate-effect="fadeInLeft" alt="">
+                    <div class="row mt-4">
+                        @foreach ($galleryImages as $image)
+                        <div class="col-4 mb-3">
+                            <img src="{{ asset('storage/back/images/decoration/gallery/' . $image->image) }}"
+                                class="img-fluid animate-box" data-animate-effect="fadeInLeft" alt="">
+                        </div>
+                        @endforeach
+                        <div class="d-flex justify-content-center">
+                            {{ $galleryImages->links('pagination::custom') }}
+                        </div>
+                    </div>
                     <h4 class="pwe-about-subheading animate-box" data-animate-effect="fadeInUp">To Know Us is to Love
                         Us!</h4>
                 </div>

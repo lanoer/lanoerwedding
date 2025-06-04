@@ -39,14 +39,14 @@ class DocumentationController extends Controller
 
         $request->validate([
             'album_id' => 'required|exists:albums,id',
-            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,|max:5000',
         ], [
             'album_id.required' => 'Album harus diisi',
             'album_id.exists' => 'Album tidak ditemukan',
             'image.*.required' => 'Foto harus diisi',
             'image.*.image' => 'Foto harus berupa gambar',
-            'image.*.mimes' => 'Foto harus berupa gambar JPG, JPEG, PNG, GIF, atau SVG',
-            'image.*.max' => 'Foto harus berukuran maksimal 2MB',
+            'image.*.mimes' => 'Foto harus berupa gambar JPG, JPEG, PNG',
+            'image.*.max' => 'Foto harus berukuran maksimal 5MB',
         ]);
 
         if ($request->hasFile('image')) {

@@ -24,7 +24,7 @@
             </div>
             <div class="card-body">
                 <form action="{{ route('decoration.update.decor', $decoration->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" id="decorationform">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
@@ -36,16 +36,37 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="image">Image</label>
-                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                            name="image" value="{{ $decoration->image }}">
-                        @error('image')
+                        <label for="main_image">Main Image</label>
+                        <input type="file" class="form-control @error('main_image') is-invalid @enderror"
+                            id="main_image" name="main_image" accept="image/*">
+                        @error('main_image')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="image_holder mb-2" style="max-width: 250px">
                         <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}" alt=""
                             class="img-thumbnail" id="image-previewer">
+                    </div>
+                    <!-- Gallery Images -->
+                    <div class="form-group mb-3">
+                        <label>Gallery Images</label>
+                        <div class="dropzone" id="gallery-dropzone"></div>
+                        <div class="row mt-2">
+                            @foreach($decoration->images as $img)
+                            <div class="col-3 mb-2" id="gallery-img-{{ $img->id }}">
+                                <img src="{{ asset('storage/back/images/decoration/gallery/' . $img->image) }}"
+                                    class="img-thumbnail" style="width:100%">
+                                <button type="button" class="btn btn-danger btn-sm btn-block mt-1 delete-gallery-img"
+                                    data-id="{{ $img->id }}">Delete</button>
+                            </div>
+                            @endforeach
+                        </div>
+                        @error('gallery')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        @error('gallery.*')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
@@ -56,11 +77,14 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
                     <div class="form-group d-flex justify-content-between">
                         <a href="{{ route('decoration.index') }}" class="btn btn-warning mt-3"><i
                                 class="bx bx-arrow-back"></i> Cancel</a>
-                        <button type="submit" class="btn btn-primary mt-3"><i class="bx bx-save"></i> Update</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary mt-3">
+                            <i class="bx bx-loader bx-spin font-size-16 align-middle me-2 d-none"
+                                id="loadingSpinner"></i>
+                            <span id="buttonText">Update</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -70,35 +94,87 @@
 @endsection
 @push('stylesheets')
 <script src="{{ asset('back/assets/vendor/ckeditor/build/ckeditor.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('back/assets/vendor/dropzone/dropzone.min.css') }}">
 @endpush
 
-
 @push('scripts')
+<script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-            ClassicEditor
-                .create(document.querySelector('#description'))
-                .catch(error => {
-                    console.error(error);
-                });
+        ClassicEditor
+            .create(document.querySelector('#description'))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+
+    // Inisialisasi Dropzone
+    Dropzone.autoDiscover = false;
+    var galleryDropzone = new Dropzone("#gallery-dropzone", {
+        url: "#", // Tidak dipakai, submit manual
+        paramName: "gallery[]",
+        maxFilesize: 2, // MB
+        acceptedFiles: "image/*",
+        addRemoveLinks: true,
+        dictDefaultMessage: "Drop images here or click to upload",
+        autoProcessQueue: false,
+        uploadMultiple: true,
+        parallelUploads: 10,
+        previewsContainer: "#gallery-dropzone",
+    });
+
+    document.getElementById('decorationform').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        galleryDropzone.files.forEach(function(file) {
+            formData.append('gallery[]', file);
         });
-</script>
-<script>
-    $(document).ready(function() {
-            $('input[type="file"][name="image"]').ijaboViewer({
-                preview: '#image-previewer',
-                imageShape: 'rectangular',
-                allowedExtensions: ['jpg', 'jpeg', 'png'],
-                onErrorShape: function(message, element) {
-                    alert(message);
+
+        var submitBtn = document.getElementById('submitBtn');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        var buttonText = document.getElementById('buttonText');
+        submitBtn.disabled = true;
+        loadingSpinner.classList.remove('d-none');
+        buttonText.textContent = 'Saving...';
+
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            toastr.success(data.success);
+            submitBtn.disabled = false;
+            loadingSpinner.classList.add('d-none');
+            buttonText.textContent = 'Update';
+        })
+        .catch(error => {
+            toastr.error('Terjadi kesalahan saat menyimpan data');
+            submitBtn.disabled = false;
+            loadingSpinner.classList.add('d-none');
+            buttonText.textContent = 'Update';
+        });
+    });
+
+    // Hapus gambar gallery
+    $('.delete-gallery-img').click(function() {
+        var imgId = $(this).data('id');
+        if(confirm('Delete this image?')) {
+            $.ajax({
+                url: '{{ route("decoration.delete.gallery.image", ":id") }}'.replace(':id', imgId),
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
                 },
-                onInvalidType: function(message, element) {
-                    alert(message);
-                },
-                onSuccess: function(message, element) {
-                    // Success callback
+                success: function(res) {
+                    $('#gallery-img-' + imgId).remove();
                 }
             });
-        });
+        }
+    });
 </script>
 @endpush

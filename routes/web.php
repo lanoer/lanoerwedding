@@ -154,6 +154,7 @@ Route::middleware('auth:web')->group(function () {
         Route::put('main/update/{id}', [DecorationController::class, 'update'])->name('update.decor');
         Route::delete('main/destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy.decor');
         Route::get('main/create', [DecorationController::class, 'create'])->name('create.decor');
+        Route::delete('/decoration/gallery-image/{id}', [DecorationController::class, 'deleteGalleryImage'])->name('delete.gallery.image');
     });
 
     Route::prefix('entertainment')->name('entertainment.')->group(function () {
@@ -165,6 +166,7 @@ Route::middleware('auth:web')->group(function () {
         Route::get('sound/show/{id}', [EntertainmentController::class, 'show'])->name('sound.show');
         Route::get('sound/soundSystem/create', [EntertainmentController::class, 'createSound'])->name('sound.create');
         Route::post('sound/soundSystem/store', [EntertainmentController::class, 'storeSound'])->name('sound.store');
+        Route::post('sound/soundSystem/upload', [EntertainmentController::class, 'soundContentImage'])->name('sound.uploadImage');
         // Route::get('sound/show/{id}', [EntertainmentController::class, 'showSound'])->name('soundSystem.show');
         Route::get('sound/soundSystem/edit/{id}', [EntertainmentController::class, 'editSound'])->name('soundSystem.edit');
         Route::put('sound/soundSystem/update/{id}', [EntertainmentController::class, 'updateSound'])->name('soundSystem.update');
@@ -180,7 +182,7 @@ Route::middleware('auth:web')->group(function () {
         Route::get('live/livemusic/edit/{id}', [EntertainmentController::class, 'editLiveMusic'])->name('livemusic.edit');
         Route::put('live/livemusic/update/{id}', [EntertainmentController::class, 'updateLiveMusic'])->name('livemusic.update');
         Route::delete('live/livemusic/destroy/{id}', [EntertainmentController::class, 'destroyLiveMusic'])->name('livemusic.destroy');
-
+        Route::post('live/livemusic/upload', [EntertainmentController::class, 'liveContentImage'])->name('live.uploadImage');
         // ceremonial
         Route::get('ceremonial/edit/{id}', [EntertainmentController::class, 'editCeremonial'])->name('ceremonial.edit');
         Route::put('ceremonial/update/{id}', [EntertainmentController::class, 'updateCeremonial'])->name('ceremonial.update');
@@ -224,6 +226,8 @@ Route::middleware('auth:web')->group(function () {
     Route::prefix('team')->name('team.')->group(function () {
         Route::view('/list', 'back.pages.team.index')->name('list');
         // Route::resource('/', TeamLanoerController::class);
+        Route::get('create', [TeamLanoerController::class, 'create'])->name('create');
+        Route::post('store', [TeamLanoerController::class, 'store'])->name('store');
         Route::get('edit/{id}', [TeamLanoerController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [TeamLanoerController::class, 'update'])->name('update');
         Route::delete('destroy/{id}', [TeamLanoerController::class, 'destroy'])->name('destroy');
@@ -255,4 +259,7 @@ Route::middleware('auth:web')->group(function () {
 
     Route::post('/albums', [AlbumController::class, 'store'])->name('albums.store');
     Route::post('/albums/{id}', [AlbumController::class, 'update'])->name('albums.update');
+
+
+    Route::view('/insert-code', 'back.pages.insert-code.index')->name('insert-code');
 });

@@ -1,6 +1,8 @@
 @include('front.layouts.inc.head')
 
 <body>
+    {!! web_seo()->gtag_body !!}
+
     @include('front.layouts.inc.whatsapp')
 
 

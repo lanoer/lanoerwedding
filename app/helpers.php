@@ -10,6 +10,7 @@ use App\Models\ContactHome;
 use App\Models\Decorations;
 use App\Models\Event;
 use App\Models\Foto;
+use App\Models\InsertCodeSeo;
 use App\Models\InsertHeader;
 use App\Models\LiveMusic;
 use App\Models\Logo;
@@ -307,6 +308,13 @@ if (! function_exists('clients')) {
         function teamCreative()
         {
             return TeamLanoer::get();
+        }
+    }
+
+    if (! function_exists('web_seo')) {
+        function web_seo()
+        {
+            return InsertCodeSeo::find(1);
         }
     }
 }

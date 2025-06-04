@@ -1,99 +1,35 @@
+{{-- Dashboard Summary Cards --}}
 <div class="row">
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-primary text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-users fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Total Users</h6>
-                    <h2 class="mb-0">{{ $totalUsers }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-success text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-magic fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Wedding Makeups</h6>
-                    <h2 class="mb-0">{{ $totalWeddings }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-warning text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-paint-brush fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Event Makeups</h6>
-                    <h2 class="mb-0">{{ $totalEvent }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-info text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-utensils fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Catering Packages</h6>
-                    <h2 class="mb-0">{{ $totalCatering }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-danger text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-gem fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Decorations</h6>
-                    <h2 class="mb-0">{{ $totalDecorations }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-primary text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-music fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Live Music</h6>
-                    <h2 class="mb-0">{{ $totalMusic }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card shadow border-0 bg-info text-white">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-music fa-2x"></i>
-                </div>
-                <div>
-                    <h6 class="mb-0">Sound System</h6>
-                    <h2 class="mb-0">{{ $totalSoundSystem }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
+    @php
+        $cards = [
+            ['title' => 'Total Users', 'count' => $totalUsers, 'icon' => 'users', 'bg' => 'primary'],
+            ['title' => 'Wedding Makeups', 'count' => $totalWeddings, 'icon' => 'magic', 'bg' => 'success'],
+            ['title' => 'Event Makeups', 'count' => $totalEvent, 'icon' => 'paint-brush', 'bg' => 'warning'],
+            ['title' => 'Catering Packages', 'count' => $totalCatering, 'icon' => 'utensils', 'bg' => 'info'],
+            ['title' => 'Decorations', 'count' => $totalDecorations, 'icon' => 'gem', 'bg' => 'danger'],
+            ['title' => 'Live Music', 'count' => $totalMusic, 'icon' => 'music', 'bg' => 'primary'],
+            ['title' => 'Sound System', 'count' => $totalSoundSystem, 'icon' => 'music', 'bg' => 'info'],
+        ];
+    @endphp
 
-
+    @foreach ($cards as $card)
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 bg-{{ $card['bg'] }} text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="fas fa-{{ $card['icon'] }} fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">{{ $card['title'] }}</h6>
+                        <h2 class="mb-0">{{ $card['count'] }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 </div>
 
+{{-- Top Views Table --}}
 <div class="row mt-4">
     <div class="col-12">
         <div class="card shadow border-0">
@@ -114,18 +50,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($topVisitedItems as $i => $item)
-                            <tr>
-                                <td class="fw-bold">{{ $i+1 }}</td>
-                                <td class="text-start">{{ $item['title'] }}</td>
-                                <td><span class="badge bg-info">{{ $item['model'] }}</span></td>
-                                <td><span class="badge bg-success fs-6">{{ $item['views'] }}</span></td>
-                                <td>
-                                    <a href="{{ $item['url'] }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-external-link-alt"></i> Lihat
-                                    </a>
-                                </td>
-                            </tr>
+                            @foreach ($topVisitedItems as $i => $item)
+                                <tr>
+                                    <td class="fw-bold">{{ $i + 1 }}</td>
+                                    <td class="text-start">{{ $item['title'] }}</td>
+                                    <td><span class="badge bg-info">{{ $item['model'] }}</span></td>
+                                    <td><span class="badge bg-success fs-6">{{ $item['views'] }}</span></td>
+                                    <td>
+                                        <a href="{{ $item['url'] }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-external-link-alt"></i> Lihat
+                                        </a>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -135,60 +72,303 @@
     </div>
 </div>
 
-<div class="col-12">
-    <div class="row">
-        <div class="col-xl-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Most visited post</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped gy-7 gs-7">
-                            <thead>
-                                <tr class="fw-semibold fs-6 text-gray-800 border-bottom-2 border-gray-200">
-                                    <th>No</th>
-                                    <th>Post title</th>
-                                    <th>Author</th>
-                                    <th>Views Today</th>
-                                    <th>View last 30 days</th>
-                                    <th>View last 90 days</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($posts as $e => $item)
+
+
+{{-- Most Visited Posts & Activity Log --}}
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Most Visited Post</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="fw-semibold text-gray-800">
+                                <th>No</th>
+                                <th>Post Title</th>
+                                <th>Author</th>
+                                <th>Views Today</th>
+                                <th>Last 30 Days</th>
+                                <th>Last 90 Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($posts as $e => $item)
                                 <tr>
-                                    <td> {{ $e + 1 }}</td>
+                                    <td>{{ $e + 1 }}</td>
                                     <td>
-                                        <a href="" style="font-size: 12px">{{ Str::limit($item->post_title, 20, '...')
-                                            }}</a>
+                                        <a href="#"
+                                            style="font-size: 12px">{{ Str::limit($item->post_title, 20, '...') }}</a>
                                     </td>
                                     <td>{{ $item->author->name }}</td>
-                                    <td>{{
-                                        views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::since(today()))->count()
-                                        }}
+                                    <td>{{ views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::since(today()))->count() }}
                                     </td>
-                                    <td>{{
-                                        views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::pastDays(30))->count()
-                                        }}
+                                    <td>{{ views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::pastDays(30))->count() }}
                                     </td>
-                                    <td>{{
-                                        views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::pastDays(90))->count()
-                                        }}
+                                    <td>{{ views($item)->period(\CyrildeWit\EloquentViewable\Support\Period::pastDays(90))->count() }}
                                     </td>
                                 </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    @livewire('back.activity-log')
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+    {{-- Activity Log --}}
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                @livewire('back.activity-log')
+            </div>
+        </div>
+    </div>
 </div>
+{{-- Filter Waktu --}}
+<div class="mb-4">
+    <label for="period" class="block text-sm font-medium text-gray-700">Filter Waktu:</label>
+    <select wire:model="selectedPeriod" id="period"
+        class="mt-1 block w-60 p-2 border border-gray-300 rounded-md shadow-sm">
+        <option value="1">Hari Ini</option>
+        <option value="7">7 Hari Terakhir</option>
+        <option value="30">30 Hari Terakhir</option>
+        <option value="90">3 Bulan Terakhir</option>
+    </select>
+</div>
+{{-- Analytics Charts --}}
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Views</h4>
+                <div id="page-views-chart"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">View by Country</h4>
+                <div id="country-views-chart" class="apex-charts" style="min-height: 365px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Top Browsers</h4>
+                <div id="top-browsers-chart" class="apex-charts" style="min-height: 365px;"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Top Operating Systems</h4>
+                <div id="top-operating-systems-chart" class="apex-charts" style="min-height: 365px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Scripts --}}
+@push('scripts')
+    <script src="/back/assets/libs/apexcharts/apexcharts.min.js"></script>
+@endpush
+
+@push('scripts')
+    <script>
+        document.addEventListener('livewire:load', function() {
+            var pageViewsOptions = {
+                series: [{
+                    name: 'Page Views',
+                    data: [{{ $dailyViews }}, {{ $weeklyViews }}, {{ $monthlyViews }}]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded',
+                        distributed: true
+                    },
+                },
+                colors: ['#FF4560', '#00E396', '#008FFB'],
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: ['Daily', 'Weekly', 'Monthly'],
+                },
+                yaxis: {
+                    title: {
+                        text: ''
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return Math.round(val);
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " views";
+                        }
+                    }
+                }
+            };
+
+            var pageViewsChart = new ApexCharts(document.querySelector("#page-views-chart"), pageViewsOptions);
+            pageViewsChart.render();
+
+            // country views
+            var countryViewsOptions = {
+                series: [{
+                    name: 'Screen Page Views',
+                    data: @json($countryViews->pluck('screenPageViews'))
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: @json($countryViews->pluck('country'))
+                },
+                yaxis: {
+                    title: {
+                        text: ''
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return Math.round(val);
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " screen page views";
+                        }
+                    }
+                }
+            };
+
+            var countryViewsChart = new ApexCharts(document.querySelector("#country-views-chart"),
+                countryViewsOptions);
+            countryViewsChart.render();
+
+            // top browsers
+            var topBrowsersOptions = {
+                series: [{
+                    name: 'Screen Page Views',
+                    data: @json($topBrowsers->pluck('screenPageViews'))
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    horizontal: true
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        columnWidth: '55%',
+                        endingShape: 'rounded',
+                        distributed: true
+                    },
+                },
+                colors: ['#FF4560', '#00E396', '#008FFB', '#775DD0', '#FEB019'],
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: @json($topBrowsers->pluck('browser')),
+                    labels: {
+                        show: false
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        show: true
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " screen page views";
+                        }
+                    }
+                }
+            };
+
+            var topBrowsersChart = new ApexCharts(document.querySelector("#top-browsers-chart"),
+                topBrowsersOptions);
+            topBrowsersChart.render();
+
+            // top operating systems
+            var topOperatingSystemsOptions = {
+                series: @json($topOperatingSystems->pluck('screenPageViews')),
+                chart: {
+                    type: 'donut',
+                    height: 350
+                },
+                labels: @json($topOperatingSystems->pluck('operatingSystem')),
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }],
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " screen page views";
+                        }
+                    }
+                }
+            };
+
+            var topOperatingSystemsChart = new ApexCharts(document.querySelector("#top-operating-systems-chart"),
+                topOperatingSystemsOptions);
+            topOperatingSystemsChart.render();
+        });
+    </script>
+@endpush

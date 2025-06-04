@@ -248,7 +248,8 @@ class HomeController extends Controller
 
     public function showDecoration($slug)
     {
-        $decoration = Decorations::where('slug', $slug)->first();
+        $decoration = Decorations::with('images')->where('slug', $slug)->first();
+        $galleryImages = $decoration->images()->paginate(3);
         if ($decoration) {
             views($decoration)->record();
         }
@@ -306,7 +307,7 @@ class HomeController extends Controller
                 'author' => "admin",
                 'section' => "Decoration",
             ]);
-        return view('front.pages.home.decoration.show', compact('decoration', 'teamCreative', 'articleSchema', 'data'));
+        return view('front.pages.home.decoration.show', compact('decoration', 'teamCreative', 'articleSchema', 'data', 'galleryImages'));
     }
 
     public function entertainmentList()

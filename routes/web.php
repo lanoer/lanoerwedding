@@ -71,7 +71,6 @@ Route::get('entertainment/detail/ceremony/{ceremonySlug}/{ceremonySubSlug}', [Ho
 
 
 Route::get('/services', [HomeController::class, 'services'])->name('servicesHome');
-Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolioHome');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blogHome');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contactHome');
 Route::post('/contact', [HomeController::class, 'contactStore'])->name('contact.store');

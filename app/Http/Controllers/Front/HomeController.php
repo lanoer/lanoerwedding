@@ -674,16 +674,31 @@ class HomeController extends Controller
     public function robotsTxt()
     {
         $lines = [
-            'User-agent: ' . config('robots-txt.user-agent'),
+            'User-agent: *',  // Semua user-agent (semua mesin pencari)
+
+            // Mengizinkan crawling untuk semua halaman frontend yang dapat diakses publik
+            'Allow: /',
+
+            // Memblokir crawling untuk halaman backend dan halaman yang memerlukan login
+            'Disallow: /auth/login',
+            'Disallow: /auth/forgot-password',
+            'Disallow: /auth/reset-password',
+            'Disallow: /home',
+            'Disallow: /dashboard',
+            'Disallow: /admin',
+            'Disallow: /users',
+            'Disallow: /settings',
+            'Disallow: /role',
+            'Disallow: /permissions',
+            'Disallow: /posts',
+            'Disallow: /makeup',
+            'Disallow: /wedding',
+            'Disallow: /decoration',
+            'Disallow: /entertainment',
+
+            // Menambahkan lokasi sitemap
+            'Sitemap: https://lanoerwedding.com/sitemap.xml' // Lokasi sitemap
         ];
-
-        foreach (config('robots-txt.disallow') as $disallow) {
-            $lines[] = "Disallow: $disallow";
-        }
-
-        foreach (config('robots-txt.allow') as $allow) {
-            $lines[] = "Allow: $allow";
-        }
 
         return response(implode("\n", $lines), 200, ['Content-Type' => 'text/plain']);
     }

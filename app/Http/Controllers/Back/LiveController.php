@@ -9,7 +9,7 @@ class LiveController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:read pages');
+        $this->middleware('can:read content');
     }
     /**
      * Display a listing of the resource.

@@ -9,7 +9,7 @@ class ContactController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:read pages');
+        $this->middleware('can:read contact');
     }
     /**
      * Display a listing of the resource.

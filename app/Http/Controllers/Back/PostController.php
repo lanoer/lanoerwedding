@@ -11,6 +11,10 @@ use Intervention\Image\Facades\Image;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:read post');
+    }
     // CREATE POST
     public function createPost(Request $request)
     {

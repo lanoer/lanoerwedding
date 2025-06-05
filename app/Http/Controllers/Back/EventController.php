@@ -16,9 +16,9 @@ class EventController extends Controller
      * Display a listing of the resource.
      */
     public function __construct()
-    {
-        $this->middleware('can:read pages');
-    }
+     {
+         $this->middleware('can:read content');
+     }
     public function index()
     {
         $eventMakeups = EventMakeups::withCount('events')->first();

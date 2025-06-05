@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 class AlbumController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:read content');
+    }
     public function store(Request $request)
     {
         Log::info('Masuk ke AlbumController@store');

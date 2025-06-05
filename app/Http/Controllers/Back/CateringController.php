@@ -15,10 +15,10 @@ class CateringController extends Controller
      * Display a listing of the resource.
      */
 
-    public function __construct()
-    {
-        $this->middleware('can:read pages');
-    }
+     public function __construct()
+     {
+         $this->middleware('can:read content');
+     }
     public function index()
     {
         return view('back.pages.catering.index');
@@ -99,7 +99,7 @@ class CateringController extends Controller
      */
     public function show(string $id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -199,6 +199,6 @@ class CateringController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        abort(404);
     }
 }

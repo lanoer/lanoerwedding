@@ -11,7 +11,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(BingService::class, function ($app) {
+            return new BingService();
+        });
     }
 
     /**

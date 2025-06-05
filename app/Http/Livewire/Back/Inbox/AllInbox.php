@@ -17,14 +17,9 @@ class AllInbox extends Component
 
     public $contact;
 
-    public $selectedInboxes = [];
-
-    public $selectAll = false;
-
     public $listeners = [
         'resetModalForm',
         'deleteInboxAction',
-        'deleteSelectedInboxAction'
     ];
     public function mount()
     {
@@ -32,36 +27,6 @@ class AllInbox extends Component
             abort(403);
         }
     }
-    public function updatedSelectAll($value)
-    {
-        if ($value) {
-            $this->selectedInboxes = Contact::pluck('id')->map(fn($id) => (string) $id)->toArray();
-        } else {
-            $this->selectedInboxes = [];
-        }
-    }
-
-    public function deleteSelected()
-    {
-        if (empty($this->selectedInboxes)) {
-            $this->showToastr('Please select items to delete.', 'warning');
-            return;
-        }
-
-        $this->dispatchBrowserEvent('deleteSelectedInbox', [
-            'title' => 'Are you sure?',
-            'html' => 'You want to delete ' . count($this->selectedInboxes) . ' selected items',
-        ]);
-    }
-
-    public function deleteSelectedInboxAction()
-    {
-        Contact::whereIn('id', $this->selectedInboxes)->delete();
-        $this->selectedInboxes = [];
-        $this->selectAll = false;
-        $this->showToastr('Selected inboxes have been successfully deleted.', 'info');
-    }
-
     public function deleteInbox($id)
     {
         $inbox = Contact::find($id);
@@ -77,9 +42,10 @@ class AllInbox extends Component
         $inbox = Contact::where('id', $id)->first();
         $inbox->delete();
         $this->showToastr('Inbox has been successfuly deleted.', 'info');
+        // Log aktivitas
         activity()
             ->causedBy(auth()->user())
-            ->log('Deleted inbox ' . $inbox->name);
+            ->log('Deleted inbox');
     }
 
     public function showToastr($message, $type)

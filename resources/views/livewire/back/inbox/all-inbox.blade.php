@@ -1,16 +1,11 @@
 <div>
     <div class="row mt-3">
-        <div class="col-md-12 mb-2">
+        <div class="col-md-8 mb-2">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <h3 class="card-title align-items-start flex-column">
                         <span class="card-label fw-bold text-dark">Inbox</span>
                     </h3>
-                    @if(count($selectedInboxes) > 0)
-                    <button wire:click="deleteSelected" class="btn btn-danger btn-sm">
-                        Delete Selected ({{ count($selectedInboxes) }})
-                    </button>
-                    @endif
                 </div>
 
                 <div class="card-body">
@@ -18,37 +13,32 @@
                         <table class="table table-striped gy-7 gs-7">
                             <thead>
                                 <tr class="fw-semibold fs-6 text-gray-800 border-bottom-2 border-gray-200">
-                                    <th>
-                                        <input type="checkbox" wire:model="selectAll" class="form-check-input">
-                                    </th>
                                     <th>No</th>
-                                    <th>Full Name</th>
+                                    <th>Nama Lengkap</th>
                                     <th>Email</th>
-                                    <th>Message</th>
-                                    <th>Read</th>
-                                    <td>Sent</td>
-                                    <th class="w-1">Action</th>
+                                    <th>Url</th>
+                                    <th>Pesan</th>
+                                    <th>Status dibaca</th>
+                                    <td>created</td>
+                                    <th class="w-1"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($inboxes as $in)
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" wire:model="selectedInboxes" value="{{ $in->id }}"
-                                            class="form-check-input">
-                                    </td>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $in->name }}</td>
-                                    <td>{{ $in->email }}</td>
-                                    <td>{{ Str::limit($in->pesan, 10, '...') }}</td>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$in->name}}</td>
+                                    <td>{{$in->email}}</td>
+                                    <td>{{Str::limit($in->url, '10', '...')}}</td>
+                                    <td>{{Str::limit($in->pesan, 10, '...')}}</td>
                                     <td>
                                         @livewire('back.inbox.inbox-status', ['model' => $in, 'field' => 'isActive'],
                                         key($in->id))
                                     </td>
-                                    <td>{{ $in->formatted_created_at }}</td>
+                                    <td>{{$in->created_at}}</td>
                                     <td>
                                         <div class="d-flex py-2 align-items-center">
-                                            <a href="#" wire:click.prevent='deleteInbox({{ $in->id }})'
+                                            <a href="#" wire:click.prevent='deleteInbox({{$in->id}})'
                                                 class="btn btn-sm btn-danger">Delete</a>
                                             <a data-bs-toggle="modal" data-bs-target="#view{{ $in->id }}"
                                                 class="btn btn-primary btn-sm" style="margin-left: 3px">View</a>
@@ -57,14 +47,14 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8"><span class="text-danger justify-content-center">Inbox Not
-                                            Found!</span></td>
+                                    <td colspan="7"><span class="text-danger justify-center">Inbox Not Found!</span>
+                                    </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                         <div class="row mt-4">
-                            {{ $inboxes->links('livewire::bootstrap') }}
+                            {{$inboxes->links('livewire::bootstrap')}}
                         </div>
                     </div>
                 </div>
@@ -82,51 +72,31 @@
                 <div class="modal-body">
                     <div class="card-body">
                         <dl class="row">
-                            <dt class="col-5">Full Name :</dt>
+                            <dt class="col-5">Name :</dt>
                             <dd class="col-7">{{ $in->name }}</dd>
                             <dt class="col-5">Email :</dt>
                             <dd class="col-7">{{ $in->email }}</dd>
-                            <dt class="col-5">Phone :</dt>
-                            <dd class="col-7">{{ $in->telp }}</dd>
                             <dt class="col-5">Url :</dt>
-                            <dd class="col-7">
-                                @if ($in->url == null)
+                            <dd class="col-7">@if ($in->url == null)
                                 -
                                 @else
                                 {{ $in->url }}
-                                @endif
-                            </dd>
-                            <dt class="col-5">Message :</dt>
+                                @endif</dd>
+                            <dt class="col-5">Pesan :</dt>
                             <dd class="col-7">{{ $in->pesan }}</dd>
-                            <dt class="col-5">Sent :</dt>
-                            <dd class="col-7">{{ $in->formatted_created_at }}</dd>
+                            <dt class="col-5">Tanggal :</dt>
+                            <dd class="col-7">{{ $in->created_at }}</dd>
                         </dl>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
     @empty
+
     @endforelse
 </div>
-
-<script>
-    window.addEventListener('deleteSelectedInbox', event => {
-    Swal.fire({
-        title: event.detail.title,
-        html: event.detail.html,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Livewire.emit('deleteSelectedInboxAction');
-        }
-    })
-});
-</script>

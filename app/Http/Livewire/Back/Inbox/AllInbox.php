@@ -28,7 +28,7 @@ class AllInbox extends Component
     ];
     public function mount()
     {
-        if (!auth()->user()->can('read pages')) {
+        if (!auth()->user()->can('read contact')) {
             abort(403);
         }
     }

@@ -39,7 +39,7 @@ class GoogleIndexList extends Component
         }
 
         $client = new Google_Client();
-        $client->setAuthConfig(storage_path('app/indexing/lanoer-wedding-bb914e745c4f.json'));
+        $client->setAuthConfig(storage_path('app/indexing/lanoer-wedding-1dbfa13833cc.json'));
         $client->addScope(Google_Service_Indexing::INDEXING);
 
         $service = new Google_Service_Indexing($client);
@@ -74,7 +74,7 @@ class GoogleIndexList extends Component
         }
 
         $client = new Google_Client();
-        $client->setAuthConfig(storage_path('app/indexing/lanoer-wedding-bb914e745c4f.json'));
+        $client->setAuthConfig(storage_path('app/indexing/lanoer-wedding-1dbfa13833cc.json'));
         $client->addScope(Google_Service_Indexing::INDEXING);
 
         $service = new Google_Service_Indexing($client);

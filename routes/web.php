@@ -261,4 +261,6 @@ Route::middleware('auth:web')->group(function () {
 
 
     Route::view('/insert-code', 'back.pages.insert-code.index')->name('insert-code');
+    Route::view('/indexing', 'back.pages.indexing.index')->name('indexing');
+
 });

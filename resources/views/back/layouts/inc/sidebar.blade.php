@@ -100,6 +100,7 @@
                 </li>
                 @endcan
                 @can('read post')
+                <li class="menu-title">Article Management</li>
                 <!-- posts & categories -->
                 <li class="{{ Route::is('posts.*') ? 'mm-active' : '' }}">
                     <a href="javascript: void(0);" class="has-arrow waves-effect">

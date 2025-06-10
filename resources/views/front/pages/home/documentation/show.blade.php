@@ -32,7 +32,7 @@
                         <div class="gallery-box">
                             <div class="gallery-img">
                                 <img src="{{ asset('storage/back/images/album/foto/' . $f->image) }}"
-                                    class="img-fluid mx-auto d-block" alt="work-img">
+                                    class="img-fluid mx-auto d-block" alt="work-img" loading="lazy">
                             </div>
                             <div class="gallery-detail text-center">
                                 <i class="ti-fullscreen"></i>

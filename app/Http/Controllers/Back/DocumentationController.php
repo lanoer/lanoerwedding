@@ -12,9 +12,9 @@ use Intervention\Image\Facades\Image;
 class DocumentationController extends Controller
 {
     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    {
+        $this->middleware('can:read content');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -36,10 +36,9 @@ class DocumentationController extends Controller
     }
     public function StoreFoto(Request $request)
     {
-
         $request->validate([
             'album_id' => 'required|exists:albums,id',
-            'image.*' => 'required|image|mimes:jpeg,png,jpg,|max:5000',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg|max:5000',
         ], [
             'album_id.required' => 'Album harus diisi',
             'album_id.exists' => 'Album tidak ditemukan',
@@ -48,6 +47,19 @@ class DocumentationController extends Controller
             'image.*.mimes' => 'Foto harus berupa gambar JPG, JPEG, PNG',
             'image.*.max' => 'Foto harus berukuran maksimal 5MB',
         ]);
+
+        // Cek jumlah foto yang sudah ada di album
+        $album = Album::findOrFail($request->album_id);
+        $existingPhotoCount = $album->Foto()->count();
+        $newPhotoCount = count($request->file('image')); // Foto yang akan di-upload
+
+        // Total foto setelah penambahan
+        $totalPhotoCount = $existingPhotoCount + $newPhotoCount;
+
+        // Jika total foto lebih dari 10, batalkan upload
+        if ($totalPhotoCount > 10) {
+            return response()->json(['error' => 'Album sudah penuh, tidak bisa menambahkan foto lebih banyak.'], 400);
+        }
 
         if ($request->hasFile('image')) {
             $insert = [];
@@ -69,6 +81,7 @@ class DocumentationController extends Controller
 
                 Image::make(storage_path('app/public/' . $path . $new_filename))
                     ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
+
                 Image::make(storage_path('app/public/' . $path . $new_filename))
                     ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
@@ -85,6 +98,10 @@ class DocumentationController extends Controller
 
         return response()->json(['success' => 'Foto berhasil disimpan']);
     }
+
+
+
+
     /**
      * Show the form for creating a new resource.
      */

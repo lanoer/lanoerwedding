@@ -3,107 +3,115 @@
 @section('pageTitle', isset($pageTitle) ? $pageTitle : 'Add Foto')
 
 @section('pageHeader')
-    <div class="col-12">
-        <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="page-title mb-0 font-size-18">Add Foto</h4>
+<div class="col-12">
+    <div class="page-title-box d-flex align-items-center justify-content-between">
+        <h4 class="page-title mb-0 font-size-18">Add Foto</h4>
 
-            <div class="page-title-right">
-                @include('components.breadcrumbs')
-            </div>
-
+        <div class="page-title-right">
+            @include('components.breadcrumbs')
         </div>
+
     </div>
+</div>
 @endsection
 @section('content')
-    <div class="row">
-        <div class="app-container">
-            <div class="col-md-8">
-                <div class="card">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-block">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
-                            <strong>{{ $message }}</strong>
-                        </div>
-                    @endif
+<div class="row">
+    <div class="app-container">
+        <div class="col-md-8">
+            <div class="card">
+                @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>{{ $message }}</strong>
+                </div>
+                @endif
 
-                    @if ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-block">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
-                            <strong>{{ $message }}</strong>
-                        </div>
-                    @endif
+                @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>{{ $message }}</strong>
+                </div>
+                @endif
+                <div class="card-header">
                     <div class="card-header">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <!--begin::Search-->
-                                Add foto
-                                <!--end::Search-->
-                            </h2>
-                        </div>
+                        <h2 class="card-title">
+                            <!--begin::Search-->
+                            Add foto
+                            <!--end::Search-->
+                        </h2>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('documentation.store-foto') }}" method="post" id="clientform"
-                            class="dropzone" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <div class="mb-3">
-                                    <label class="form-label">Album</label>
-                                    <select class="form-control" name="album_id" id="album_id" wire:model='album_id'>
-                                        <option value="">-- PILIH ALBUM --</option>
-                                        @foreach ($albums as $al)
-                                            <option value="{{ $al->id }}">{{ $al->album_name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger">
-                                        @error('album_id')
-                                            {!! $message !!}
-                                        @enderror
-                                    </span>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="">Files</label>
-                                    <div class="dropzone" id="file-dropzone">
-                                        <div class="row">
-                                            <style>
-                                                .dz-preview .dz-image image {
-                                                    width: 100px;
-                                                    height: 100px;
-                                                }
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('documentation.store-foto') }}" method="post" id="clientform"
+                        class="dropzone" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label">Album</label>
+                                <select class="form-control" name="album_id" id="album_id" wire:model='album_id'>
+                                    <option value="">-- PILIH ALBUM --</option>
+                                    @foreach ($albums as $al)
+                                    @php
+                                    $photoCount = $al->Foto()->count(); // Menghitung jumlah foto di album
+                                    @endphp
+                                    <option value="{{ $al->id }}" {{ $photoCount>= 10 ? 'disabled' : '' }}>
+                                        {{ $al->album_name }}
+                                        @if ($photoCount >= 10)
+                                        - (Album penuh)
+                                        @endif
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger">
+                                    @error('album_id')
+                                    {!! $message !!}
+                                    @enderror
+                                </span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="">Files</label>
+                                <div class="dropzone" id="file-dropzone">
+                                    <div class="row">
+                                        <style>
+                                            .dz-preview .dz-image image {
+                                                width: 100px;
+                                                height: 100px;
+                                            }
 
-                                                .dz-preview .dz-details {
-                                                    display: none;
-                                                }
-                                            </style>
-                                            <div class="images-preview-div"></div>
-                                        </div>
+                                            .dz-preview .dz-details {
+                                                display: none;
+                                            }
+                                        </style>
+                                        <div class="images-preview-div"></div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mt-3">
                             <div class="mt-3">
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-dark waves-effect waves-light" id="submitBtn">
-                                        <i class="bx bx-loader bx-spin font-size-16 align-middle me-2 d-none"
-                                            id="loadingSpinner"></i>
-                                        <span id="buttonText">Save</span>
-                                    </button>
-                                </div>
+                                <button type="submit" class="btn btn-dark waves-effect waves-light" id="submitBtn">
+                                    <i class="bx bx-loader bx-spin font-size-16 align-middle me-2 d-none"
+                                        id="loadingSpinner"></i>
+                                    <span id="buttonText">Save</span>
+                                </button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 @push('stylesheets')
-    <link rel="stylesheet" href="{{ asset('back/assets/vendor/dropzone/dropzone.min.css') }}">
+<link rel="stylesheet" href="{{ asset('back/assets/vendor/dropzone/dropzone.min.css') }}">
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}"></script>
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+<script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}"></script>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('clientform');
                 const submitBtn = document.getElementById('submitBtn');
                 const loadingSpinner = document.getElementById('loadingSpinner');
@@ -176,6 +184,6 @@
                     console.error('Form element not found');
                 }
             });
-        </script>
-    @endpush
+</script>
+@endpush
 @endpush

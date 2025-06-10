@@ -42,12 +42,12 @@ if (! function_exists('isOnline')) {
     }
 }
 
-if (! function_exists('webCode')) {
-    function webCode()
-    {
-        return InsertHeader::find(1);
-    }
-}
+// if (! function_exists('webCode')) {
+//     function webCode()
+//     {
+//         return InsertHeader::find(1);
+//     }
+// }
 if (! function_exists('webInfo')) {
     function webInfo()
     {
@@ -185,31 +185,11 @@ if (! function_exists('galery')) {
         return Foto::latest()->take(6)->get();
     }
 }
-if (! function_exists('ContactSpecifically')) {
-    function ContactSpecifically()
-    {
-        return ContactHome::find(1);
-    }
-}
-if (! function_exists('categoriesProducts')) {
-    function categoriesProducts()
-    {
-        return ServiceCategory::whereHas('subservices')
-            ->orderBy('service_name', 'asc')
-            ->get();
-    }
-}
 
 
 
-if (! function_exists('random_services')) {
-    function random_services($limit = 3)
-    {
-        $services = Service::where('isActive', 1)->inRandomOrder()->take($limit)->get();
 
-        return $services;
-    }
-}
+
 
 if (! function_exists('recommended_post')) {
     function recommended_post()

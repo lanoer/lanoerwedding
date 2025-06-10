@@ -15,31 +15,126 @@ use Artesaos\SEOTools\Facades\JsonLdMulti;
 
 class BlogController extends Controller
 {
+    // public function searchBlog(Request $request)
+    // {
+    //     // Validasi input query
+    //     $request->validate([
+    //         'query' => 'required|string|min:1|max:255',  // Validasi query
+    //     ]);
+
+    //     // Mengambil dan mensanitasi input query
+    //     $query = filter_var($request->input('query'), FILTER_SANITIZE_STRING);
+
+    //     // Jika query valid dan panjangnya lebih dari 1 karakter
+    //     if ($query && strlen($query) >= 1) {
+    //         $searchValue = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+    //         $posts = Post::query();
+
+    //         // Proses pencarian
+    //         $posts->where(function ($q) use ($searchValue) {
+    //             foreach ($searchValue as $value) {
+    //                 $q->orWhere('post_title', 'LIKE', "%{$value}%");
+    //                 $q->orWhere('post_tags', 'LIKE', "%{$value}%");
+    //                 $q->orWhere('meta_keywords', 'LIKE', "%{$value}%");
+    //             }
+    //         });
+
+    //         $posts = $posts->where('isActive', 1)
+    //             ->with('subcategory')
+    //             ->with('author')
+    //             ->orderBy('created_at', 'desc')
+    //             ->paginate(4);
+
+    //         // Menyusun SEO dan Schema
+    //         SEOMeta::setTitle('Search results for: ' . $query);
+    //         SEOMeta::setDescription('Search results for: ' . $query);
+    //         SEOMeta::setCanonical(url('/search?query=' . urlencode($query)));
+
+    //         OpenGraph::setTitle('Search results for: ' . $query)
+    //             ->setDescription('Search results for: ' . $query)
+    //             ->setUrl(url('/search?query=' . urlencode($query)))
+    //             ->setType('website');
+
+    //         JsonLdMulti::setTitle('Search results for: ' . $query);
+    //         JsonLdMulti::setDescription('Search results for: ' . $query);
+    //         JsonLdMulti::setType('WebPage');
+
+    //         // Schema.org untuk halaman pencarian
+    //         $searchSchema = Schema::webPage()
+    //             ->name('Search results for: ' . $query)
+    //             ->description('Search results for: ' . $query)
+    //             ->url(url('/search?query=' . urlencode($query)));
+
+    //         // Menampilkan saran jika tidak ada hasil
+    //         $suggestions = [];
+    //         if ($posts->isEmpty()) {
+    //             $allKeywords = Post::pluck('meta_keywords')->toArray();
+    //             $allKeywords = array_unique(array_merge(...array_map(function ($keywords) {
+    //                 return explode(',', $keywords);
+    //             }, $allKeywords)));
+
+    //             foreach ($allKeywords as $keyword) {
+    //                 if (levenshtein($query, $keyword) <= 3) {
+    //                     $suggestions[] = $keyword;
+    //                 }
+    //             }
+    //         }
+
+    //         // Data untuk tampilan
+    //         $data = [
+    //             'pageTitle' => 'Search results for: ' . $query,
+    //             'posts' => $posts,
+    //             'searchSchema' => $searchSchema,
+    //             'query' => $query,
+    //             'suggestions' => $suggestions,
+    //         ];
+
+    //         return view('front.pages.home.blog.search', $data);
+    //     } else {
+    //         return abort(404);  // Menampilkan halaman 404 jika query kosong atau tidak valid
+    //     }
+    // }
     public function searchBlog(Request $request)
     {
+        // Validasi input query
+        $request->validate([
+            'query' => 'required|string|min:1|max:255',  // Validasi query
+        ]);
 
-        $query = $request->query('query');
+        // Mengambil dan mensanitasi input
+        $query = filter_var($request->input('query'), FILTER_SANITIZE_STRING);
+
         if ($query && strlen($query) >= 1) {
-            $searchValue = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
-            $posts = Post::query();
-            $posts->where(function ($q) use ($searchValue) {
-                foreach ($searchValue as $value) {
-                    $q->orWhere('post_title', 'LIKE', "%{$value}%");
-                    $q->orWhere('post_tags', 'LIKE', "%{$value}%");
-                    $q->orWhere('meta_keywords', 'LIKE', "%{$value}%");
-                }
-            });
+            // Redirect ke halaman GET yang ramah SEO
+            return redirect()->route('blog.search.results', ['query' => $query]);
+        } else {
+            return abort(404);  // Jika query kosong atau tidak valid
+        }
+    }
 
-            $posts = $posts->where('isActive', 1)
+    public function showSearchResults(Request $request)
+    {
+        // Mengambil query parameter dari URL
+        $query = filter_var($request->query('query'), FILTER_SANITIZE_STRING);
+
+        if ($query && strlen($query) >= 1) {
+            // Proses pencarian
+            $posts = Post::query()
+                ->where(function ($q) use ($query) {
+                    $q->orWhere('post_title', 'LIKE', "%{$query}%")
+                        ->orWhere('post_tags', 'LIKE', "%{$query}%")
+                        ->orWhere('meta_keywords', 'LIKE', "%{$query}%");
+                })
+                ->where('isActive', 1)
                 ->with('subcategory')
                 ->with('author')
                 ->orderBy('created_at', 'desc')
                 ->paginate(4);
 
-            // Set SEO Meta Tags
+            // Menyusun SEO dan Schema.org
             SEOMeta::setTitle('Search results for: ' . $query);
             SEOMeta::setDescription('Search results for: ' . $query);
-            SEOMeta::setCanonical(url('/search?query=' . urlencode($query)));
+            SEOMeta::setCanonical(url('/search?query=' . urlencode($query)));  // Menambahkan tag canonical untuk SEO
 
             OpenGraph::setTitle('Search results for: ' . $query)
                 ->setDescription('Search results for: ' . $query)
@@ -50,40 +145,25 @@ class BlogController extends Controller
             JsonLdMulti::setDescription('Search results for: ' . $query);
             JsonLdMulti::setType('WebPage');
 
-            // Buat objek Schema.org untuk halaman pencarian
-            $searchSchema = Schema::webPage()
-                ->name('Search results for: ' . $query)
-                ->description('Search results for: ' . $query)
-                ->url(url('/search?query=' . urlencode($query)));
-
-            // Jika tidak ada hasil, cari saran
-            $suggestions = [];
-            if ($posts->isEmpty()) {
-                $allKeywords = Post::pluck('meta_keywords')->toArray();
-                $allKeywords = array_unique(array_merge(...array_map(function ($keywords) {
-                    return explode(',', $keywords);
-                }, $allKeywords)));
-
-                foreach ($allKeywords as $keyword) {
-                    if (levenshtein($query, $keyword) <= 3) {
-                        $suggestions[] = $keyword;
-                    }
-                }
-            }
-
+            // Data untuk tampilan
             $data = [
                 'pageTitle' => 'Search results for: ' . $query,
                 'posts' => $posts,
-                'searchSchema' => $searchSchema,
                 'query' => $query,
-                'suggestions' => $suggestions,
+                'searchSchema' => Schema::webPage()
+                    ->name('Search results for: ' . $query)
+                    ->description('Search results for: ' . $query)
+                    ->url(url('/search?query=' . urlencode($query))),
+                'suggestions' => [],  // Inisialisasi saran kosong
             ];
 
-            return view('front.pages.blog.search', $data);
+            // Menampilkan hasil pencarian
+            return view('front.pages.home.blog.search', $data);
         } else {
-            return abort(404);
+            return abort(404);  // Jika query kosong atau tidak valid
         }
     }
+
 
     public function categoryPost(Request $request, $slug)
     {
@@ -134,7 +214,7 @@ class BlogController extends Controller
                     'categorySchema' => $categorySchema,
                 ];
 
-                return view('front.pages.blog.category', $data);
+                return view('front.pages.home.blog.category', $data);
             }
         }
     }
@@ -314,6 +394,6 @@ class BlogController extends Controller
             'tagSchema' => $tagSchema,
         ];
 
-        return view('front.pages.blog.tag-post', $data);
+        return view('front.pages.home.blog.tag-post', $data);
     }
 }

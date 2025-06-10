@@ -64,7 +64,10 @@ class HomeController extends Controller
 
     public function services()
     {
-        return view('front.pages.home.services');
+        $weddings = weddings::with('weddingMakeups')->take(4)->get();
+
+
+        return view('front.pages.home.services', compact('weddings'));
     }
 
     public function showEvent($eventMakeupSlug, $slug)
@@ -100,13 +103,13 @@ class HomeController extends Controller
         ];
 
         SEOMeta::setTitle($event->name);
-        SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($event->meta_desc);
+        SEOMeta::setCanonical(url()->current());  // Set canonical URL
+        SEOMeta::setDescription($event->meta_description);
         SEOMeta::addMeta('article:published_time', $event->created_at->toW3CString(), 'property');
         SEOMeta::addMeta('article:section', $event->name, 'property');
         SEOMeta::addKeyword($event->meta_keywords);
 
-        OpenGraph::setDescription($event->meta_desc);
+        OpenGraph::setDescription($event->meta_description);
         OpenGraph::setTitle($event->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
@@ -114,7 +117,7 @@ class HomeController extends Controller
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
         JsonLdMulti::setTitle($event->name);
-        JsonLdMulti::setDescription($event->meta_desc);
+        JsonLdMulti::setDescription($event->meta_description);
         JsonLdMulti::setType('Article');
         JsonLdMulti::addImage($event->image);
         if (!JsonLdMulti::isEmpty()) {
@@ -122,20 +125,11 @@ class HomeController extends Controller
             JsonLdMulti::setType('WebPage');
             JsonLdMulti::setTitle('Page Article - ' . $event->name);
         }
-        OpenGraph::setTitle($event->name)
-            ->setDescription($event->meta_desc)
-            ->setType('article')
-            ->setArticle([
-                'created_at' => 'datetime',
-                'updated_at' => 'datetime',
-                'expiration_time' => 'datetime',
-                'author' => "admin",
-                'section' => "Event Makeup",
-            ]);
 
-        // Logika untuk menampilkan detail event
+        // Menampilkan halaman detail event
         return view('front.pages.home.makeups.show', compact('eventMakeup', 'event', 'teamCreative', 'articleSchema', 'data'));
     }
+
 
     public function detailEvent($eventMakeupSlug)
     {
@@ -187,13 +181,13 @@ class HomeController extends Controller
         ];
 
         SEOMeta::setTitle($wedding->name);
-        SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($wedding->meta_desc);
+        SEOMeta::setCanonical(url()->current());  // Set canonical URL
+        SEOMeta::setDescription($wedding->meta_description);
         SEOMeta::addMeta('article:published_time', $wedding->created_at->toW3CString(), 'property');
         SEOMeta::addMeta('article:section', $wedding->name, 'property');
         SEOMeta::addKeyword($wedding->meta_keywords);
 
-        OpenGraph::setDescription($wedding->description, 150);
+        OpenGraph::setDescription($wedding->meta_description);
         OpenGraph::setTitle($wedding->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
@@ -201,7 +195,7 @@ class HomeController extends Controller
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
         JsonLdMulti::setTitle($wedding->name);
-        JsonLdMulti::setDescription($wedding->description, 150);
+        JsonLdMulti::setDescription($wedding->meta_description);
         JsonLdMulti::setType('Article');
         JsonLdMulti::addImage($wedding->image);
         if (!JsonLdMulti::isEmpty()) {
@@ -209,20 +203,11 @@ class HomeController extends Controller
             JsonLdMulti::setType('WebPage');
             JsonLdMulti::setTitle('Page Article - ' . $wedding->name);
         }
-        OpenGraph::setTitle($wedding->name)
-            ->setDescription($wedding->description, 150)
-            ->setType('article')
-            ->setArticle([
-                'created_at' => 'datetime',
-                'updated_at' => 'datetime',
-                'expiration_time' => 'datetime',
-                'author' => "admin",
-                'section' => "Wedding Makeup",
-            ]);
 
-        $teamCreative = TeamLanoer::get();
-        return view('front.pages.home.weddings.show', compact('weddingMakeup', 'wedding', 'teamCreative', 'articleSchema', 'data'));
+        // Menampilkan halaman detail wedding
+        return view('front.pages.home.weddings.show', compact('weddingMakeup', 'wedding', 'articleSchema', 'data'));
     }
+
     public function detailWedding($weddingMakeupSlug)
     {
         $weddingMakeup = WeddingMakeups::where('slug', $weddingMakeupSlug)
@@ -276,7 +261,7 @@ class HomeController extends Controller
 
         SEOMeta::setTitle($decoration->name);
         SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($decoration->meta_desc);
+        SEOMeta::setDescription($decoration->meta_description);
         SEOMeta::addMeta('article:published_time', $decoration->created_at->toW3CString(), 'property');
         SEOMeta::addMeta('article:section', $decoration->name, 'property');
         SEOMeta::addKeyword($decoration->meta_keywords);
@@ -289,7 +274,7 @@ class HomeController extends Controller
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
         JsonLdMulti::setTitle($decoration->name);
-        JsonLdMulti::setDescription($decoration->description, 150);
+        JsonLdMulti::setDescription($decoration->meta_description, 150);
         JsonLdMulti::setType('Article');
         JsonLdMulti::addImage($decoration->image);
         if (!JsonLdMulti::isEmpty()) {
@@ -298,7 +283,7 @@ class HomeController extends Controller
             JsonLdMulti::setTitle('Page Article - ' . $decoration->name);
         }
         OpenGraph::setTitle($decoration->name)
-            ->setDescription($decoration->description, 150)
+            ->setDescription($decoration->meta_description, 150)
             ->setType('article')
             ->setArticle([
                 'created_at' => 'datetime',
@@ -332,54 +317,54 @@ class HomeController extends Controller
         if (!$sound || !$soundSystem) {
             abort(404);
         }
-        if ($sound) {
-            views($sound)->record();
+        if ($soundSystem) {
+            views($soundSystem)->record();
         }
         $teamCreative = TeamLanoer::get();
         // schema.org
-        $logoUrl = $sound->image ? asset('back/images/sound/' . $sound->image) : '';
-        $featuredImage = $sound->image ? asset('/storage/back/images/sound/' . $sound->image) : '';
+        $logoUrl = $soundSystem->image ? asset('back/images/sound/' . $soundSystem->image) : '';
+        $featuredImage = $soundSystem->image ? asset('/storage/back/images/sound/' . $soundSystem->image) : '';
         $articleSchema = Schema::article()
-            ->headline($sound->name)
+            ->headline($soundSystem->name)
             ->author("admin")
-            ->datePublished($sound->created_at->toW3CString())
-            ->dateModified($sound->updated_at->toW3CString())
+            ->datePublished($soundSystem->created_at->toW3CString())
+            ->dateModified($soundSystem->updated_at->toW3CString())
             ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
             ->image($featuredImage)
             ->publisher(Schema::organization()
                 ->name('Lanoer Wedding & Event Organizer')
                 ->logo($logoUrl));
         $data = [
-            'pageTitle' => Str::ucfirst($sound->name),
-            'sound' => $sound,
+            'pageTitle' => Str::ucfirst($soundSystem->name),
+            'sound' => $soundSystem,
             'articleSchema' => $articleSchema,
         ];
 
-        SEOMeta::setTitle($sound->name);
+        SEOMeta::setTitle($soundSystem->name);
         SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($sound->meta_desc);
-        SEOMeta::addMeta('article:published_time', $sound->created_at->toW3CString(), 'property');
-        SEOMeta::addMeta('article:section', $sound->name, 'property');
-        SEOMeta::addKeyword($sound->meta_keywords);
+        SEOMeta::setDescription($soundSystem->meta_description);
+        SEOMeta::addMeta('article:published_time', $soundSystem->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $soundSystem->name, 'property');
+        SEOMeta::addKeyword($soundSystem->meta_keywords);
 
-        OpenGraph::setDescription($sound->description, 150);
-        OpenGraph::setTitle($sound->name);
+        OpenGraph::setDescription($soundSystem->meta_description);
+        OpenGraph::setTitle($soundSystem->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
         OpenGraph::addProperty('locale', 'id-ID');
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
-        JsonLdMulti::setTitle($sound->name);
-        JsonLdMulti::setDescription($sound->description, 150);
+        JsonLdMulti::setTitle($soundSystem->name);
+        JsonLdMulti::setDescription($soundSystem->meta_description);
         JsonLdMulti::setType('Article');
-        JsonLdMulti::addImage($sound->image);
+        JsonLdMulti::addImage($soundSystem->image);
         if (!JsonLdMulti::isEmpty()) {
             JsonLdMulti::newJsonLd();
             JsonLdMulti::setType('WebPage');
-            JsonLdMulti::setTitle('Page Article - ' . $sound->name);
+            JsonLdMulti::setTitle('Page Article - ' . $soundSystem->name);
         }
-        OpenGraph::setTitle($sound->name)
-            ->setDescription($sound->description, 150)
+        OpenGraph::setTitle($soundSystem->name)
+            ->setDescription($soundSystem->meta_description)
             ->setType('article')
             ->setArticle([
                 'created_at' => 'datetime',
@@ -408,49 +393,49 @@ class HomeController extends Controller
         $teamCreative = TeamLanoer::get();
 
         // schema.org
-        $logoUrl = $live->image ? asset('back/images/live/' . $live->image) : '';
-        $featuredImage = $live->image ? asset('/storage/back/images/live/' . $live->image) : '';
+        $logoUrl = $liveMusic->image ? asset('back/images/live/' . $liveMusic->image) : '';
+        $featuredImage = $liveMusic->image ? asset('/storage/back/images/live/' . $liveMusic->image) : '';
         $articleSchema = Schema::article()
-            ->headline($live->name)
+            ->headline($liveMusic->name)
             ->author("admin")
-            ->datePublished($live->created_at->toW3CString())
-            ->dateModified($live->updated_at->toW3CString())
+            ->datePublished($liveMusic->created_at->toW3CString())
+            ->dateModified($liveMusic->updated_at->toW3CString())
             ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
             ->image($featuredImage)
             ->publisher(Schema::organization()
                 ->name('Lanoer Wedding & Event Organizer')
                 ->logo($logoUrl));
         $data = [
-            'pageTitle' => Str::ucfirst($live->name),
-            'live' => $live,
+            'pageTitle' => Str::ucfirst($liveMusic->name),
+            'live' => $liveMusic,
             'articleSchema' => $articleSchema,
         ];
 
-        SEOMeta::setTitle($live->name);
+        SEOMeta::setTitle($liveMusic->name);
         SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($live->meta_desc);
-        SEOMeta::addMeta('article:published_time', $live->created_at->toW3CString(), 'property');
-        SEOMeta::addMeta('article:section', $live->name, 'property');
-        SEOMeta::addKeyword($live->meta_keywords);
+        SEOMeta::setDescription($live->meta_description);
+        SEOMeta::addMeta('article:published_time', $liveMusic->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $liveMusic->name, 'property');
+        SEOMeta::addKeyword($liveMusic->meta_keywords);
 
-        OpenGraph::setDescription($live->description, 150);
-        OpenGraph::setTitle($live->name);
+        OpenGraph::setDescription($liveMusic->meta_description);
+        OpenGraph::setTitle($liveMusic->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
         OpenGraph::addProperty('locale', 'id-ID');
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
-        JsonLdMulti::setTitle($live->name);
-        JsonLdMulti::setDescription($live->description, 150);
+        JsonLdMulti::setTitle($liveMusic->name);
+        JsonLdMulti::setDescription($liveMusic->meta_description);
         JsonLdMulti::setType('Article');
-        JsonLdMulti::addImage($live->image);
+        JsonLdMulti::addImage($liveMusic->image);
         if (!JsonLdMulti::isEmpty()) {
             JsonLdMulti::newJsonLd();
             JsonLdMulti::setType('WebPage');
-            JsonLdMulti::setTitle('Page Article - ' . $live->name);
+            JsonLdMulti::setTitle('Page Article - ' . $liveMusic->name);
         }
-        OpenGraph::setTitle($live->name)
-            ->setDescription($live->description, 150)
+        OpenGraph::setTitle($liveMusic->name)
+            ->setDescription($liveMusic->meta_description)
             ->setType('article')
             ->setArticle([
                 'created_at' => 'datetime',
@@ -481,49 +466,49 @@ class HomeController extends Controller
         $teamCreative = TeamLanoer::get();
 
         // schema.org
-        $logoUrl = $ceremony->image ? asset('back/images/ceremony/' . $ceremony->image) : '';
-        $featuredImage = $ceremony->image ? asset('/storage/back/images/ceremony/' . $ceremony->image) : '';
+        $logoUrl = $ceremonySub->image ? asset('back/images/ceremony/' . $ceremonySub->image) : '';
+        $featuredImage = $ceremonySub->image ? asset('/storage/back/images/ceremony/' . $ceremonySub->image) : '';
         $articleSchema = Schema::article()
-            ->headline($ceremony->name)
+            ->headline($ceremonySub->name)
             ->author("admin")
-            ->datePublished($ceremony->created_at->toW3CString())
-            ->dateModified($ceremony->updated_at->toW3CString())
+            ->datePublished($ceremonySub->created_at->toW3CString())
+            ->dateModified($ceremonySub->updated_at->toW3CString())
             ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
             ->image($featuredImage)
             ->publisher(Schema::organization()
                 ->name('Lanoer Wedding & Event Organizer')
                 ->logo($logoUrl));
         $data = [
-            'pageTitle' => Str::ucfirst($ceremony->name),
-            'ceremony' => $ceremony,
+            'pageTitle' => Str::ucfirst($ceremonySub->name),
+            'ceremony' => $ceremonySub,
             'articleSchema' => $articleSchema,
         ];
 
-        SEOMeta::setTitle($ceremony->name);
+        SEOMeta::setTitle($ceremonySub->name);
         SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($ceremony->meta_desc);
-        SEOMeta::addMeta('article:published_time', $ceremony->created_at->toW3CString(), 'property');
-        SEOMeta::addMeta('article:section', $ceremony->name, 'property');
-        SEOMeta::addKeyword($ceremony->meta_keywords);
+        SEOMeta::setDescription($ceremonySub->meta_description);
+        SEOMeta::addMeta('article:published_time', $ceremonySub->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $ceremonySub->name, 'property');
+        SEOMeta::addKeyword($ceremonySub->meta_keywords);
 
-        OpenGraph::setDescription($ceremony->description, 150);
-        OpenGraph::setTitle($ceremony->name);
+        OpenGraph::setDescription($ceremonySub->meta_description);
+        OpenGraph::setTitle($ceremonySub->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
         OpenGraph::addProperty('locale', 'id-ID');
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
-        JsonLdMulti::setTitle($ceremony->name);
-        JsonLdMulti::setDescription($ceremony->description, 150);
+        JsonLdMulti::setTitle($ceremonySub->name);
+        JsonLdMulti::setDescription($ceremonySub->description);
         JsonLdMulti::setType('Article');
-        JsonLdMulti::addImage($ceremony->image);
+        JsonLdMulti::addImage($ceremonySub->image);
         if (!JsonLdMulti::isEmpty()) {
             JsonLdMulti::newJsonLd();
             JsonLdMulti::setType('WebPage');
-            JsonLdMulti::setTitle('Page Article - ' . $ceremony->name);
+            JsonLdMulti::setTitle('Page Article - ' . $ceremonySub->name);
         }
-        OpenGraph::setTitle($ceremony->name)
-            ->setDescription($ceremony->description, 150)
+        OpenGraph::setTitle($ceremonySub->name)
+            ->setDescription($ceremonySub->description)
             ->setType('article')
             ->setArticle([
                 'created_at' => 'datetime',
@@ -598,12 +583,12 @@ class HomeController extends Controller
 
         SEOMeta::setTitle($catering->name);
         SEOMeta::setCanonical(url()->current());
-        SEOMeta::setDescription($catering->meta_desc);
+        SEOMeta::setDescription($catering->meta_description);
         SEOMeta::addMeta('article:published_time', $catering->created_at->toW3CString(), 'property');
         SEOMeta::addMeta('article:section', $catering->name, 'property');
         SEOMeta::addKeyword($catering->meta_keywords);
 
-        OpenGraph::setDescription($catering->description, 150);
+        OpenGraph::setDescription($catering->meta_description);
         OpenGraph::setTitle($catering->name);
         OpenGraph::setUrl(url()->current());
         OpenGraph::addProperty('type', 'article');
@@ -611,7 +596,7 @@ class HomeController extends Controller
         OpenGraph::addProperty('locale:alternate', ['en-us']);
 
         JsonLdMulti::setTitle($catering->name);
-        JsonLdMulti::setDescription($catering->description, 150);
+        JsonLdMulti::setDescription($catering->meta_description);
         JsonLdMulti::setType('Article');
         JsonLdMulti::addImage($catering->image);
         if (!JsonLdMulti::isEmpty()) {
@@ -620,7 +605,7 @@ class HomeController extends Controller
             JsonLdMulti::setTitle('Page Article - ' . $catering->name);
         }
         OpenGraph::setTitle($catering->name)
-            ->setDescription($catering->description, 150)
+            ->setDescription($catering->meta_description)
             ->setType('article')
             ->setArticle([
                 'created_at' => 'datetime',

@@ -8,6 +8,7 @@ use App\Models\DecorationImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class DecorationController extends Controller
 {
@@ -40,6 +41,9 @@ class DecorationController extends Controller
             'description' => 'required|string',
             'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'meta_description' => 'required',
+            'meta_keywords' => 'required',
+            'meta_tags' => 'required',
         ], [
             'name.required' => 'Name harus diisi',
             'name.string' => 'Name harus berupa string',
@@ -53,7 +57,11 @@ class DecorationController extends Controller
             'gallery.*.image' => 'image gallery harus berupa gambar',
             'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
             'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
-        ]);
+            'meta_description.required' => 'Meta description harus diisi',
+            'meta_keywords.required' => 'Meta keywords harus diisi',
+            'meta_tags.required' => 'Meta tags harus diisi',
+        ]
+    );
 
         // Simpan main image
         $mainImageName = null;
@@ -76,6 +84,10 @@ class DecorationController extends Controller
         $decoration->name = $request->name;
         $decoration->description = $request->description;
         $decoration->image = $mainImageName;
+        $decoration->meta_description = $request->meta_description;
+        $decoration->meta_keywords = $request->meta_keywords;
+        $decoration->meta_tags = $request->meta_tags;
+        $decoration->image_alt_text = $mainImageName;
         $decoration->save();
 
         // Simpan multiple images (gallery)
@@ -112,7 +124,7 @@ class DecorationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -131,15 +143,41 @@ class DecorationController extends Controller
     {
         $decoration = Decorations::find($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255|unique:decorations,name,' . $id,
-            'description' => 'required|string',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|string|max:255|unique:decorations,name,' . $id,
+                'description' => 'required|string',
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
+            ],
+            [
+                'name.required' => 'Name harus diisi',
+                'name.string' => 'Name harus berupa string',
+                'name.max' => 'Name maksimal 255 karakter',
+                'description.required' => 'Description harus diisi',
+                'description.string' => 'Description harus berupa string',
+                'main_image.required' => 'image utama harus diisi',
+                'main_image.image' => 'image utama harus berupa gambar',
+                'main_image.mimes' => 'image utama harus berupa gambar JPG, JPEG, PNG',
+                'main_image.max' => 'image utama harus berukuran maksimal 2MB',
+                'gallery.*.image' => 'image gallery harus berupa gambar',
+                'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
+                'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
+                'meta_description.required' => 'Meta description harus diisi',
+                'meta_keywords.required' => 'Meta keywords harus diisi',
+                'meta_tags.required' => 'Meta tags harus diisi',
+            ]
+        );
 
         $decoration->name = $request->name;
         $decoration->description = $request->description;
+
+        $decoration->meta_description = $request->meta_description;
+        $decoration->meta_keywords = $request->meta_keywords;
+        $decoration->meta_tags = $request->meta_tags;
 
         // Update main image jika ada
         if ($request->hasFile('main_image')) {
@@ -159,6 +197,7 @@ class DecorationController extends Controller
             Storage::disk('public')->put($thumbPath, (string) $img->encode());
 
             $decoration->image = $mainImageName;
+            $decoration->image_alt_text = $mainImageName;
         }
 
         $decoration->save();
@@ -204,5 +243,46 @@ class DecorationController extends Controller
         $image->delete();
 
         return response()->json(['success' => 'Image deleted']);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/decoration/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImage(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
     }
 }

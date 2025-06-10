@@ -49,6 +49,8 @@ class KonfigurasiUsers extends Component
         'resetInputFields',
         'deleteUserAction',
         'deleteCheckedUser',
+        'confirmResetPasswordAction' => 'resetPassword',
+        'promptResetPassword' => 'promptResetPassword',
     ];
 
     public function updatedSelectAll($value)
@@ -270,6 +272,53 @@ class KonfigurasiUsers extends Component
         }
 
         $this->checkedUser = [];
+    }
+    public function resetPassword($userId)
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            $this->dispatchBrowserEvent('passwordResetFailed', ['message' => 'User tidak ditemukan.']);
+            return;
+        }
+
+        $newPassword = 'Root54321';
+        $user->password = Hash::make($newPassword);
+        $user->save();
+
+        try {
+            // Ambil setting pengirim
+            $web_e = 'noreply@example.com';
+            $web_n = 'Nama Website';
+
+            $settings = Setting::all();
+            foreach ($settings as $setting) {
+                $web_e = $setting->web_email_noreply ?? $web_e;
+                $web_n = $setting->web_name ?? $web_n;
+            }
+
+            // Data email
+            $data = [
+                'email' => $user->email,
+                'password' => $newPassword,
+                'url' => route('auth.login'),
+            ];
+
+            Mail::send('reset-password-email-template', $data, function ($message) use ($web_e, $web_n, $user) {
+                $message->from($web_e, $web_n);
+                $message->to($user->email, $user->name)
+                    ->subject('Password Anda telah direset');
+            });
+
+            $this->dispatchBrowserEvent('passwordResetSuccess');
+        } catch (\Exception $e) {
+            \Log::error('Gagal kirim email reset password: ' . $e->getMessage());
+            $this->dispatchBrowserEvent('passwordResetFailed', ['message' => 'Gagal mengirim email.']);
+        }
+    }
+
+    public function promptResetPassword($userId)
+    {
+        $this->dispatchBrowserEvent('confirmResetPassword', ['id' => $userId]);
     }
 
     public function render()

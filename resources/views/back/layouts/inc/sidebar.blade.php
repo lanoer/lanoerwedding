@@ -56,7 +56,7 @@
                             class="{{ Route::is('makeup.list') ? 'mm-active' : '' }} {{ Route::is('event.*') ? 'mm-active' : '' }} {{ Route::is('wedding.*') ? 'mm-active' : '' }} ">
                             <a href="{{ route('makeup.list') }}"><span>Makeup</span></a>
                         </li>
-                        <li class="{{ Route::is('decoration.index') ? 'mm-active' : '' }}">
+                        <li class="{{ Route::is('decoration.*') ? 'mm-active' : '' }}">
                             <a href="{{ route('decoration.index') }}"><span>Decoration</span></a>
                         </li>
                         <li
@@ -90,10 +90,12 @@
                         <li class="{{ Route::is('client.index') ? 'mm-active' : '' }}">
                             <a href="{{ route('client.index') }}"><span>Clients</span></a>
                         </li>
-                        <li class="{{ Route::is('aboutBackend.index') ? 'mm-active' : '' }}">
-                            <a href="{{ route('aboutBackend.index') }}"><span>About Us</span></a>
+
+
+                        <li class="{{ Route::is('aboutBackend.*') ? 'mm-active' : '' }}">
+                            <a href="{{ route('aboutBackend.main') }}"><span>About Us</span></a>
                         </li>
-                        <li class="{{ Route::is('team.list') ? 'mm-active' : '' }}">
+                        <li class="{{ Route::is('team.*') ? 'mm-active' : '' }}">
                             <a href="{{ route('team.list') }}"><span>Team</span></a>
                         </li>
                     </ul>

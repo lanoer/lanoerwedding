@@ -78,8 +78,6 @@
                                 </td>
                                 <td>
                                     <div class="d-flex py-1 align-items-center">
-
-
                                         <a href="{{ route('event.sub.edit', [$event->id]) }}"
                                             class="btn btn-sm btn-warning " data-bs-toggle="tooltip"
                                             data-bs-placement="top" title="Edit">

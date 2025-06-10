@@ -66,7 +66,30 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_description">Meta Description</label>
+                        <input type="text" class="form-control @error('meta_description') is-invalid @enderror"
+                            id="meta_description" name="meta_description" value="{{ old('meta_description') }}">
+                        @error('meta_description')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_keywords">Meta Keywords</label>
+                        <input type="text" class="form-control @error('meta_keywords') is-invalid @enderror"
+                            id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords') }}">
+                        @error('meta_keywords')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_tags">Meta Tags</label>
+                        <input type="text" class="form-control @error('meta_tags') is-invalid @enderror" id="meta_tags"
+                            name="meta_tags" value="{{ old('meta_tags') }}">
+                        @error('meta_tags')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="form-group d-flex justify-content-between">
                         <a href="{{ route('decoration.index') }}" class="btn btn-warning mt-3"><i
                                 class="bx bx-arrow-back"></i> Cancel</a>
@@ -83,98 +106,95 @@
 </div>
 @endsection
 @push('stylesheets')
-<script src="{{ asset('back/assets/vendor/ckeditor/build/ckeditor.js') }}"></script>
+<link href="{{ asset('back/assets/vendor/summernote/summernote-bs5.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('back/assets/vendor/dropzone/dropzone.min.css') }}">
 @endpush
 
 
 @push('scripts')
-<script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}">
+<script src="{{ asset('back/assets/vendor/summernote/summernote-bs5.js') }}"></script>
+<script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}"></script>
+<script>
+    $('input[name="meta_tags"]').amsifySuggestags({
+    type: 'amsify'
+    });
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        ClassicEditor
-            .create(document.querySelector('#description'))
-            .catch(error => {
-                console.error(error);
-            });
-    });
-
     // Inisialisasi Dropzone
-    Dropzone.autoDiscover = false;
-    var galleryDropzone = new Dropzone("#gallery-dropzone", {
-        url: "#", // Tidak dipakai, submit manual
-        paramName: "gallery[]",
-        maxFilesize: 2, // MB
-        acceptedFiles: "image/*",
-        addRemoveLinks: true,
-        dictDefaultMessage: "Drop images here or click to upload",
-        autoProcessQueue: false,
-        uploadMultiple: true,
-        parallelUploads: 10,
-        previewsContainer: "#gallery-dropzone",
-    });
-
-    document.getElementById('decorationform').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Validasi manual jika perlu
-        var name = document.getElementById("name").value;
-        var description = document.getElementById("description").value;
-        var mainImage = document.getElementById("main_image").files.length;
-
-        if (!name) {
-            toastr.error('Name harus diisi');
-            return;
-        }
-        if (!description) {
-            toastr.error('Description harus diisi');
-            return;
-        }
-        if (!mainImage) {
-            toastr.error('Main image harus diisi');
-            return;
-        }
-
-        // Siapkan FormData
-        var formData = new FormData(this);
-        // Tambahkan file gallery dari Dropzone ke FormData
-        galleryDropzone.files.forEach(function(file) {
-            formData.append('gallery[]', file);
+        Dropzone.autoDiscover = false;
+        var galleryDropzone = new Dropzone("#gallery-dropzone", {
+            url: "#", // Tidak dipakai, submit manual
+            paramName: "gallery[]",
+            maxFilesize: 2, // MB
+            acceptedFiles: "image/*",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Drop images here or click to upload",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 10,
+            previewsContainer: "#gallery-dropzone",
         });
 
-        // Tampilkan loading
-        var submitBtn = document.getElementById('submitBtn');
-        var loadingSpinner = document.getElementById('loadingSpinner');
-        var buttonText = document.getElementById('buttonText');
-        submitBtn.disabled = true;
-        loadingSpinner.classList.remove('d-none');
-        buttonText.textContent = 'Saving...';
+        document.getElementById('decorationform').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        // Kirim AJAX
-        fetch(this.action, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            toastr.success(data.success);
-            this.reset();
-            galleryDropzone.removeAllFiles();
-            submitBtn.disabled = false;
-            loadingSpinner.classList.add('d-none');
-            buttonText.textContent = 'Create';
-        })
-        .catch(error => {
-            toastr.error('Terjadi kesalahan saat menyimpan data');
-            submitBtn.disabled = false;
-            loadingSpinner.classList.add('d-none');
-            buttonText.textContent = 'Create';
+            // Validasi manual jika perlu
+            var name = document.getElementById("name").value;
+            var description = document.getElementById("description").value;
+            var mainImage = document.getElementById("main_image").files.length;
+
+            if (!name) {
+                toastr.error('Name harus diisi');
+                return;
+            }
+            if (!description) {
+                toastr.error('Description harus diisi');
+                return;
+            }
+            if (!mainImage) {
+                toastr.error('Main image harus diisi');
+                return;
+            }
+
+            // Siapkan FormData
+            var formData = new FormData(this);
+            // Tambahkan file gallery dari Dropzone ke FormData
+            galleryDropzone.files.forEach(function(file) {
+                formData.append('gallery[]', file);
+            });
+
+            // Tampilkan loading
+            var submitBtn = document.getElementById('submitBtn');
+            var loadingSpinner = document.getElementById('loadingSpinner');
+            var buttonText = document.getElementById('buttonText');
+            submitBtn.disabled = true;
+            loadingSpinner.classList.remove('d-none');
+            buttonText.textContent = 'Saving...';
+
+            // Kirim AJAX
+            fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    toastr.success(data.success);
+                    this.reset();
+                    galleryDropzone.removeAllFiles();
+                    submitBtn.disabled = false;
+                    loadingSpinner.classList.add('d-none');
+                    buttonText.textContent = 'Create';
+                })
+                .catch(error => {
+                    toastr.error('Terjadi kesalahan saat menyimpan data');
+                    submitBtn.disabled = false;
+                    loadingSpinner.classList.add('d-none');
+                    buttonText.textContent = 'Create';
+                });
         });
-    });
 </script>
 
 <script>
@@ -194,5 +214,58 @@
                 }
             });
         });
+</script>
+
+<script>
+    $('#description').summernote({
+            height: 300,
+
+            callbacks: {
+                onImageUpload: function(files) {
+                    uploadImage(files[0]);
+                },
+                onMediaDelete: function(target) {
+                    var imageUrl = target[0].src;
+                    deleteImage(imageUrl);
+                }
+            }
+        });
+
+        function uploadImage(file) {
+            var formData = new FormData();
+            formData.append('image', file);
+
+            $.ajax({
+                url: '/decoration/upload-image', // Endpoint untuk upload gambar
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#description').summernote('insertImage', response
+                        .location); // Sisipkan gambar setelah berhasil diupload
+                }
+            });
+        }
+
+        function deleteImage(imageUrl) {
+            console.log("Mengirim URL gambar ke server untuk dihapus:", imageUrl); // Log URL gambar yang akan dihapus
+
+            $.ajax({
+                url: 'decoration/delete-image',
+                type: 'POST',
+                data: {
+                    imageUrl: imageUrl,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Gambar berhasil dihapus');
+                    } else {
+                        console.log('Gambar gagal dihapus');
+                    }
+                }
+            });
+        }
 </script>
 @endpush

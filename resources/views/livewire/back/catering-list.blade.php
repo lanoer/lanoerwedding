@@ -79,11 +79,16 @@
                                 <td>
                                     <div class="d-flex py-1 align-items-center">
 
-                                        <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                            data-bs-target="#cateringModal{{ $catering->id }}" data-bs-placement="top"
-                                            title="View">
+                                        <a href="{{ route('catering.detail.show', $catering->slug) }}"
+                                            class="btn btn-sm btn-primary mx-1" target="_blank" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <button class="btn btn-sm btn-info mx-1"
+                                            onclick="copyToClipboard('{{ route('catering.detail.show', $catering->slug) }}')"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Copy URL">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
                                         <a href="{{ route('catering.main.edit', [$catering->id]) }}"
                                             class="btn btn-sm btn-warning ">Edit</a>
 
@@ -93,48 +98,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <!-- Modal untuk event ini -->
-                            <div class="modal fade" id="cateringModal{{ $catering->id }}" tabindex="-1"
-                                aria-labelledby="cateringModalLabel{{ $catering->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="cateringModalLabel{{ $catering->id }}">
-                                                {{ $catering->name }}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <img src="{{ asset('storage/back/images/catering/' . $catering->image) }}"
-                                                        class="img-fluid rounded" alt="{{ $catering->name }}">
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <h4 class="mb-3">{{ $catering->name }}</h4>
-                                                    <div class="mb-3">
-                                                        <h6 class="text-muted">Description:</h6>
-                                                        <p>{!! $catering->description !!}</p>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <h6 class="text-muted">Created At:</h6>
-                                                        <p>{{ $catering->created_at->format('d M Y H:i') }}</p>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <h6 class="text-muted">Updated At:</h6>
-                                                        <p>{{ $catering->updated_at->format('d M Y H:i') }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             @empty
                             <tr>
                                 <td colspan="5" class="text-center text-danger">No Catering found.
@@ -154,3 +118,24 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+    function copyToClipboard(url) {
+            // Buat elemen textarea sementara
+            var textarea = document.createElement("textarea");
+            textarea.value = url;
+            document.body.appendChild(textarea);
+            textarea.select();
+           try {
+            // Salin teks ke clipboard
+            document.execCommand('copy');
+            toastr.success('URL copied to clipboard');
+            } catch (err) {
+            toastr.error('Failed to copy URL');
+            }
+            // Hapus elemen textarea sementara
+            document.body.removeChild(textarea);
+        }
+</script>
+@endpush

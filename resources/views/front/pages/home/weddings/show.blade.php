@@ -1,12 +1,13 @@
 @extends('front.layouts.pages-home')
 
-@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Weddings')
+@section('pageTitle', isset($pageTitle) ? $pageTitle : ($wedding->name ?? 'Wedding Detail'))
 @push('meta')
 {!! SEO::generate() !!}
 @endpush
 @push('schema')
 {!! $articleSchema->toScript() !!}
 @endpush
+
 @section('content')
 <div id="pwe-main">
     <!-- Banner Title -->
@@ -38,11 +39,18 @@
     </style>
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">
+            <style>
+                .description img {
+                    width: 100%;
+                    height: auto;
+                    max-width: 100%;
+                }
+            </style>
             <div class="row">
                 <div class="col-md-5 animate-box" data-animate-effect="fadeInLeft"> <img
                         src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
-                        class="img-fluid mb-30" alt=""> </div>
-                <div class="col-md-7 animate-box" data-animate-effect="fadeInLeft">
+                        class="img-fluid mb-30" alt="{{ $wedding->image_alt_text }}"> </div>
+                <div class="col-md-7 animate-box description" data-animate-effect="fadeInLeft">
                     <p>{!! $wedding->description ?? '' !!}</p>
                 </div>
             </div>

@@ -7,6 +7,7 @@ use App\Models\CateringPackages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class CateringController extends Controller
 {
@@ -15,10 +16,10 @@ class CateringController extends Controller
      * Display a listing of the resource.
      */
 
-     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    public function __construct()
+    {
+        $this->middleware('can:read content');
+    }
     public function index()
     {
         return view('back.pages.catering.index');
@@ -40,8 +41,12 @@ class CateringController extends Controller
     {
         $request->validate(
             [
-                'name' => 'required|unique:catering_packages,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'name' => 'required|unique:sound_systems,name',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
             ],
             [
                 'name.required' => 'Nama harus diisi',
@@ -49,18 +54,26 @@ class CateringController extends Controller
                 'image.image' => 'Gambar harus berupa gambar',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'image.required' => 'Gambar harus diisi',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta Deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta Keywords harus diisi',
             ]
         );
 
         $catering = new CateringPackages();
         $catering->name = $request->name;
         $catering->description = $request->description;
+        $catering->meta_description = $request->meta_description;
+        $catering->meta_keywords = $request->meta_keywords;
+        $catering->meta_tags = $request->meta_tags;
 
         if ($request->hasFile('image')) {
             $path = 'back/images/catering/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'catering-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -82,6 +95,7 @@ class CateringController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $catering->image = $new_filename;
+            $catering->image_alt_text = $new_filename;
         }
 
         $catering->save();
@@ -158,8 +172,9 @@ class CateringController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $catering->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'catering-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -178,11 +193,21 @@ class CateringController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $catering->image = $new_filename;
+            $catering->image_alt_text = $new_filename;
         }
 
         // Update description if provided
         if ($request->has('description')) {
             $catering->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $catering->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $catering->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $catering->meta_tags = $request->meta_tags;
         }
 
         $catering->save();
@@ -200,5 +225,46 @@ class CateringController extends Controller
     public function destroy(string $id)
     {
         abort(404);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/catering/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImage(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
     }
 }

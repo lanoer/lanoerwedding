@@ -32,6 +32,12 @@
             list-style: initial;
             margin-left: 1.5em;
         }
+
+        .description img {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+        }
     </style>
     <!-- About Us -->
     <div class="about-section pt-0 pb-60">
@@ -39,7 +45,8 @@
             <div class="row">
                 <div class="col-md-6 text-center">
                     <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}"
-                        class="img-fluid mb-30 animate-box" data-animate-effect="fadeInLeft" alt="">
+                        class="img-fluid mb-30 animate-box" data-animate-effect="fadeInLeft"
+                        alt="{{ $decoration->image_alt_text }}">
                     <div class="row mt-4">
                         @foreach ($galleryImages as $image)
                         <div class="col-4 mb-3">
@@ -55,7 +62,7 @@
                         Us!</h4>
                 </div>
                 <div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-                    <h3 class="pwe-about-heading">{{ $decoration->name }}</h3>
+                    <h3 class="pwe-about-heading description">{{ $decoration->name }}</h3>
                     <p>{!! $decoration->description !!}</p>
                 </div>
             </div>

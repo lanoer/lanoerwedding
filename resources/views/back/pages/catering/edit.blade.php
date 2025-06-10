@@ -56,7 +56,30 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_description">Meta Description</label>
+                        <input type="text" class="form-control @error('meta_description') is-invalid @enderror"
+                            id="meta_description" name="meta_description" value="{{ $catering->meta_description }}">
+                        @error('meta_description')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_keywords">Meta Keywords</label>
+                        <input type="text" class="form-control @error('meta_keywords') is-invalid @enderror"
+                            id="meta_keywords" name="meta_keywords" value="{{ $catering->meta_keywords }}">
+                        @error('meta_keywords')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <label for="meta_tags">Meta Tags</label>
+                        <input type="text" class="form-control @error('meta_tags') is-invalid @enderror" id="meta_tags"
+                            name="meta_tags" value="{{ $catering->meta_tags }}">
+                        @error('meta_tags')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="form-group d-flex justify-content-between">
                         <a href="{{ route('catering.index') }}" class="btn btn-warning mt-3"><i
                                 class="bx bx-arrow-back"></i> Cancel</a>
@@ -69,19 +92,69 @@
 </div>
 @endsection
 @push('stylesheets')
-<script src="{{ asset('back/assets/vendor/ckeditor/build/ckeditor.js') }}"></script>
+<link href="{{ asset('back/assets/vendor/summernote/summernote-bs5.css') }}" rel="stylesheet">
 @endpush
 
 
 @push('scripts')
+<script src="{{ asset('back/assets/vendor/summernote/summernote-bs5.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-            ClassicEditor
-                .create(document.querySelector('#description'))
-                .catch(error => {
-                    console.error(error);
-                });
+    $('input[name="meta_tags"]').amsifySuggestags({
+    type: 'amsify'
+    });
+</script>
+
+<script>
+    $('#description').summernote({
+            height: 300,
+
+            callbacks: {
+                onImageUpload: function(files) {
+                    uploadImage(files[0]);
+                },
+                onMediaDelete: function(target) {
+                    var imageUrl = target[0].src;
+                    deleteImage(imageUrl);
+                }
+            }
         });
+
+        function uploadImage(file) {
+            var formData = new FormData();
+            formData.append('image', file);
+
+            $.ajax({
+                url: 'entertainment/sound/soundSystem/upload-image', // Endpoint untuk upload gambar
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#description').summernote('insertImage', response
+                        .location); // Sisipkan gambar setelah berhasil diupload
+                }
+            });
+        }
+
+        function deleteImage(imageUrl) {
+            console.log("Mengirim URL gambar ke server untuk dihapus:", imageUrl); // Log URL gambar yang akan dihapus
+
+            $.ajax({
+                url: 'entertainment/sound/soundSystem/delete-image',
+                type: 'POST',
+                data: {
+                    imageUrl: imageUrl,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Gambar berhasil dihapus');
+                    } else {
+                        console.log('Gambar gagal dihapus');
+                    }
+                }
+            });
+        }
 </script>
 <script>
     $(document).ready(function() {

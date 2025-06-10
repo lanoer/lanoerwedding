@@ -27,8 +27,8 @@
                     </div>
 
                     @if ($checkedUser)
-                        <button class="btn btn-sm btn-danger" wire:click="deleteSelectedUser()">Bulk Delete
-                            {{ count($checkedUser) }}</button>
+                    <button class="btn btn-sm btn-danger" wire:click="deleteSelectedUser()">Bulk Delete
+                        {{ count($checkedUser) }}</button>
                     @endif
 
 
@@ -43,7 +43,7 @@
                                 <select wire:model="roleFilter" class="form-select form-select-solid ">
                                     <option value="">Semua Role</option>
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -75,34 +75,38 @@
                         </thead>
                         <tbody>
                             @forelse ($users as $user)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" wire:model="checkedUser" value="{{ $user->id }}">
-                                    </td>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
-                                    <td>@livewire('back.user-status', ['model' => $user, 'field' => 'isActive'], key($user->id))
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('users.show', $user->username) }}"
-                                            class="btn btn-primary btn-sm" data-toggle="tooltip" title="Lihat User"><i
-                                                class="mdi mdi-eye"></i>
-                                        </a>
-                                        <a class="btn btn-warning btn-sm"
-                                            wire:click.prevent='editUser({{ $user }})' data-toggle="tooltip"
-                                            title="Edit User"><i class="mdi mdi-pencil"></i>
-                                        </a>
-                                        <a class="btn btn-danger btn-sm"
-                                            wire:click.prevent='deleteUser({{ $user }})' data-toggle="tooltip"
-                                            title="Hapus User"><i class="mdi mdi-delete"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" wire:model="checkedUser" value="{{ $user->id }}">
+                                </td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
+                                <td>@livewire('back.user-status', ['model' => $user, 'field' => 'isActive'],
+                                    key($user->id))
+                                </td>
+                                <td>
+                                    <a href="{{ route('users.show', $user->username) }}" class="btn btn-primary btn-sm"
+                                        data-toggle="tooltip" title="Lihat User"><i class="mdi mdi-eye"></i></a>
+                                    <a class="btn btn-warning btn-sm" wire:click.prevent='editUser({{ $user }})'
+                                        data-toggle="tooltip" title="Edit User"><i class="mdi mdi-pencil"></i></a>
+                                    <a class="btn btn-danger btn-sm" wire:click.prevent='deleteUser({{ $user }})'
+                                        data-toggle="tooltip" title="Hapus User"><i class="mdi mdi-delete"></i></a>
+
+                                    {{-- Tombol Reset Password --}}
+                                    @if (!$user->hasRole('superadmin'))
+                                    <button wire:click="$emit('promptResetPassword', {{ $user->id }})"
+                                        class="btn btn-sm btn-secondary mt-1" data-toggle="tooltip"
+                                        title="Reset Password">
+                                        <i class="mdi mdi-lock-reset"></i>
+                                    </button>
+                                    @endif
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-danger">No data found</td>
-                                </tr>
+                            <tr>
+                                <td colspan="6" class="text-center text-danger">No data found</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -128,11 +132,11 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="example-text-input"
-                                placeholder="Enter name" wire:model='name'>
+                            <input type="text" class="form-control" name="example-text-input" placeholder="Enter name"
+                                wire:model='name'>
                             <span class="text-danger">
                                 @error('name')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -141,22 +145,22 @@
                             <select class="form-select" wire:model='role'>
                                 <option value="">-- Pilih Role --</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                <option value="{{ $role->name }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger">
                                 @error('role')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" name="example-text-input"
-                                placeholder="Enter email" wire:model='email'>
+                            <input type="email" class="form-control" name="example-text-input" placeholder="Enter email"
+                                wire:model='email'>
                             <span class="text-danger">
                                 @error('email')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -166,7 +170,7 @@
                                 placeholder="Enter username" wire:model='username'>
                             <span class="text-danger">
                                 @error('username')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -179,7 +183,7 @@
                             </select>
                             <span class="text-danger">
                                 @error('jenis_kelamin')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -214,21 +218,21 @@
                         <input type="hidden" wire:model='selected_user_id'>
                         <div class="mb-3">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="example-text-input"
-                                placeholder="Enter name" wire:model='name'>
+                            <input type="text" class="form-control" name="example-text-input" placeholder="Enter name"
+                                wire:model='name'>
                             <span class="text-danger">
                                 @error('name')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="text" class="form-control" name="example-text-input"
-                                placeholder="Enter email" wire:model='email'>
+                            <input type="text" class="form-control" name="example-text-input" placeholder="Enter email"
+                                wire:model='email'>
                             <span class="text-danger">
                                 @error('email')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -238,7 +242,7 @@
                                 placeholder="Enter username" wire:model='username'>
                             <span class="text-danger">
                                 @error('username')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -247,12 +251,12 @@
                             <select class="form-select" wire:model='role'>
                                 <option value="">-- Pilih Role --</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                <option value="{{ $role->name }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger">
                                 @error('role')
-                                    {!! $message !!}
+                                {!! $message !!}
                                 @enderror
                             </span>
                         </div>
@@ -268,10 +272,10 @@
     </div>
 </div>
 @push('scripts')
-    <script src="/back/assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/back/assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 
-    <script>
-        $(window).on('hidden.bs.modal', function() {
+<script>
+    $(window).on('hidden.bs.modal', function() {
             Livewire.emit('resetForms');
         });
 
@@ -321,11 +325,47 @@
                 }
             });
         });
-    </script>
+</script>
 
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip(); // Mengaktifkan tooltip Bootstrap
         });
-    </script>
+</script>
+
+<script>
+    window.addEventListener('confirmResetPassword', function(event) {
+Swal.fire({
+title: 'Reset Password?',
+html: 'Password user akan direset ke <b>Root54321</b> dan dikirim ke email pengguna.',
+icon: 'warning',
+showCancelButton: true,
+confirmButtonText: 'Ya, reset',
+cancelButtonText: 'Batal',
+confirmButtonColor: '#3085d6',
+cancelButtonColor: '#d33',
+}).then((result) => {
+if (result.isConfirmed) {
+// Ambil hanya ID-nya
+Livewire.emit('confirmResetPasswordAction', event.detail.id);
+}
+});
+});
+
+    window.addEventListener('passwordResetSuccess', function(event) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Password berhasil direset dan dikirim ke email user.'
+        });
+    });
+
+    window.addEventListener('passwordResetFailed', function(event) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: event.detail.message ?? 'Terjadi kesalahan saat mereset password.'
+        });
+    });
+</script>
 @endpush

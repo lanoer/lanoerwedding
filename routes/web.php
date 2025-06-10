@@ -27,7 +27,6 @@ use App\Http\Controllers\Back\TestimoniController;
 use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\SitemapController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,12 +39,16 @@ use App\Http\Controllers\Front\SitemapController;
 */
 
 Route::get('/', [HomeController::class, 'index']);
+
 Route::get('/about', [HomeController::class, 'about'])->name('aboutHome');
 Route::get('/makeups', [HomeController::class, 'makeups'])->name('makeups');
+
 Route::get('/documentation', [HomeController::class, 'documentation'])->name('portofolio');
 Route::get('/documentation/foto/{slug}', [HomeController::class, 'showDocumentation'])->name('documentation.main.show');
+
 Route::get('makeup/event/{eventMakeupSlug}', [HomeController::class, 'detailEvent'])->name('makeup.event');
 Route::get('makeup/event/show/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
+
 Route::get('makeup/wedding/{weddingMakeupSlug}', [HomeController::class, 'detailWedding'])->name('makeup.wedding');
 Route::get('makeup/wedding/{weddingMakeupSlug}/{slug}', [HomeController::class, 'showWedding'])->name('makeup.wedding.detail');
 
@@ -80,7 +83,9 @@ Route::get('/blog/{any}', [BlogController::class, 'blogDetail'])->name('blog.det
 Route::get('/blog/category/{any}', [BlogController::class, 'categoryPost'])->name('blog.category');
 Route::get('/blog/tag/{any}', [BlogController::class, 'tagPost'])->name('blog.tag');
 Route::get('/blog/{any}', [BlogController::class, 'readPost'])->name('blog.detail');
-Route::get('/search', [BlogController::class, 'searchBlog'])->name('blog.search');
+
+Route::middleware('throttle:10,1')->post('/search', [BlogController::class, 'searchBlog'])->name('blog.search');
+Route::get('/search', [BlogController::class, 'showSearchResults'])->name('blog.search.results');
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [HomeController::class, 'robotsTxt']);
@@ -128,6 +133,8 @@ Route::middleware('auth:web')->group(function () {
         Route::get('sub/edit/{id}', [EventController::class, 'editMakeup'])->name('sub.edit');
         Route::put('sub/update/{id}', [EventController::class, 'updateMakeup'])->name('sub.update');
         Route::delete('sub/destroy/{id}', [EventController::class, 'destroyMakeup'])->name('sub.destroy');
+        Route::post('sub/upload-image', [EventController::class, 'uploadImage'])->name('upload.image');
+        Route::post('sub/delete-image', [EventController::class, 'deleteImage'])->name('delete.image');
     });
 
     // wedding
@@ -141,6 +148,8 @@ Route::middleware('auth:web')->group(function () {
         Route::get('sub/edit/{id}', [WeddingController::class, 'editWedding'])->name('sub.edit');
         Route::put('sub/update/{id}', [WeddingController::class, 'updateWedding'])->name('sub.update');
         Route::delete('sub/destroy/{id}', [WeddingController::class, 'destroyWedding'])->name('sub.destroy');
+        Route::post('sub/upload-image', [WeddingController::class, 'uploadImage'])->name('upload.image');
+        Route::post('sub/delete-image', [WeddingController::class, 'deleteImage'])->name('delete.image');
     });
 
     Route::prefix('makeup')->name('makeup.')->group(function () {
@@ -154,6 +163,8 @@ Route::middleware('auth:web')->group(function () {
         Route::delete('main/destroy/{id}', [DecorationController::class, 'destroy'])->name('destroy.decor');
         Route::get('main/create', [DecorationController::class, 'create'])->name('create.decor');
         Route::delete('/decoration/gallery-image/{id}', [DecorationController::class, 'deleteGalleryImage'])->name('delete.gallery.image');
+        Route::post('/upload-image', [DecorationController::class, 'uploadImage'])->name('upload.image');
+        Route::post('/delete-image', [DecorationController::class, 'deleteImage'])->name('delete.image');
     });
 
     Route::prefix('entertainment')->name('entertainment.')->group(function () {
@@ -170,6 +181,8 @@ Route::middleware('auth:web')->group(function () {
         Route::get('sound/soundSystem/edit/{id}', [EntertainmentController::class, 'editSound'])->name('soundSystem.edit');
         Route::put('sound/soundSystem/update/{id}', [EntertainmentController::class, 'updateSound'])->name('soundSystem.update');
         Route::delete('sound/soundSystem/destroy/{id}', [EntertainmentController::class, 'destroySound'])->name('soundSystem.destroy');
+        Route::post('sound/soundSystem/upload-image', [EntertainmentController::class, 'uploadImage'])->name('upload.image');
+        Route::post('sound/soundSystem/delete-image', [EntertainmentController::class, 'deleteImage'])->name('delete.image');
 
         // live
         Route::get('live/edit/{id}', [EntertainmentController::class, 'editLive'])->name('live.edit');
@@ -181,7 +194,9 @@ Route::middleware('auth:web')->group(function () {
         Route::get('live/livemusic/edit/{id}', [EntertainmentController::class, 'editLiveMusic'])->name('livemusic.edit');
         Route::put('live/livemusic/update/{id}', [EntertainmentController::class, 'updateLiveMusic'])->name('livemusic.update');
         Route::delete('live/livemusic/destroy/{id}', [EntertainmentController::class, 'destroyLiveMusic'])->name('livemusic.destroy');
-        Route::post('live/livemusic/upload', [EntertainmentController::class, 'liveContentImage'])->name('live.uploadImage');
+
+        Route::post('live/livemusic/upload-image', [EntertainmentController::class, 'uploadImageLive'])->name('upload.image');
+        Route::post('live/livemusic/delete-image', [EntertainmentController::class, 'deleteImageLive'])->name('delete.image');
         // ceremonial
         Route::get('ceremonial/edit/{id}', [EntertainmentController::class, 'editCeremonial'])->name('ceremonial.edit');
         Route::put('ceremonial/update/{id}', [EntertainmentController::class, 'updateCeremonial'])->name('ceremonial.update');
@@ -193,6 +208,9 @@ Route::middleware('auth:web')->group(function () {
         Route::get('ceremonial/ceremonialevent/edit/{id}', [EntertainmentController::class, 'editCeremonialEvent'])->name('ceremonialevent.edit');
         Route::put('ceremonial/ceremonialevent/update/{id}', [EntertainmentController::class, 'updateCeremonialEvent'])->name('ceremonialevent.update');
         Route::delete('ceremonial/ceremonialevent/destroy/{id}', [EntertainmentController::class, 'destroyCeremonialEvent'])->name('ceremonialevent.destroy');
+
+        Route::post('ceremonial/ceremonialevent/upload-image', [EntertainmentController::class, 'uploadImageCere'])->name('upload.image');
+        Route::post('ceremonial/ceremonialevent/delete-image', [EntertainmentController::class, 'deleteImageCere'])->name('delete.image');
     });
     Route::prefix('documentationBack')->name('documentation.')->group(function () {
         Route::resource('/', DocumentationController::class);
@@ -207,6 +225,8 @@ Route::middleware('auth:web')->group(function () {
         Route::get('main/edit/{id}', [CateringController::class, 'edit'])->name('main.edit');
         Route::put('main/update/{id}', [CateringController::class, 'update'])->name('main.update');
         Route::delete('main/destroy/{id}', [CateringController::class, 'destroy'])->name('main.destroy');
+        Route::post('upload-image', [CateringController::class, 'uploadImage'])->name('upload.image');
+        Route::post('delete-image', [CateringController::class, 'deleteImage'])->name('delete.image');
     });
 
     // recycle
@@ -219,7 +239,11 @@ Route::middleware('auth:web')->group(function () {
     });
 
     Route::prefix('aboutBackend')->name('aboutBackend.')->group(function () {
-        Route::view('/', 'back.pages.about.index')->name('index');
+        Route::get('/main', [AboutController::class, 'mainAbout'])->name('main');
+        Route::get('/main/edit/{id}', [AboutController::class, 'editAbout'])->name('mainEdit');
+        Route::put('/main/{id}', [AboutController::class, 'updateAbout'])->name('update');
+        Route::post('upload-image', [AboutController::class, 'uploadImage'])->name('upload.image');
+        Route::post('delete-image', [AboutController::class, 'deleteImage'])->name('delete.image');
     });
 
     Route::prefix('team')->name('team.')->group(function () {
@@ -262,5 +286,4 @@ Route::middleware('auth:web')->group(function () {
 
     Route::view('/insert-code', 'back.pages.insert-code.index')->name('insert-code');
     Route::view('/indexing', 'back.pages.indexing.index')->name('indexing');
-
 });

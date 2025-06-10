@@ -3,15 +3,14 @@
 namespace App\Http\Livewire\Back;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class CanghePassword extends Component
 {
     public $current_password;
-
     public $new_password;
-
     public $confirm_password;
 
     public function ChangePassword()
@@ -20,7 +19,7 @@ class CanghePassword extends Component
             'current_password' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (! Hash::check($value, User::find(auth('web')->id())->password)) {
+                    if (!Hash::check($value, auth('web')->user()->password)) {
                         return $fail(__('Password lama salah'));
                     }
                 },
@@ -33,27 +32,24 @@ class CanghePassword extends Component
             'confirm_password.same' => 'Konfirmasi password harus sama dengan password baru',
         ]);
 
-        $query = User::find(auth('web')->id())->update([
+        $updated = User::find(auth('web')->id())->update([
             'password' => Hash::make($this->new_password),
         ]);
 
-        if ($query) {
-            $this->showToastr('Your password has been successfuly updated.', 'success');
-            $this->current_password = $this->new_password = $this->confirm_password = null;
-            activity()
-                ->causedBy(auth()->user())
-                ->log('Updated password');
-        } else {
-            $this->showToastr('Something went wrong', 'error');
-        }
-    }
+        if ($updated) {
+            activity()->causedBy(auth()->user())->log('Updated password');
 
-    public function showToastr($message, $type)
-    {
-        return $this->dispatchBrowserEvent('showToastr', [
-            'type' => $type,
-            'message' => $message,
-        ]);
+            Auth::logout();
+            session()->invalidate();
+            session()->regenerateToken();
+
+            $this->dispatchBrowserEvent('passwordChanged');
+        } else {
+            $this->dispatchBrowserEvent('showToast', [
+                'type' => 'danger',
+                'message' => 'Gagal mengubah password.',
+            ]);
+        }
     }
 
     public function render()

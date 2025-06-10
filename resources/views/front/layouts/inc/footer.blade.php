@@ -4,7 +4,11 @@
         <div class="row">
             <div class="col-md-3 animate-box" data-animate-effect="fadeInLeft">
                 <h2>
-                    <a href="index.html">LR<i>®</i><span>weddings <small>•</small> events</span></a>
+                    <a href="/">
+                        <img src="{{ webLogo()->logo_front2 }}" alt="Logo" class="img-fluid"
+                            style="width: 70px; height: 70px; margin-bottom: 10px;">
+                        <span>weddings <small>&#8226;</small> events</span>
+                    </a>
                 </h2>
                 <div class="social">
                     <a href="{{ webSosmed()->facebook }}"><i class="ti-facebook"></i></a> <a

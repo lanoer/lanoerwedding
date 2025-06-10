@@ -8,13 +8,14 @@ use App\Models\Weddings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class WeddingController extends Controller
 {
     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    {
+        $this->middleware('can:read content');
+    }
     public function index()
     {
         $weddingMakeups = WeddingMakeups::withCount('weddings')->first();
@@ -26,7 +27,7 @@ class WeddingController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -34,7 +35,7 @@ class WeddingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -143,7 +144,7 @@ class WeddingController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        abort(404);
     }
 
 
@@ -159,14 +160,23 @@ class WeddingController extends Controller
         $request->validate(
             [
                 'name' => 'required|unique:weddings,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
             ],
             [
                 'name.required' => 'Nama harus diisi',
                 'name.unique' => 'Nama sudah ada',
                 'image.image' => 'Gambar harus berupa gambar',
+                'image.required' => 'Gambar harus diisi',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta keywords harus diisi',
+                'meta_tags.required' => 'Meta tags harus diisi',
             ]
         );
 
@@ -174,12 +184,18 @@ class WeddingController extends Controller
         $weddingMakeups->wedding_makeups_id = $request->wedding_makeups_id;
         $weddingMakeups->name = $request->name;
         $weddingMakeups->description = $request->description;
+        $weddingMakeups->meta_description = $request->meta_description;
+        $weddingMakeups->meta_keywords = $request->meta_keywords;
+        $weddingMakeups->meta_tags = $request->meta_tags;
 
+        // Jika ada gambar yang di-upload
         if ($request->hasFile('image')) {
             $path = 'back/images/wedding/weddingmakeup/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'weddingmakeup-' . time() . '' . $filename;
+            // Gunakan slug dari name untuk nama file
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;  // Nama file baru hanya berdasarkan slug dan ekstensi file
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -190,27 +206,25 @@ class WeddingController extends Controller
                 Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
             }
 
-            // Create thumbnails with different sizes
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(75, 75)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_75_' . $new_filename));
-
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
 
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
-            $weddingMakeups->image = $new_filename;
+            $weddingMakeups->image = $new_filename; // Update nama file gambar
+            $weddingMakeups->image_alt_text = $new_filename; // Menyimpan alt text gambar
         }
 
-        $weddingMakeups->save();
+        $weddingMakeups->save(); // Simpan data ke database
 
         activity()
             ->causedBy(auth()->user())
             ->log('Created wedding makeup');
 
-        return redirect()->route('wedding.main.show', ['id' => 1])->with('success', 'Wedding Makeup created successfully');
+        return redirect()->route('wedding.main.show', ['id' => $weddingMakeups->wedding_makeups_id])->with('success', 'Wedding Makeup created successfully');
     }
+
 
     public function editWedding($id)
     {
@@ -262,8 +276,10 @@ class WeddingController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $weddingMakeups->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'weddingmakeup-' . time() . '' . $filename;
+            // Gunakan slug dari database untuk nama file
+            $slug = $weddingMakeups->slug;  // Ambil slug dari database
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;  // Nama file baru hanya berdasarkan slug
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -284,12 +300,23 @@ class WeddingController extends Controller
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
+            // Update model with new image name and alt text
             $weddingMakeups->image = $new_filename;
+            $weddingMakeups->image_alt_text = $new_filename;
         }
 
         // Update description if provided
         if ($request->has('description')) {
             $weddingMakeups->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $weddingMakeups->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $weddingMakeups->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $weddingMakeups->meta_tags = $request->meta_tags;
         }
 
         $weddingMakeups->save();
@@ -301,9 +328,52 @@ class WeddingController extends Controller
         return redirect()->route('wedding.main.show', ['id' => $weddingMakeups->wedding_makeups_id])->with('success', 'Wedding Makeup updated successfully');
     }
 
+
+
     public function destroyWedding($id)
     {
         $weddingMakeups = WeddingMakeups::find($id);
         $weddingMakeups->delete();
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/wedding/weddingmakeup/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImage(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
     }
 }

@@ -12,13 +12,14 @@ use App\Models\SoundSystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class EntertainmentController extends Controller
 {
     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    {
+        $this->middleware('can:read content');
+    }
     public function index()
     {
         return view('back.pages.entertainment.index');
@@ -29,7 +30,7 @@ class EntertainmentController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -37,7 +38,7 @@ class EntertainmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -163,7 +164,11 @@ class EntertainmentController extends Controller
         $request->validate(
             [
                 'name' => 'required|unique:sound_systems,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
             ],
             [
                 'name.required' => 'Nama harus diisi',
@@ -171,6 +176,10 @@ class EntertainmentController extends Controller
                 'image.image' => 'Gambar harus berupa gambar',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'image.required' => 'Gambar harus diisi',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta Deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta Keywords harus diisi',
             ]
         );
 
@@ -178,12 +187,16 @@ class EntertainmentController extends Controller
         $soundSystem->sounds_id = $request->sounds_id;
         $soundSystem->name = $request->name;
         $soundSystem->description = $request->description;
+        $soundSystem->meta_description = $request->meta_description;
+        $soundSystem->meta_keywords = $request->meta_keywords;
+        $soundSystem->meta_tags = $request->meta_tags;
 
         if ($request->hasFile('image')) {
             $path = 'back/images/entertainment/sound/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'sound-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -205,6 +218,7 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $soundSystem->image = $new_filename;
+            $soundSystem->image_alt_text = $new_filename;
         }
 
         $soundSystem->save();
@@ -215,34 +229,8 @@ class EntertainmentController extends Controller
 
         return redirect()->route('entertainment.sound.show', ['id' => 1])->with('success', 'Sound System created successfully');
     }
-    public function soundContentImage(Request $request)
-    {
-        $soundSystem = new SoundSystem();
-        $soundSystem->id = 0;
-        $soundSystem->exists = true;
-        $images = $soundSystem->addMediaFromRequest('upload')
-            ->toMediaCollection('sound_content');
 
-        $resizedImageUrl = $images->getUrl('resized');
 
-        return response()->json([
-            'url' => $resizedImageUrl,
-        ]);
-    }
-    public function liveContentImage(Request $request)
-    {
-        $liveMusic = new LiveMusic();
-        $liveMusic->id = 0;
-        $liveMusic->exists = true;
-        $images = $liveMusic->addMediaFromRequest('upload')
-            ->toMediaCollection('live_content');
-
-        $resizedImageUrl = $images->getUrl('resized');
-
-        return response()->json([
-            'url' => $resizedImageUrl,
-        ]);
-    }
     public function editSound(string $id)
     {
         $soundSystem = SoundSystem::find($id);
@@ -253,8 +241,6 @@ class EntertainmentController extends Controller
     public function updateSound(Request $request, $id)
     {
         $soundSystem = SoundSystem::find($id);
-
-        // Validate only the fields that are present in the request
         $validationRules = [];
         $validationMessages = [];
 
@@ -293,8 +279,9 @@ class EntertainmentController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $soundSystem->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'sound-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -316,11 +303,21 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $soundSystem->image = $new_filename;
+            $soundSystem->image_alt_text = $new_filename;
         }
 
         // Update description if provided
         if ($request->has('description')) {
             $soundSystem->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $soundSystem->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $soundSystem->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $soundSystem->meta_tags = $request->meta_tags;
         }
 
         $soundSystem->save();
@@ -435,8 +432,12 @@ class EntertainmentController extends Controller
 
         $request->validate(
             [
-                'name' => 'required|unique:live_music,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'name' => 'required|unique:sound_systems,name',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
             ],
             [
                 'name.required' => 'Nama harus diisi',
@@ -444,6 +445,10 @@ class EntertainmentController extends Controller
                 'image.image' => 'Gambar harus berupa gambar',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'image.required' => 'Gambar harus diisi',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta Deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta Keywords harus diisi',
             ]
         );
 
@@ -451,12 +456,16 @@ class EntertainmentController extends Controller
         $liveMusic->lives_id = $request->lives_id;
         $liveMusic->name = $request->name;
         $liveMusic->description = $request->description;
+        $liveMusic->meta_description = $request->meta_description;
+        $liveMusic->meta_keywords = $request->meta_keywords;
+        $liveMusic->meta_tags = $request->meta_tags;
 
         if ($request->hasFile('image')) {
             $path = 'back/images/entertainment/live/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'live-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -478,6 +487,7 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $liveMusic->image = $new_filename;
+            $liveMusic->image_alt_text = $new_filename;
         }
 
         $liveMusic->save();
@@ -539,8 +549,9 @@ class EntertainmentController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $liveMusic->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'live-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -562,11 +573,21 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $liveMusic->image = $new_filename;
+            $liveMusic->image_alt_text = $new_filename;
         }
 
         // Update description if provided
         if ($request->has('description')) {
             $liveMusic->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $liveMusic->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $liveMusic->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $liveMusic->meta_tags = $request->meta_tags;
         }
 
         $liveMusic->save();
@@ -682,8 +703,12 @@ class EntertainmentController extends Controller
 
         $request->validate(
             [
-                'name' => 'required|unique:ceremonial_events,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'name' => 'required|unique:sound_systems,name',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
             ],
             [
                 'name.required' => 'Nama harus diisi',
@@ -691,6 +716,10 @@ class EntertainmentController extends Controller
                 'image.image' => 'Gambar harus berupa gambar',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'image.required' => 'Gambar harus diisi',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta Deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta Keywords harus diisi',
             ]
         );
 
@@ -698,12 +727,16 @@ class EntertainmentController extends Controller
         $ceremonialEvent->ceremonial_id = $request->ceremonial_id;
         $ceremonialEvent->name = $request->name;
         $ceremonialEvent->description = $request->description;
+        $ceremonialEvent->meta_description = $request->meta_description;
+        $ceremonialEvent->meta_keywords = $request->meta_keywords;
+        $ceremonialEvent->meta_tags = $request->meta_tags;
 
         if ($request->hasFile('image')) {
             $path = 'back/images/entertainment/ceremonial/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'ceremonial-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -725,6 +758,7 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $ceremonialEvent->image = $new_filename;
+            $ceremonialEvent->image_alt_text = $new_filename;
         }
 
         $ceremonialEvent->save();
@@ -787,8 +821,9 @@ class EntertainmentController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $ceremonialEvent->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'ceremonial-' . time() . '' . $filename;
+            $slug = str::slug($request->name); // Ambil slug dari nama wedding
+            $extension = $request->file('image')->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -810,11 +845,21 @@ class EntertainmentController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $ceremonialEvent->image = $new_filename;
+            $ceremonialEvent->image_alt_text = $new_filename;
         }
 
         // Update description if provided
         if ($request->has('description')) {
             $ceremonialEvent->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $ceremonialEvent->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $ceremonialEvent->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $ceremonialEvent->meta_tags = $request->meta_tags;
         }
 
         $ceremonialEvent->save();
@@ -824,5 +869,126 @@ class EntertainmentController extends Controller
             ->log('Updated ceremonial event');
 
         return redirect()->route('entertainment.ceremonial.show', ['id' => $ceremonialEvent->ceremonial_id])->with('success', 'Ceremonial Event updated successfully');
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/entertainment/sound/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImage(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
+    }
+    public function uploadImageLive(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/entertainment/live/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImageLive(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
+    }
+    public function uploadImageCere(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/entertainment/ceremonial/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImageCere(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
     }
 }

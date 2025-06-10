@@ -2,6 +2,7 @@
 
 @section('pageTitle', isset($pageTitle) ? $pageTitle : 'Weddings Detail')
 
+
 @section('content')
 <div id="pwe-main">
     <!-- Banner Title -->
@@ -29,7 +30,7 @@
                 <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
                     <div class="item mb-30">
                         <div class="position-re o-hidden">
-                            <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
+                            <img src="{{ asset('storage/back/images/wedding/weddingmakeup/thumbnails/thumb_271_' . $wedding->image) }}"
                                 alt="">
                         </div>
                         <div class="con">

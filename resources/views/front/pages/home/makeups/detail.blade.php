@@ -29,7 +29,8 @@
                 <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
                     <div class="item mb-30">
                         <div class="position-re o-hidden">
-                            <img src="{{ asset('storage/back/images/event/eventmakeup/' . $event->image) }}" alt="">
+                            <img src="{{ asset('storage/back/images/event/eventmakeup/thumbnails/thumb_271_' . $event->image) }}"
+                                alt="">
                         </div>
                         <div class="con">
                             <span class="category">

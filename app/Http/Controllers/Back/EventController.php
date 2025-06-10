@@ -9,6 +9,7 @@ use App\Models\WeddingMakeups;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -16,9 +17,9 @@ class EventController extends Controller
      * Display a listing of the resource.
      */
     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    {
+        $this->middleware('can:read content');
+    }
     public function index()
     {
         $eventMakeups = EventMakeups::withCount('events')->first();
@@ -141,14 +142,24 @@ class EventController extends Controller
         $request->validate(
             [
                 'name' => 'required|unique:event_makeups,name',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'description' => 'required|string',
+                'meta_description' => 'required|string',
+                'meta_keywords' => 'required|string',
+                'meta_tags' => 'required|string',
+
             ],
             [
                 'name.required' => 'Nama harus diisi',
                 'name.unique' => 'Nama sudah ada',
                 'image.image' => 'Gambar harus berupa gambar',
                 'image.mimes' => 'Gambar harus berupa gambar JPG, JPEG, PNG',
+                'image.required' => 'Gambar harus diisi',
                 'image.max' => 'Gambar harus berukuran maksimal 2MB',
+                'description.required' => 'Deskripsi harus diisi',
+                'meta_description.required' => 'Meta deskripsi harus diisi',
+                'meta_keywords.required' => 'Meta kata kunci harus diisi',
+                'meta_tags.required' => 'Meta tag harus diisi',
             ]
         );
 
@@ -156,14 +167,17 @@ class EventController extends Controller
         $eventMakeups->event_makeups_id = $request->event_makeups_id;
         $eventMakeups->name = $request->name;
         $eventMakeups->description = $request->description;
+        $eventMakeups->meta_description = $request->meta_description;
+        $eventMakeups->meta_keywords = $request->meta_keywords;
+        $eventMakeups->meta_tags = $request->meta_tags;
 
         if ($request->hasFile('image')) {
             $path = 'back/images/event/eventmakeup/';
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'eventmakeup-' . time() . '' . $filename;
+            $slug = str::slug($request->name);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $new_filename = $slug . '.' . $extension;
 
-            // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
 
             // Buat dan simpan thumbnail
@@ -172,9 +186,6 @@ class EventController extends Controller
                 Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
             }
 
-            // Create thumbnails with different sizes
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(75, 75)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_75_' . $new_filename));
 
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
@@ -183,6 +194,7 @@ class EventController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $eventMakeups->image = $new_filename;
+            $eventMakeups->image_alt_text = $new_filename;
         }
 
         $eventMakeups->save();
@@ -244,8 +256,9 @@ class EventController extends Controller
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $eventMakeups->image);
             }
 
-            $filename = $request->file('image')->getClientOriginalName();
-            $new_filename = 'eventmakeup-' . time() . '' . $filename;
+            $slug = $request->slug;
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $new_filename = $slug . '.' . $extension;
 
             // Simpan file ukuran asli
             $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
@@ -256,10 +269,6 @@ class EventController extends Controller
                 Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
             }
 
-            // Create thumbnails with different sizes
-            Image::make(storage_path('app/public/' . $path . $new_filename))
-                ->fit(75, 75)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_75_' . $new_filename));
-
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
 
@@ -267,6 +276,7 @@ class EventController extends Controller
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
             $eventMakeups->image = $new_filename;
+            $eventMakeups->image_alt_text = $new_filename;
         }
 
         // Update description if provided
@@ -287,5 +297,46 @@ class EventController extends Controller
     {
         $eventMakeups = Event::find($id);
         $eventMakeups->delete();
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',  // Validasi gambar
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'content-' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'back/images/event/eventmakeup/content/' . $imageName;
+
+        // Simpan gambar ke storage
+        Storage::disk('public')->put($imagePath, file_get_contents($image));
+
+        // Kembalikan URL gambar
+        return response()->json(['location' => asset('storage/' . $imagePath)]);
+    }
+
+
+    public function deleteImage(Request $request)
+    {
+        $request->validate([
+            'imageUrl' => 'string',
+        ]);
+
+        $imageUrl = $request->input('imageUrl');
+        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
+
+        // Hapus bagian '/storage/' dari path untuk mendapatkan relative path gambar
+        $relativePath = str_replace('/storage/', '', $imagePath);
+
+        // Cek apakah gambar ada di storage
+        if (Storage::disk('public')->exists($relativePath)) {
+            // Hapus gambar dari storage
+            Storage::disk('public')->delete($relativePath);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
     }
 }

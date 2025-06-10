@@ -7,12 +7,15 @@
 @push('schema')
 {!! $articleSchema->toScript() !!}
 @endpush
+
+
 @section('content')
 <div id="pwe-main">
     <!-- Banner Title -->
     <div class="banner-container">
-        <div class="banner-img"> <img class="banner-img-width" src="{{ asset('front/assets/images/topbanner.jpeg') }}"
-                alt=""> </div>
+        <div class="banner-img">
+            <img class="banner-img-width" src="{{ asset('front/assets/images/topbanner.jpeg') }}" alt="">
+        </div>
         <div class="banner-head">
             <div class="banner-head-padding banner-head-margin">
                 <div class="container-fluid">
@@ -37,11 +40,18 @@
     </style>
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">
+            <style>
+                .description img {
+                    width: 100%;
+                    height: auto;
+                    max-width: 100%;
+                }
+            </style>
             <div class="row">
                 <div class="col-md-5 animate-box" data-animate-effect="fadeInLeft"> <img
                         src="{{ asset('storage/back/images/event/eventmakeup/' . $event->image) }}"
-                        class="img-fluid mb-30" alt=""> </div>
-                <div class="col-md-7 animate-box" data-animate-effect="fadeInLeft">
+                        class="img-fluid mb-30" alt="{{ $event->image_alt_text }}"> </div>
+                <div class="col-md-7 animate-box description" data-animate-effect="fadeInLeft">
                     <p>{!! $event->description ?? '' !!}</p>
                 </div>
             </div>

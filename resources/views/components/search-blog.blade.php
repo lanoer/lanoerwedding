@@ -1,4 +1,8 @@
 <div>
+    @push('css')
+    <!-- Tambahkan CDN Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    @endpush
     <style>
         #search-button {
             color: #fff;
@@ -13,10 +17,11 @@
         }
     </style>
     <div class="pwe-sidebar-block pwe-sidebar-block-search">
-        <form method="get" action="{{ route('blog.search') }}" id="search-form" class="pwe-sidebar-search-form">
+        <form method="POST" action="{{ route('blog.search') }}" id="search-form" class="pwe-sidebar-search-form">
+            @csrf
             <input type="search" name="query" class="form-control search-field" id="search" placeholder="Search..."
                 required>
-            <button type="submit" id="search-button" class="ti-arrow-right pwe-sidebar-search-submit">
+            <button type="submit" id="search-button" class="pwe-sidebar-search-submit">
                 <span class="icon fa fa-search"></span>
                 <span class="spinner fa fa-spinner fa-spin"></span>
             </button>
@@ -24,7 +29,7 @@
     </div>
 </div>
 
-@push('scriptsFront')
+@push('js')
 <script>
     $(document).ready(function() {
             $('#search-form').on('submit', function() {

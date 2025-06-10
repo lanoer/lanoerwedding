@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Back\AboutController;
-use App\Http\Controllers\back\AlbumController;
+use App\Http\Controllers\Back\AlbumController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Back\AuthController;
 use App\Http\Controllers\Back\CateringController;

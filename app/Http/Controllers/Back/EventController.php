@@ -166,6 +166,7 @@ class EventController extends Controller
         $eventMakeups = new Event();
         $eventMakeups->event_makeups_id = $request->event_makeups_id;
         $eventMakeups->name = $request->name;
+        $eventMakeups->slug = Str::slug($request->name);
         $eventMakeups->description = $request->description;
         $eventMakeups->meta_description = $request->meta_description;
         $eventMakeups->meta_keywords = $request->meta_keywords;
@@ -239,6 +240,19 @@ class EventController extends Controller
         // Update name if provided
         if ($request->has('name')) {
             $eventMakeups->name = $request->name;
+            $eventMakeups->slug = Str::slug($request->name);
+        }
+        if ($request->has('description')) {
+            $eventMakeups->description = $request->description;
+        }
+        if ($request->has('meta_description')) {
+            $eventMakeups->meta_description = $request->meta_description;
+        }
+        if ($request->has('meta_keywords')) {
+            $eventMakeups->meta_keywords = $request->meta_keywords;
+        }
+        if ($request->has('meta_tags')) {
+            $eventMakeups->meta_tags = $request->meta_tags;
         }
 
         // Update image if provided

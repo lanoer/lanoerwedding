@@ -183,6 +183,7 @@ class WeddingController extends Controller
         $weddingMakeups = new Weddings();
         $weddingMakeups->wedding_makeups_id = $request->wedding_makeups_id;
         $weddingMakeups->name = $request->name;
+        $weddingMakeups->slug = Str::slug($request->name); // Generate slug from name
         $weddingMakeups->description = $request->description;
         $weddingMakeups->meta_description = $request->meta_description;
         $weddingMakeups->meta_keywords = $request->meta_keywords;
@@ -259,6 +260,7 @@ class WeddingController extends Controller
         // Update name if provided
         if ($request->has('name')) {
             $weddingMakeups->name = $request->name;
+            $weddingMakeups->slug = Str::slug($request->name); // Generate slug from name
         }
 
         // Update image if provided

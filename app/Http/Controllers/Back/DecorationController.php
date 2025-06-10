@@ -36,32 +36,34 @@ class DecorationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'meta_description' => 'required',
-            'meta_keywords' => 'required',
-            'meta_tags' => 'required',
-        ], [
-            'name.required' => 'Name harus diisi',
-            'name.string' => 'Name harus berupa string',
-            'name.max' => 'Name maksimal 255 karakter',
-            'description.required' => 'Description harus diisi',
-            'description.string' => 'Description harus berupa string',
-            'main_image.required' => 'image utama harus diisi',
-            'main_image.image' => 'image utama harus berupa gambar',
-            'main_image.mimes' => 'image utama harus berupa gambar JPG, JPEG, PNG',
-            'main_image.max' => 'image utama harus berukuran maksimal 2MB',
-            'gallery.*.image' => 'image gallery harus berupa gambar',
-            'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
-            'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
-            'meta_description.required' => 'Meta description harus diisi',
-            'meta_keywords.required' => 'Meta keywords harus diisi',
-            'meta_tags.required' => 'Meta tags harus diisi',
-        ]
-    );
+        $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'meta_description' => 'required',
+                'meta_keywords' => 'required',
+                'meta_tags' => 'required',
+            ],
+            [
+                'name.required' => 'Name harus diisi',
+                'name.string' => 'Name harus berupa string',
+                'name.max' => 'Name maksimal 255 karakter',
+                'description.required' => 'Description harus diisi',
+                'description.string' => 'Description harus berupa string',
+                'main_image.required' => 'image utama harus diisi',
+                'main_image.image' => 'image utama harus berupa gambar',
+                'main_image.mimes' => 'image utama harus berupa gambar JPG, JPEG, PNG',
+                'main_image.max' => 'image utama harus berukuran maksimal 2MB',
+                'gallery.*.image' => 'image gallery harus berupa gambar',
+                'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
+                'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
+                'meta_description.required' => 'Meta description harus diisi',
+                'meta_keywords.required' => 'Meta keywords harus diisi',
+                'meta_tags.required' => 'Meta tags harus diisi',
+            ]
+        );
 
         // Simpan main image
         $mainImageName = null;
@@ -127,9 +129,7 @@ class DecorationController extends Controller
         abort(404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit($id)
     {
         $decoration = Decorations::with('images')->find($id);
@@ -141,56 +141,54 @@ class DecorationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $decoration = Decorations::find($id);
+        // Cek jika decoration ada
+        $decoration = Decorations::findOrFail($id);
 
-        $request->validate(
-            [
-                'name' => 'required|string|max:255|unique:decorations,name,' . $id,
-                'description' => 'required|string',
-                'main_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-                'gallery.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-                'meta_description' => 'required',
-                'meta_keywords' => 'required',
-                'meta_tags' => 'required',
-            ],
-            [
-                'name.required' => 'Name harus diisi',
-                'name.string' => 'Name harus berupa string',
-                'name.max' => 'Name maksimal 255 karakter',
-                'description.required' => 'Description harus diisi',
-                'description.string' => 'Description harus berupa string',
-                'main_image.required' => 'image utama harus diisi',
-                'main_image.image' => 'image utama harus berupa gambar',
-                'main_image.mimes' => 'image utama harus berupa gambar JPG, JPEG, PNG',
-                'main_image.max' => 'image utama harus berukuran maksimal 2MB',
-                'gallery.*.image' => 'image gallery harus berupa gambar',
-                'gallery.*.mimes' => 'image gallery harus berupa gambar JPG, JPEG, PNG',
-                'gallery.*.max' => 'image gallery harus berukuran maksimal 2MB',
-                'meta_description.required' => 'Meta description harus diisi',
-                'meta_keywords.required' => 'Meta keywords harus diisi',
-                'meta_tags.required' => 'Meta tags harus diisi',
-            ]
-        );
+        // Validasi input
+        $request->validate([
+            'name' => 'nullable|string|max:255|unique:decorations,name,' . $id,
+            'description' => 'nullable|string',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'meta_tags' => 'nullable|string',
+        ]);
 
-        $decoration->name = $request->name;
-        $decoration->description = $request->description;
+        // Update properti yang dikirim dalam request
+        if ($request->has('name')) {
+            $decoration->name = $request->name;
+        }
 
-        $decoration->meta_description = $request->meta_description;
-        $decoration->meta_keywords = $request->meta_keywords;
-        $decoration->meta_tags = $request->meta_tags;
+        if ($request->has('description')) {
+            $decoration->description = $request->description;
+        }
 
-        // Update main image jika ada
+        if ($request->has('meta_description')) {
+            $decoration->meta_description = $request->meta_description;
+        }
+
+        if ($request->has('meta_keywords')) {
+            $decoration->meta_keywords = $request->meta_keywords;
+        }
+
+        if ($request->has('meta_tags')) {
+            $decoration->meta_tags = $request->meta_tags;
+        }
+
+        // Update gambar utama jika ada file gambar yang diupload
         if ($request->hasFile('main_image')) {
             $mainImage = $request->file('main_image');
             $mainImageName = 'decoration-main-' . time() . '-' . $mainImage->getClientOriginalName();
             $mainImagePath = 'back/images/decoration/' . $mainImageName;
 
-            // Hapus gambar lama
+            // Hapus gambar lama jika ada
             if ($decoration->image) {
                 Storage::disk('public')->delete('back/images/decoration/' . $decoration->image);
                 Storage::disk('public')->delete('back/images/decoration/thumbnails/thumb_271_' . $decoration->image);
             }
 
+            // Simpan gambar baru dan buat thumbnail
             Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
             $thumbPath = 'back/images/decoration/thumbnails/thumb_271_' . $mainImageName;
             $img = Image::make($mainImage->getRealPath())->fit(271, 266);
@@ -200,9 +198,10 @@ class DecorationController extends Controller
             $decoration->image_alt_text = $mainImageName;
         }
 
+        // Simpan perubahan
         $decoration->save();
 
-        // Simpan gallery baru jika ada
+        // Simpan gambar galeri baru jika ada
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
                 $galleryImageName = 'decoration-gallery-' . time() . '-' . $file->getClientOriginalName();
@@ -220,12 +219,13 @@ class DecorationController extends Controller
             }
         }
 
-        activity()
-            ->causedBy(auth()->user())
-            ->log('Updated decoration');
+        // Log aktivitas
+        activity()->causedBy(auth()->user())->log('Updated decoration');
 
-        return response()->json(['success' => 'Decoration updated successfully']);
+        return response()->json(['success' => 'Decoration berhasil diperbarui']);
     }
+
+
 
     /**
      * Remove the specified resource from storage.

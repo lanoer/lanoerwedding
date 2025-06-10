@@ -44,8 +44,12 @@
                         @enderror
                     </div>
                     <div class="image_holder mb-2" style="max-width: 250px">
+                        @if($decoration->image)
                         <img src="{{ asset('storage/back/images/decoration/' . $decoration->image) }}" alt=""
                             class="img-thumbnail" id="image-previewer">
+                        @else
+                        <p>No image available.</p>
+                        @endif
                     </div>
                     <!-- Gallery Images -->
                     <div class="form-group mb-3">
@@ -96,7 +100,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_tags">Meta Tags</label>
                         <input type="text" class="form-control @error('meta_tags') is-invalid @enderror" id="meta_tags"
-                            name="meta_tags" value="{{ $decoration->meta_tagss }}">
+                            name="meta_tags" value="{{ $decoration->meta_tags }}">
                         @error('meta_tags')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -260,4 +264,23 @@
             });
         }
 </script>
+<script>
+    $(document).ready(function() {
+            $('input[type="file"][name="main_image"]').ijaboViewer({
+                preview: '#image-previewer',
+                imageShape: 'rectangular',
+                allowedExtensions: ['jpg', 'jpeg', 'png'],
+                onErrorShape: function(message, element) {
+                    alert(message);
+                },
+                onInvalidType: function(message, element) {
+                    alert(message);
+                },
+                onSuccess: function(message, element) {
+                    // Success callback
+                }
+            });
+        });
+</script>
+
 @endpush

@@ -64,10 +64,11 @@ class HomeController extends Controller
 
     public function services()
     {
-        $weddings = weddings::with('weddingMakeups')->take(4)->get();
+        $weddings = Weddings::with('weddingMakeups')->paginate(3);
+        $event = event::with('eventMakeup')->paginate(3);
 
 
-        return view('front.pages.home.services', compact('weddings'));
+        return view('front.pages.home.services', compact('weddings', 'event'));
     }
 
     public function showEvent($eventMakeupSlug, $slug)

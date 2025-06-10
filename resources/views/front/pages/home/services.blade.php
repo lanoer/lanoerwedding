@@ -23,43 +23,85 @@
     <!-- Services -->
 
     <div class="services-section services pt-0 pb-90">
+        <div class="banner-head">
+            <div class="banner-head-padding banner-head-margin">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12"> <span class="heading-meta">weddings</span>
+                            <h2 class="pwe-heading animate-box" data-animate-effect="fadeInLeft">Weddings</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="row">
+                @forelse ($weddings as $item)
                 <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
-                    @forelse ($weddings as $item)
                     <div class="item mb-30">
                         <div class="position-re o-hidden">
-                            <img src="{{ asset('front/assets/images/services/1.jpg') }}" alt="">
+                            <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $item->image) }}" alt="">
                         </div>
                         <div class="con">
                             <span class="category">
-                                <a href="services-page.html">.
+                                <a
+                                    href="{{ route('makeup.wedding', ['weddingMakeupSlug' => $item->weddingMakeups->slug]) }}">.
                                     <!-- Check if weddingMakeups exists -->
                                     {{ optional($item->weddingMakeups)->name ?? 'No Makeup Found' }}
                                 </a>
                             </span>
                             <!-- Check if wedding exists -->
-                            <h5><a href="services-page.html">{{ $item->name }}</a></h5>
+                            <h5><a
+                                    href="{{ route('makeup.wedding.detail', ['weddingMakeupSlug' => $item->weddingMakeups->slug, 'slug' => $item->slug]) }}">{{
+                                    $item->name }}</a></h5>
 
-                            <a href="services-page.html"><i class="ti-arrow-right"></i></a>
-                        </div>
-                    </div>
-                    @empty
-                    <p>Not Found</p>
-                    @endforelse
-                </div>
-                {{-- <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
-                    <div class="item mb-30">
-                        <div class="position-re o-hidden"> <img src="{{ asset('front/assets/images/services/2.jpg') }}"
-                                alt=""> </div>
-                        <div class="con"> <span class="category">
-                                <a href="services-page.html">. weddings</a>
-                            </span>
-                            <h5><a href="services-page.html">MASTER OF CEREMONIES</a></h5> <a href="#"><i
+                            <a
+                                href="{{ route('makeup.wedding.detail', ['weddingMakeupSlug' => $item->weddingMakeups->slug, 'slug' => $item->slug]) }}"><i
                                     class="ti-arrow-right"></i></a>
                         </div>
                     </div>
-                </div> --}}
+
+                </div>
+                @empty
+                <p>Not Found</p>
+                @endforelse
+                <!-- Pagination Links -->
+                <div class="pagination-wrapper" style="text-align: center;">
+                    {{ $weddings->links('vendor.pagination.custom') }}
+                </div>
+                <hr>
+                @forelse ($event as $item)
+                <div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
+                    <div class="item mb-30">
+                        <div class="position-re o-hidden">
+                            <img src="{{ asset('storage/back/images/event/eventmakeup/' . $item->image) }}" alt="">
+                        </div>
+                        <div class="con">
+                            <span class="category">
+                                <a href="{{ route('makeup.event', ['eventMakeupSlug' => $item->eventMakeup->slug]) }}">.
+                                    <!-- Check if weddingMakeups exists -->
+                                    {{ optional($item->eventMakeup)->name ?? 'No Makeup Found' }}
+                                </a>
+                            </span>
+                            <!-- Check if wedding exists -->
+                            <h5><a
+                                    href="{{ route('makeup.event.detail', ['eventMakeupSlug' => $item->eventMakeup->slug, 'slug' => $item->slug]) }}">{{
+                                    $item->name }}</a></h5>
+
+                            <a
+                                href="{{ route('makeup.event.detail', ['eventMakeupSlug' => $item->eventMakeup->slug, 'slug' => $item->slug]) }}"><i
+                                    class="ti-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+                @empty
+                <p>Not Found</p>
+                @endforelse
+                <!-- Pagination Links -->
+                <div class="pagination-wrapper" style="text-align: center;">
+                    {{ $event->links('vendor.pagination.custom') }}
+                </div>
 
             </div>
         </div>

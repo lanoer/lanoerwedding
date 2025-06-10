@@ -28,7 +28,8 @@
                     <div class="item animate-box" data-animate-effect="fadeInLeft">
                         <div class="portfolio-img">
                             <a href="{{ route('documentation.main.show', $a->slug) }}">
-                                <img src="{{ asset('storage/back/images/album/thumbnail/' . $a->image) }}" alt="">
+                                <img src="{{ asset('storage/back/images/album/thumbnails/thumb_800_' . $a->image) }}"
+                                    alt="">
                             </a>
                         </div>
                         <div class="content">

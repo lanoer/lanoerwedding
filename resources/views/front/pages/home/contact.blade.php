@@ -120,6 +120,7 @@
             </div>
         </div>
     </div>
+    @include('front.layouts.inc.team')
     @include('front.layouts.inc.footer')
 </div>
 

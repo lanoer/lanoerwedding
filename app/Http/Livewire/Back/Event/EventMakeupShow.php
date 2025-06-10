@@ -30,41 +30,7 @@ class EventMakeupShow extends Component
     {
         $this->resetPage();
     }
-    // public function deleteEvent($id, $name)
-    // {
-    //     $this->dispatchBrowserEvent('deleteEvent', [
-    //         'title' => 'Are you sure ?',
-    //         'html' => 'You want to delete this event ' . $name . '?',
-    //         'id' => $id,
-    //     ]);
-    // }
 
-    // public function deleteEventAction($id)
-    // {
-    //     $event = Event::find($id);
-    //     $path = 'back/images/event/eventmakeup/';
-    //     $image = $event->image;
-    //     if ($image != null && Storage::disk('public')->exists($path . $image)) {
-    //         // delete resize image
-    //         if (Storage::disk('public')->exists($path . 'thumbnails/resized_' . $image)) {
-    //             Storage::disk('public')->delete($path . 'thumbnails/resized_' . $image);
-    //         }
-    //         // delete thumbnails
-    //         if (Storage::disk('public')->exists($path . 'thumbnails/thumb_' . $image)) {
-    //             Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $image);
-    //         }
-    //         // delete post fetaured image
-    //         Storage::disk('public')->delete($path . $image);
-    //     }
-
-    //     $delete_event = $event->delete();
-
-    //     if ($delete_event) {
-    //         flash()->addSuccess('Event has been successfuly deleted!');
-    //     } else {
-    //         flash()->addError('Something went wrong!');
-    //     }
-    // }
 
     public function deleteEvent($id, $name)
     {

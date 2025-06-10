@@ -30,7 +30,8 @@
                     <div class="item animate-box" data-animate-effect="fadeInLeft">
                         <div class="portfolio-img">
                             <a href="{{ route('catering.detail.show', $catering->slug) }}"><img
-                                    src="{{ asset('storage/back/images/catering/' . $catering->image) }}" alt="">
+                                    src="{{ asset('storage/back/images/catering/thumbnails/thumb_' . $catering->image) }}"
+                                    alt="">
                         </div>
                         <div class="content">
                             <h5><a href="{{ route('catering.detail.show', $catering->slug) }}">{{ $catering->name }}</a>
@@ -44,8 +45,6 @@
     </div>
 
     <!-- Team -->
-    @include('front.layouts.inc.team')
-
     @include('front.layouts.inc.testimonial')
     @include('front.layouts.inc.footer')
 </div>

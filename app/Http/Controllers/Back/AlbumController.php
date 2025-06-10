@@ -81,9 +81,11 @@ class AlbumController extends Controller
         $album->album_name = $request->album_name;
 
         if ($request->hasFile('image')) {
-            // Hapus file lama jika ada
-            $thumbnail_path = 'back/images/album/thumbnail/';
-            $original_path = 'back/images/album/original/';
+            // Mendefinisikan path untuk gambar album
+            $thumbnail_path = 'back/images/album/thumbnails/';
+            $original_path = 'back/images/album/';
+
+            // Hapus gambar lama jika ada
             if ($album->image && Storage::disk('public')->exists($thumbnail_path . $album->image)) {
                 Storage::disk('public')->delete($thumbnail_path . $album->image);
             }
@@ -91,24 +93,23 @@ class AlbumController extends Controller
                 Storage::disk('public')->delete($original_path . $album->image);
             }
 
+            // Mendapatkan file gambar yang baru
             $file = $request->file('image');
-            $filename = $file->getClientOriginalName();
-            $new_filename = time() . '_' . $filename;
-            $upload = Storage::disk('public')->put($original_path . $new_filename, (string) file_get_contents($file));
+            $imageName = 'album-' . time() . '-' . $file->getClientOriginalName();
+            $imagePath = 'back/images/album/' . $imageName;
 
-            // Buat thumbnail
-            if (!Storage::disk('public')->exists($thumbnail_path)) {
-                Storage::disk('public')->makeDirectory($thumbnail_path, 0755, true, true);
-            }
-            Image::make(storage_path('app/public/' . $original_path . $new_filename))
-                ->fit(520, 400, function ($constraint) {
-                    $constraint->upsize();
-                })->save(storage_path('app/public/' . $thumbnail_path . $new_filename));
+            // Simpan gambar original album
+            Storage::disk('public')->put($imagePath, file_get_contents($file));
 
-            if ($upload) {
-                $album->image = $new_filename;
-            }
+            // Simpan thumbnail untuk gambar album
+            $thumbPath = 'back/images/album/thumbnails/thumb_800_' . $imageName;
+            $img = Image::make($file->getRealPath())->fit(800, 600);
+            Storage::disk('public')->put($thumbPath, (string) $img->encode());
+
+            // Jika upload berhasil, simpan nama file gambar ke dalam database
+            $album->image = $imageName;
         }
+
 
         $album->save();
 

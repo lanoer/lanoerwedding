@@ -78,8 +78,8 @@ class DecorationController extends Controller
             Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
 
             // Simpan thumbnail
-            $thumbPath = 'back/images/decoration/thumbnails/thumb_271_' . $mainImageName;
-            $img = Image::make($mainImage->getRealPath())->fit(271, 266);
+            $thumbPath = 'back/images/decoration/thumbnails/thumb_800_' . $mainImageName;
+            $img = Image::make($mainImage->getRealPath())->fit(800, 600);
             Storage::disk('public')->put($thumbPath, (string) $img->encode());
         }
 
@@ -190,13 +190,13 @@ class DecorationController extends Controller
             // Hapus gambar lama jika ada
             if ($decoration->image) {
                 Storage::disk('public')->delete('back/images/decoration/' . $decoration->image);
-                Storage::disk('public')->delete('back/images/decoration/thumbnails/thumb_271_' . $decoration->image);
+                Storage::disk('public')->delete('back/images/decoration/thumbnails/thumb_800_' . $decoration->image);
             }
 
             // Simpan gambar baru dan buat thumbnail
             Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
-            $thumbPath = 'back/images/decoration/thumbnails/thumb_271_' . $mainImageName;
-            $img = Image::make($mainImage->getRealPath())->fit(271, 266);
+            $thumbPath = 'back/images/decoration/thumbnails/thumb_800_' . $mainImageName;
+            $img = Image::make($mainImage->getRealPath())->fit(800, 600);
             Storage::disk('public')->put($thumbPath, (string) $img->encode());
 
             $decoration->image = $mainImageName;

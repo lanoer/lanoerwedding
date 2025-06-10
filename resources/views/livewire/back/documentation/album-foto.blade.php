@@ -96,7 +96,7 @@
                                                     $loop->iteration }}
                                                 </td>
                                                 <td>{{ $a->album_name }}</td>
-                                                <td><img src="{{ asset('storage/back/images/album/thumbnail/' . $a->image) }}"
+                                                <td><img src="{{ asset('storage/back/images/album/thumbnails/thumb_800_' . $a->image) }}"
                                                         width="60"></td>
                                                 <td class="text-muted">
                                                     {{ $a->foto->count() }}

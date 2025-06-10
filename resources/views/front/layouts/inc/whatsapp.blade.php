@@ -1,5 +1,5 @@
 <!-- Floating WhatsApp Chat -->
-<div id="whatsapp-chat" class="show">
+<div id="whatsapp-chat">
     <div class="header">
         <span>Obrolan Dengan Lanoer</span>
         <span class="close" onclick="toggleChat()">×</span>

@@ -47,20 +47,13 @@ class DocumentationController extends Controller
             'image.*.mimes' => 'Foto harus berupa gambar JPG, JPEG, PNG',
             'image.*.max' => 'Foto harus berukuran maksimal 5MB',
         ]);
+        $Albums = Album::find($request->album_id);
+        // Cek apakah album sudah memiliki 10 foto
 
-        // Cek jumlah foto yang sudah ada di album
-        $album = Album::findOrFail($request->album_id);
-        $existingPhotoCount = $album->Foto()->count();
-        $newPhotoCount = count($request->file('image')); // Foto yang akan di-upload
-
-        // Total foto setelah penambahan
-        $totalPhotoCount = $existingPhotoCount + $newPhotoCount;
-
-        // Jika total foto lebih dari 10, batalkan upload
-        if ($totalPhotoCount > 10) {
-            return response()->json(['error' => 'Album sudah penuh, tidak bisa menambahkan foto lebih banyak.'], 400);
+        if ($Albums->Foto()->count() >= 10) {
+            return response()->json(['error' => 'Album sudah mencapai batas maksimal foto (10 foto)'], 422);
         }
-
+        // Cek apakah album sudah memiliki 10 foto
         if ($request->hasFile('image')) {
             $insert = [];
             foreach ($request->file('image') as $key => $file) {
@@ -98,9 +91,6 @@ class DocumentationController extends Controller
 
         return response()->json(['success' => 'Foto berhasil disimpan']);
     }
-
-
-
 
     /**
      * Show the form for creating a new resource.

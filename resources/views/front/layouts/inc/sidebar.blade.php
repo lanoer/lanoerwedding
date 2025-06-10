@@ -23,7 +23,7 @@
                     href="{{ route('entertainment.list') }}">Entertainment</a>
             </li>
             <li @if (request()->is('documentation') || request()->is('documentation/*')) class="pwe-active" @endif>
-                <a href="{{ route('portofolio') }}">Documentation</a>
+                <a href="{{ route('portofolio') }}">Our Clients</a>
             </li>
             <li @if (request()->is('catering/*')) class="pwe-active" @endif><a
                     href="{{ route('catering.list') }}">Catering</a>

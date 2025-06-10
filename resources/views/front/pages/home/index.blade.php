@@ -21,7 +21,7 @@
                         @foreach ($wedding as $wed)
                         <div class="item">
                             <div class="position-re o-hidden">
-                                <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wed->image) }}"
+                                <img src="{{ asset('storage/back/images/wedding/weddingmakeup/thumbnails/thumb_271_' . $wed->image) }}"
                                     alt="{{ $wed->name }}">
                             </div>
                             <div class="con">
@@ -44,7 +44,7 @@
                         @foreach ($event as $evt)
                         <div class="item">
                             <div class="position-re o-hidden">
-                                <img src="{{ asset('storage/back/images/event/eventmakeup/' . $evt->image) }}"
+                                <img src="{{ asset('storage/back/images/event/eventmakeup/thumbnails/thumb_271_' . $evt->image) }}"
                                     alt="{{ $evt->name }}">
                             </div>
                             <div class="con">

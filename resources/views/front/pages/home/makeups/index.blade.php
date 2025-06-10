@@ -22,9 +22,7 @@
     </div>
     @livewire('front.makeups-list')
     <!-- Team -->
-    @include('front.layouts.inc.team')
 
-    @include('front.layouts.inc.testimonial')
     @include('front.layouts.inc.footer')
 </div>
 @endsection

@@ -30,7 +30,8 @@
                     <div class="item animate-box" data-animate-effect="fadeInLeft">
                         <div class="portfolio-img">
                             <a href="{{ route('decoration.detail.show', $dec->slug) }}"><img
-                                    src="{{ asset('storage/back/images/decoration/' . $dec->image) }}" alt="">
+                                    src="{{ asset('storage/back/images/decoration/thumbnails/thumb_800_' . $dec->image) }}"
+                                    alt="">
                         </div>
                         <div class="content">
                             <h5><a href="{{ route('decoration.detail.show', $dec->slug) }}">{{ $dec->name }}</a>
@@ -44,8 +45,6 @@
     </div>
 
     <!-- Team -->
-    @include('front.layouts.inc.team')
-
     @include('front.layouts.inc.testimonial')
     @include('front.layouts.inc.footer')
 </div>

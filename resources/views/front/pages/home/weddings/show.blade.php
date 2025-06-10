@@ -58,9 +58,8 @@
     </div>
     @include('front.layouts.inc.cta')
     <!-- Team -->
-    @include('front.layouts.inc.team')
 
-    @include('front.layouts.inc.testimonial')
+
     @include('front.layouts.inc.footer')
 </div>
 @endsection

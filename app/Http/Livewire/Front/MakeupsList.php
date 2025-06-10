@@ -3,71 +3,57 @@
 namespace App\Http\Livewire\Front;
 
 use Livewire\Component;
-use App\Models\EventMakeups;
-use App\Models\WeddingMakeups;
 use App\Models\Event;
 use App\Models\Weddings;
+use Illuminate\Support\Collection;
 
 class MakeupsList extends Component
 {
-    public $eventMakeups;
-    public $weddingMakeups;
     public $events;
     public $weddings;
-    public $selectedEvent = '';
-    public $selectedWedding = '';
-    public $randomEvents;
-    public $randomWeddings;
+
+    public $eventsEnd = false;
+    public $weddingsEnd = false;
+
+    protected $eventsPerPage = 3;
+    protected $weddingsPerPage = 3;
 
     public function mount()
     {
-        $this->eventMakeups = EventMakeups::first();
-        $this->weddingMakeups = WeddingMakeups::first();
-        $this->events = Event::with('eventMakeup')->get();
-        $this->weddings = Weddings::with('weddingMakeups')->get();
-        $this->loadRandomItems();
+        $this->weddings = Weddings::with('weddingMakeups')->take($this->weddingsPerPage)->get();
+        $this->events = Event::with('eventMakeup')->take($this->eventsPerPage)->get();
     }
 
-    public function loadRandomItems()
+    public function loadMoreWeddings()
     {
-        $this->randomEvents = Event::inRandomOrder()->take(3)->get();
-        $this->randomWeddings = Weddings::inRandomOrder()->take(3)->get();
+        $next = Weddings::with('weddingMakeups')
+            ->skip($this->weddings->count())
+            ->take($this->weddingsPerPage)
+            ->get();
+
+        if ($next->isEmpty()) {
+            $this->weddingsEnd = true;
+        } else {
+            $this->weddings = $this->weddings->merge($next);
+        }
     }
 
-    public function updatedSelectedEvent($value)
+    public function loadMoreEvents()
     {
-        // Event dipilih: tidak perlu reset wedding
-        // Bisa pilih dua-duanya
-    }
+        $next = Event::with('eventMakeup')
+            ->skip($this->events->count())
+            ->take($this->eventsPerPage)
+            ->get();
 
-    public function updatedSelectedWedding($value)
-    {
-        // Wedding dipilih: tidak perlu reset event
-    }
-
-    public function resetSelection()
-    {
-        $this->selectedEvent = '';
-        $this->selectedWedding = '';
-    }
-
-    public function getSelectedEventDataProperty()
-    {
-        return $this->events->firstWhere('id', $this->selectedEvent);
-    }
-
-    public function getSelectedWeddingDataProperty()
-    {
-        return $this->weddings->firstWhere('id', $this->selectedWedding);
+        if ($next->isEmpty()) {
+            $this->eventsEnd = true;
+        } else {
+            $this->events = $this->events->merge($next);
+        }
     }
 
     public function render()
     {
-        return view('livewire.front.makeups-list', [
-            'selectedEventData' => $this->selectedEventData,
-            'selectedWeddingData' => $this->selectedWeddingData,
-            'randomEvents' => $this->randomEvents,
-            'randomWeddings' => $this->randomWeddings,
-        ]);
+        return view('livewire.front.makeups-list');
     }
 }

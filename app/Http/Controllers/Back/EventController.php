@@ -240,11 +240,16 @@ class EventController extends Controller
         // Update name if provided
         if ($request->has('name')) {
             $eventMakeups->name = $request->name;
-            $eventMakeups->slug = Str::slug($request->name);
         }
+
+        // Set the slug from the name (fallback)
+        $eventMakeups->slug = Str::slug($request->name); // Ensure slug is set before image filename generation
+
+        // Update other fields
         if ($request->has('description')) {
             $eventMakeups->description = $request->description;
         }
+
         if ($request->has('meta_description')) {
             $eventMakeups->meta_description = $request->meta_description;
         }
@@ -259,43 +264,39 @@ class EventController extends Controller
         if ($request->hasFile('image')) {
             $path = 'back/images/event/eventmakeup/';
 
-            // Delete old images
+            // Delete old images if they exist
             if ($eventMakeups->image) {
-                // Delete original image
                 Storage::disk('public')->delete($path . $eventMakeups->image);
-
-                // Delete thumbnails
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_75_' . $eventMakeups->image);
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_271_' . $eventMakeups->image);
                 Storage::disk('public')->delete($path . 'thumbnails/thumb_' . $eventMakeups->image);
             }
 
-            $slug = $request->slug;
+            // Ensure slug is correctly used for image name
+            $slug = Str::slug($request->name);  // Use the slug created from the name
+
             $extension = $request->file('image')->getClientOriginalExtension();
             $new_filename = $slug . '.' . $extension;
 
-            // Simpan file ukuran asli
-            $upload = Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
+            // Save the image file with the new filename
+            Storage::disk('public')->put($path . $new_filename, (string) file_get_contents($request->file('image')));
 
-            // Buat dan simpan thumbnail
+            // Create and save thumbnails
             $post_thumbnails_path = $path . 'thumbnails';
             if (!Storage::disk('public')->exists($post_thumbnails_path)) {
                 Storage::disk('public')->makeDirectory($post_thumbnails_path, 0755, true, true);
             }
 
+            // Create thumbnail images
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(271, 266)->save(storage_path('app/public/' . $post_thumbnails_path . '/thumb_271_' . $new_filename));
 
             Image::make(storage_path('app/public/' . $path . $new_filename))
                 ->fit(800, 600)->save(storage_path('app/public/' . $path . 'thumbnails/' . 'thumb_' . $new_filename));
 
+            // Set the image and alt text
             $eventMakeups->image = $new_filename;
             $eventMakeups->image_alt_text = $new_filename;
-        }
-
-        // Update description if provided
-        if ($request->has('description')) {
-            $eventMakeups->description = $request->description;
         }
 
         $eventMakeups->save();
@@ -306,6 +307,8 @@ class EventController extends Controller
 
         return redirect()->route('event.main.show', ['id' => $eventMakeups->event_makeups_id])->with('success', 'Event Makeup updated successfully');
     }
+
+
 
     public function destroyMakeup($id)
     {

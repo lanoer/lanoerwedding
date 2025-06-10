@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Str;
+
 
 class DecorationController extends Controller
 {
@@ -158,6 +160,9 @@ class DecorationController extends Controller
         // Update properti yang dikirim dalam request
         if ($request->has('name')) {
             $decoration->name = $request->name;
+
+            // Update slug jika nama berubah
+            $decoration->slug = Str::slug($request->name);  // Atau bisa pakai $decoration->slug = $decoration->generateSlug();
         }
 
         if ($request->has('description')) {
@@ -224,6 +229,7 @@ class DecorationController extends Controller
 
         return response()->json(['success' => 'Decoration berhasil diperbarui']);
     }
+
 
 
 

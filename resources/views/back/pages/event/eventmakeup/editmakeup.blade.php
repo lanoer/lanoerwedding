@@ -64,7 +64,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_description">Meta Description</label>
                         <input type="text" class="form-control @error('meta_description') is-invalid @enderror"
-                            id="meta_description" name="meta_description" value="{{ old('meta_description') }}">
+                            id="meta_description" name="meta_description" value="{{ $eventMakeups->meta_description }}">
                         @error('meta_description')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -72,7 +72,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_keywords">Meta Keywords</label>
                         <input type="text" class="form-control @error('meta_keywords') is-invalid @enderror"
-                            id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords') }}">
+                            id="meta_keywords" name="meta_keywords" value="{{ $eventMakeups->meta_keywords }}">
                         @error('meta_keywords')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -80,7 +80,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_tags">Meta Tags</label>
                         <input type="text" class="form-control @error('meta_tags') is-invalid @enderror" id="meta_tags"
-                            name="meta_tags" value="{{ old('meta_tags') }}">
+                            name="meta_tags" value="{{ $eventMakeups->meta_tags }}">
                         @error('meta_tags')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror

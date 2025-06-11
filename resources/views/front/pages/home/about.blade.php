@@ -39,7 +39,7 @@
                 <div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
                     <h3 class="pwe-about-heading">{{ $about->title }}</h3>
                     <h4 class="pwe-about-subheading">{{ $about->desc_singkat }}</h4>
-                    <p>{!! $about->desc_lengkap !!}</p>
+                    <p>{!! $about->description !!}</p>
                 </div>
             </div>
         </div>

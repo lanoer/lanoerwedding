@@ -79,8 +79,8 @@
                     <div class="section-head">
                         <span>testiominals</span>
                         <h4>From our clients</h4>
-                        <p>We are always eager to hear your opinion and share your experience. Here you can find
-                            some of our affectionate customers opinions.</p>
+                        <p>Kami bangga telah menjadi bagian dari kisah mereka. Berikut adalah ungkapan hati dari para
+                            pelanggan kami.</p>
                     </div>
                 </div>
                 <div class="col-md-7">

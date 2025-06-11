@@ -19,6 +19,8 @@ class VerifyCsrfToken extends Middleware
         '/entertainment/sound/soundSystem/upload-image',
         '/entertainment/live/livemusic/upload-image',
         '/entertainment/ceremonial/ceremonialevent/upload-image',
-        '/aboutBackend/upload-image'
+        '/aboutBackend/upload-image',
+        '/catering/sub/premium/upload-image/',
+        '/catering/sub/medium/upload-image/'
     ];
 }

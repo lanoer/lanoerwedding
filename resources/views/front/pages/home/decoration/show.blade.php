@@ -58,8 +58,8 @@
                             {{ $galleryImages->links('pagination::custom') }}
                         </div>
                     </div>
-                    <h4 class="pwe-about-subheading animate-box" data-animate-effect="fadeInUp">To Know Us is to Love
-                        Us!</h4>
+                    <h4 class="pwe-about-subheading animate-box" data-animate-effect="fadeInUp">{{
+                        webInfo()->web_tagline }}</h4>
                 </div>
                 <div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
                     <h3 class="pwe-about-heading description">{{ $decoration->name }}</h3>
@@ -70,9 +70,7 @@
     </div>
     @include('front.layouts.inc.cta')
     <!-- Team -->
-    @include('front.layouts.inc.team')
 
-    @include('front.layouts.inc.testimonial')
     @include('front.layouts.inc.footer')
 </div>
 @endsection

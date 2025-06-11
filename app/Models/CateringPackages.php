@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
+use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
 class CateringPackages extends Model implements Viewable
@@ -27,5 +27,14 @@ class CateringPackages extends Model implements Viewable
                 'source' => 'name'
             ]
         ];
+    }
+
+    public function mediumCaterings()
+    {
+        return $this->hasMany(MediumCatering::class, 'catering_packages_id');
+    }
+    public function premiumCaterings()
+    {
+        return $this->hasMany(PremiumCatering::class, 'catering_packages_id');
     }
 }

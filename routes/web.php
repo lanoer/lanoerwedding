@@ -58,6 +58,9 @@ Route::get('decoration/{slug}', [HomeController::class, 'showDecoration'])->name
 Route::get('catering/list', [HomeController::class, 'cateringList'])->name('catering.list');
 Route::get('catering/{slug}', [HomeController::class, 'showCatering'])->name('catering.detail.show');
 
+Route::get('catering/premium/{slug}', [HomeController::class, 'showCateringPremium'])->name('premium.detail.show');
+Route::get('catering/medium/{slug}', [HomeController::class, 'showCateringMedium'])->name('medium.detail.show');
+
 Route::get('entertainment/list', [HomeController::class, 'entertainmentList'])
     ->name('entertainment.list');
 
@@ -219,6 +222,7 @@ Route::middleware('auth:web')->group(function () {
     });
 
     Route::prefix('catering')->name('catering.')->group(function () {
+
         Route::resource('/', CateringController::class);
         Route::get('main/create', [CateringController::class, 'create'])->name('main.create');
         Route::post('main/store', [CateringController::class, 'store'])->name('main.store');
@@ -227,6 +231,28 @@ Route::middleware('auth:web')->group(function () {
         Route::delete('main/destroy/{id}', [CateringController::class, 'destroy'])->name('main.destroy');
         Route::post('upload-image', [CateringController::class, 'uploadImage'])->name('upload.image');
         Route::post('delete-image', [CateringController::class, 'deleteImage'])->name('delete.image');
+
+
+        // PREMIUM CATERING
+        Route::get('sub/create/premium', [CateringController::class, 'createPremiumCatering'])->name('sub.createPremium');
+        Route::post('sub/store/premium', [CateringController::class, 'storePremiumCatering'])->name('sub.storePremium');
+        Route::get('sub/premium/edit/{id}', [CateringController::class, 'editPremiumCatering'])->name('sub.editPremium');
+        Route::put('sub/premium/update/{id}', [CateringController::class, 'updatePremiumCatering'])->name('sub.updatePremium');
+        Route::delete('/sub/premium/{destroy/id}', [CateringController::class, 'destroyPremiumCatering'])->name('sub.destroyPremium');
+        Route::post('/sub/premium/upload-image/', [CateringController::class, 'uploadImagePremium'])->name('upload.imagePremium');
+        Route::post('/sub/premium/delete-image/', [CateringController::class, 'deleteImagePremium'])->name('delete.imagePremium');
+        Route::delete('/sub/gallery-image/{id}', [CateringController::class, 'deleteGalleryImage'])->name('delete.premiumGallery.image');
+
+
+        // MEDIUM CATERING
+        Route::get('sub/medium/create', [CateringController::class, 'createMediumCatering'])->name('sub.createMedium');
+        Route::post('sub/medium/store', [CateringController::class, 'storeMediumCatering'])->name('sub.storeMedium');
+        Route::get('sub/medium/edit/{id}', [CateringController::class, 'editMediumCatering'])->name('sub.editMedium');
+        Route::put('sub/medium/update/{id}', [CateringController::class, 'updateMediumCatering'])->name('sub.updateMedium');
+        Route::delete('sub/medium/destroy/{id}', [CateringController::class, 'destroyMediumCatering'])->name('sub.destroyMedium');
+        Route::post('sub/medium/upload-image', [CateringController::class, 'uploadImageMedium'])->name('upload.imageMedium');
+        Route::post('sub/medium/delete-image', [CateringController::class, 'deleteImageMedium'])->name('delete.imageMedium');
+        Route::delete('/sub/medium/gallery-image/{id}', [CateringController::class, 'deleteGalleryImageMedium'])->name('delete.mediumGallery.image');
     });
 
     // recycle

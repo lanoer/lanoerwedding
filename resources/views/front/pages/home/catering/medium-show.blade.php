@@ -1,6 +1,6 @@
 @extends('front.layouts.pages-home')
 
-@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Entertainment - ' . $liveMusic->name)
+@section('pageTitle', isset($catering->name) ? $catering->name : 'Catering Medium')
 @push('meta')
 {!! SEO::generate() !!}
 @endpush
@@ -17,16 +17,15 @@
             <div class="banner-head-padding banner-head-margin">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12"> <span class="heading-meta">{{ $live->name }}</span>
+                        <div class="col-md-12"> <span class="heading-meta">Catering</span>
                             <h2 class="pwe-heading animate-box" data-animate-effect="fadeInLeft">
-                                {{ $liveMusic->name }}</h2>
+                                {{ $medium->name }}</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- About Us -->
     <style>
         .about-section ul,
         .about-section ol {
@@ -40,19 +39,20 @@
             max-width: 100%;
         }
     </style>
+    <!-- About Us -->
     <div class="about-section pt-0 pb-60">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 text-center"> <img
-                        src="{{ asset('storage/back/images/entertainment/live/' . $liveMusic->image) }}"
+                        src="{{ asset('storage/back/images/catering/medium/' . $medium->image) }}"
                         class="img-fluid mb-30 animate-box" data-animate-effect="fadeInLeft"
-                        alt="{{ $liveMusic->image_alt_text }}">
+                        alt="{{ $medium->image_alt_text }}">
                     <h4 class="pwe-about-subheading animate-box" data-animate-effect="fadeInUp">{{
                         webInfo()->web_tagline }}</h4>
                 </div>
                 <div class="col-md-6 animate-box description" data-animate-effect="fadeInLeft">
-                    <h3 class="pwe-about-heading">{{ $liveMusic->name }}</h3>
-                    <p>{!! $liveMusic->description !!}</p>
+                    <h3 class="pwe-about-heading">{{ $medium->name }}</h3>
+                    <p>{!! $medium->description !!}</p>
                 </div>
             </div>
         </div>
@@ -60,4 +60,5 @@
     @include('front.layouts.inc.cta')
     <!-- Team -->
     @include('front.layouts.inc.footer')
-    @endsection
+</div>
+@endsection

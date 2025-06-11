@@ -13,7 +13,7 @@
                                         <h1>{{ $slide->title }}</h1>
                                         <p>{{ $slide->desc_short }}</p>
                                         <div class="btn-contact"><a href="{{ $slide->action_link }}"
-                                                target="_blank"><span>{{ $slide->action_text }}</span></a></div>
+                                                ><span>{{ $slide->action_text }}</span></a></div>
                                     </div>
                                 </div>
                             </div>
@@ -21,6 +21,6 @@
                     </div>
                 </li>
             @endforeach
-        </ul> 
+        </ul>
     </div>
 </aside>

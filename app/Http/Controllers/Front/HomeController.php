@@ -22,6 +22,8 @@ use App\Models\TeamLanoer;
 use App\Models\Video;
 use App\Models\Wedding;
 use App\Models\WeddingMakeups;
+use App\Models\PremiumCatering;
+use App\Models\MediumCatering;
 use App\Models\Weddings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +52,48 @@ class HomeController extends Controller
         $about = About::first();
         if ($about) {
             views($about)->record();
+        }
+        // schema.org
+        $logoUrl = $about->image ? asset('back/images/about/' . $about->image) : '';
+        $featuredImage = $about->image ? asset('/storage/back/images/about/' . $about->image) : '';
+        $articleSchema = Schema::article()
+            ->headline($about->name)
+            ->author("admin")
+            ->datePublished($about->created_at->toW3CString())
+            ->dateModified($about->updated_at->toW3CString())
+            ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
+            ->image($featuredImage)
+            ->publisher(Schema::organization()
+                ->name('About us - Lanoer Wedding & Event Organizer')
+                ->logo($logoUrl));
+        $data = [
+            'pageTitle' => Str::ucfirst($about->name),
+            'about' => $about,
+            'articleSchema' => $articleSchema,
+        ];
+
+        SEOMeta::setTitle($about->name);
+        SEOMeta::setCanonical(url()->current());  // Set canonical URL
+        SEOMeta::setDescription($about->meta_description);
+        SEOMeta::addMeta('article:published_time', $about->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $about->name, 'property');
+        SEOMeta::addKeyword($about->meta_keywords);
+
+        OpenGraph::setDescription($about->meta_description);
+        OpenGraph::setTitle($about->name);
+        OpenGraph::setUrl(url()->current());
+        OpenGraph::addProperty('type', 'article');
+        OpenGraph::addProperty('locale', 'id-ID');
+        OpenGraph::addProperty('locale:alternate', ['en-us']);
+
+        JsonLdMulti::setTitle($about->name);
+        JsonLdMulti::setDescription($about->meta_description);
+        JsonLdMulti::setType('Article');
+        JsonLdMulti::addImage($about->image);
+        if (!JsonLdMulti::isEmpty()) {
+            JsonLdMulti::newJsonLd();
+            JsonLdMulti::setType('WebPage');
+            JsonLdMulti::setTitle('Page Article - ' . $about->name);
         }
         $teamCreative = TeamLanoer::get();
         return view('front.pages.home.about', compact('about', 'teamCreative'));
@@ -239,7 +283,6 @@ class HomeController extends Controller
         if ($decoration) {
             views($decoration)->record();
         }
-        $teamCreative = TeamLanoer::get();
 
         // schema.org
         $logoUrl = $decoration->image ? asset('back/images/decoration/' . $decoration->image) : '';
@@ -293,7 +336,7 @@ class HomeController extends Controller
                 'author' => "admin",
                 'section' => "Decoration",
             ]);
-        return view('front.pages.home.decoration.show', compact('decoration', 'teamCreative', 'articleSchema', 'data', 'galleryImages'));
+        return view('front.pages.home.decoration.show', compact('decoration', 'articleSchema', 'data', 'galleryImages'));
     }
 
     public function entertainmentList()
@@ -550,10 +593,14 @@ class HomeController extends Controller
 
     public function cateringList()
     {
-        $catering = CateringPackages::get();
-        $teamCreative = TeamLanoer::get();
-        return view('front.pages.home.catering.list', compact('catering', 'teamCreative'));
+        $premium = PremiumCatering::get();
+        $medium = MediumCatering::get();
+
+
+        return view('front.pages.home.catering.list', compact('premium', 'medium'));
     }
+
+
 
     public function showCatering($slug)
     {
@@ -616,6 +663,130 @@ class HomeController extends Controller
                 'section' => "Catering",
             ]);
         return view('front.pages.home.catering.show', compact('catering', 'teamCreative', 'articleSchema', 'data'));
+    }
+    public function showCateringPremium($slug)
+    {
+        $premium = PremiumCatering::with('images')->where('slug', $slug)->first();
+        $galleryImages = $premium->images()->paginate(3);
+        if ($premium) {
+            views($premium)->record();
+        }
+
+        // schema.org
+        $logoUrl = $premium->image ? asset('back/images/premium/' . $premium->image) : '';
+        $featuredImage = $premium->image ? asset('/storage/back/images/premium/' . $premium->image) : '';
+        $articleSchema = Schema::article()
+            ->headline($premium->name)
+            ->author("admin")
+            ->datePublished($premium->created_at->toW3CString())
+            ->dateModified($premium->updated_at->toW3CString())
+            ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
+            ->image($featuredImage)
+            ->publisher(Schema::organization()
+                ->name('Lanoer Wedding & Event Organizer')
+                ->logo($logoUrl));
+        $data = [
+            'pageTitle' => Str::ucfirst($premium->name),
+            'premium' => $premium,
+            'articleSchema' => $articleSchema,
+        ];
+
+        SEOMeta::setTitle($premium->name);
+        SEOMeta::setCanonical(url()->current());
+        SEOMeta::setDescription($premium->meta_description);
+        SEOMeta::addMeta('article:published_time', $premium->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $premium->name, 'property');
+        SEOMeta::addKeyword($premium->meta_keywords);
+
+        OpenGraph::setDescription($premium->description, 150);
+        OpenGraph::setTitle($premium->name);
+        OpenGraph::setUrl(url()->current());
+        OpenGraph::addProperty('type', 'article');
+        OpenGraph::addProperty('locale', 'id-ID');
+        OpenGraph::addProperty('locale:alternate', ['en-us']);
+
+        JsonLdMulti::setTitle($premium->name);
+        JsonLdMulti::setDescription($premium->meta_description, 150);
+        JsonLdMulti::setType('Article');
+        JsonLdMulti::addImage($premium->image);
+        if (!JsonLdMulti::isEmpty()) {
+            JsonLdMulti::newJsonLd();
+            JsonLdMulti::setType('WebPage');
+            JsonLdMulti::setTitle('Page Article - ' . $premium->name);
+        }
+        OpenGraph::setTitle($premium->name)
+            ->setDescription($premium->meta_description, 150)
+            ->setType('article')
+            ->setArticle([
+                'created_at' => 'datetime',
+                'updated_at' => 'datetime',
+                'expiration_time' => 'datetime',
+                'author' => "admin",
+                'section' => "premium",
+            ]);
+        return view('front.pages.home.catering.premium-show', compact('premium', 'articleSchema', 'data', 'galleryImages'));
+    }
+
+    public function showCateringMedium($slug)
+    {
+        $medium = MediumCatering::where('slug', $slug)->first();
+        if ($medium) {
+            views($medium)->record();
+        }
+
+        // schema.org
+        $logoUrl = $medium->image ? asset('back/images/catering/medium/' . $medium->image) : '';
+        $featuredImage = $medium->image ? asset('/storage/back/images/catering/medium/' . $medium->image) : '';
+        $articleSchema = Schema::article()
+            ->headline($medium->name)
+            ->author("admin")
+            ->datePublished($medium->created_at->toW3CString())
+            ->dateModified($medium->updated_at->toW3CString())
+            ->mainEntityOfPage(Schema::webPage()->identifier(url()->current()))
+            ->image($featuredImage)
+            ->publisher(Schema::organization()
+                ->name('Lanoer Wedding & Event Organizer')
+                ->logo($logoUrl));
+        $data = [
+            'pageTitle' => Str::ucfirst($medium->name),
+            'catering' => $medium,
+            'articleSchema' => $articleSchema,
+        ];
+
+        SEOMeta::setTitle($medium->name);
+        SEOMeta::setCanonical(url()->current());
+        SEOMeta::setDescription($medium->meta_description);
+        SEOMeta::addMeta('article:published_time', $medium->created_at->toW3CString(), 'property');
+        SEOMeta::addMeta('article:section', $medium->name, 'property');
+        SEOMeta::addKeyword($medium->meta_keywords);
+
+        OpenGraph::setDescription($medium->meta_description);
+        OpenGraph::setTitle($medium->name);
+        OpenGraph::setUrl(url()->current());
+        OpenGraph::addProperty('type', 'article');
+        OpenGraph::addProperty('locale', 'id-ID');
+        OpenGraph::addProperty('locale:alternate', ['en-us']);
+
+        JsonLdMulti::setTitle($medium->name);
+        JsonLdMulti::setDescription($medium->meta_description);
+        JsonLdMulti::setType('Article');
+        JsonLdMulti::addImage($medium->image);
+        if (!JsonLdMulti::isEmpty()) {
+            JsonLdMulti::newJsonLd();
+            JsonLdMulti::setType('WebPage');
+            JsonLdMulti::setTitle('Page Article - ' . $medium->name);
+        }
+        OpenGraph::setTitle($medium->name)
+            ->setDescription($medium->meta_description)
+            ->setType('article')
+            ->setArticle([
+                'created_at' => 'datetime',
+                'updated_at' => 'datetime',
+                'expiration_time' => 'datetime',
+                'author' => "admin",
+                'section' => "medium",
+            ]);
+        return view('front.pages.home.catering.medium-show', compact('medium',  'articleSchema', 'data'));
     }
 
 

@@ -60,14 +60,14 @@
                             <a href="{{ route('decoration.index') }}"><span>Decoration</span></a>
                         </li>
                         <li
-                            class="{{ Route::is('entertainment.index') ? 'mm-active' : '' }} {{ Route::is('entertainment.sound.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.live.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.ceremonial.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.soundSystem.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.livemusic.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.ceremonialevent.*') ? 'mm-active' : '' }} ">
+                            class="{{ Route::is('entertainment.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.sound.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.live.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.ceremonial.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.soundSystem.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.livemusic.*') ? 'mm-active' : '' }} {{ Route::is('entertainment.ceremonialevent.*') ? 'mm-active' : '' }} ">
                             <a href="{{ route('entertainment.index') }}"><span>Entertainment</span></a>
                         </li>
                         <li
-                            class="{{ Route::is('documentation.index') ? 'mm-active' : '' }} {{ Route::is('documentation.add-foto') ? 'mm-active' : '' }} ">
+                            class="{{ Route::is('documentation.*') ? 'mm-active' : '' }} {{ Route::is('documentation.add-foto') ? 'mm-active' : '' }} ">
                             <a href="{{ route('documentation.index') }}"><span>Documentation</span></a>
                         </li>
-                        <li class="{{ Route::is('catering.index') ? 'mm-active' : '' }}">
+                        <li class="{{ Route::is('catering.*') ? 'mm-active' : '' }}">
                             <a href="{{ route('catering.index') }}"><span>Catering</span></a>
                         </li>
                     </ul>

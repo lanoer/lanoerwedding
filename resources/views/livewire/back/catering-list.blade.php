@@ -1,5 +1,5 @@
 <div>
-    <div class="app-container container-xxl">
+    {{-- <div class="app-container container-xxl">
 
 
         <div class="row row-cards">
@@ -115,11 +115,50 @@
         <div class="row mt-4">
             {{ $caterings->links() }}
         </div>
+    </div> --}}
+
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <img src="{{ asset('storage/back/images/catering/premium/' . $premiumCaterings['image']) }}"
+                    class="card-img-top" alt="Thumbnail 1" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ $premiumCaterings['name'] }}</h5>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <a href="" class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Show Details"><i class="bx bx-show"></i></a>
+                        <a href="{{ route('catering.sub.editPremium', $premiumCaterings['id']) }}"
+                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Edit"><i class="bx bx-edit"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Card 1 -->
+
+        <!-- Card 2 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <img src="{{ asset('storage/back/images/catering/medium/' . $mediumCaterings['image']) }}"
+                    class="card-img-top" alt="Thumbnail 1" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ $mediumCaterings['name'] }}</h5>
+
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <a href="" class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Show Details"><i class="bx bx-show"></i></a>
+                        <a href="{{ route('catering.sub.editMedium', $mediumCaterings['id']) }}"
+                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Edit"><i class="bx bx-edit"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 
-@push('scripts')
+{{-- @push('scripts')
 <script>
     function copyToClipboard(url) {
             // Buat elemen textarea sementara
@@ -138,4 +177,4 @@
             document.body.removeChild(textarea);
         }
 </script>
-@endpush
+@endpush --}}

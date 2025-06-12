@@ -17,7 +17,7 @@
                     style="height: 200px; object-fit: cover;">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $item->name }}</h5>
-                    <p class="card-text">{!! $item->description !!}</p>
+                    {{-- <p class="card-text">{!! $item->description !!}</p> --}}
                     <div class="mt-auto d-flex justify-content-between align-items-center">
                         <!-- Display the count for premiumCaterings if greater than 0 -->
                         @if ($item->premium_caterings_count > 0)

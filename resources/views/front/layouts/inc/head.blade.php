@@ -30,6 +30,7 @@
     {!! web_seo()->gtag_header !!}
     {!! web_seo()->bing !!}
     {!! web_seo()->yandex !!}
+    {!! web_seo()->pinterest !!}
 
 
 </head>

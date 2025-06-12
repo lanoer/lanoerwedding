@@ -70,6 +70,9 @@
                         <li class="{{ Route::is('catering.*') ? 'mm-active' : '' }}">
                             <a href="{{ route('catering.index') }}"><span>Catering</span></a>
                         </li>
+                        <li class="{{ Route::is('gallery.*') ? 'mm-active' : '' }}">
+                            <a href="{{ route('gallery.index') }}"><span>Our Gallery</span></a>
+                        </li>
                     </ul>
                 </li>
 

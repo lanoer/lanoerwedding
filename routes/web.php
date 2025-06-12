@@ -19,6 +19,7 @@ use App\Http\Controllers\Back\UserListController;
 use App\Http\Controllers\Back\WeddingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Back\EntertainmentController;
+use App\Http\Controllers\Back\GalleryController;
 use App\Http\Controllers\Back\LiveController;
 use App\Http\Controllers\Back\PostController;
 use App\Http\Controllers\Back\SliderController;
@@ -45,6 +46,9 @@ Route::get('/makeups', [HomeController::class, 'makeups'])->name('makeups');
 
 Route::get('/documentation', [HomeController::class, 'documentation'])->name('portofolio');
 Route::get('/documentation/foto/{slug}', [HomeController::class, 'showDocumentation'])->name('documentation.main.show');
+
+Route::get('/gallery/list/', [HomeController::class, 'galleryMain'])->name('galleri');
+Route::get('gallery/{slug}', [HomeController::class, 'showFotoGallery'])->name('gallery.main.show');
 
 Route::get('makeup/event/{eventMakeupSlug}', [HomeController::class, 'detailEvent'])->name('makeup.event');
 Route::get('makeup/event/show/{eventMakeupSlug}/{slug}', [HomeController::class, 'showEvent'])->name('makeup.event.detail');
@@ -92,6 +96,9 @@ Route::get('/search', [BlogController::class, 'showSearchResults'])->name('blog.
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [HomeController::class, 'robotsTxt']);
+
+
+
 // ROUTE BACKEND
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -234,17 +241,20 @@ Route::middleware('auth:web')->group(function () {
 
 
         // PREMIUM CATERING
+        Route::get('sub/view/premium/{id}', [CateringController::class, 'viewPremium'])->name('sub.viewPremium');
         Route::get('sub/create/premium', [CateringController::class, 'createPremiumCatering'])->name('sub.createPremium');
         Route::post('sub/store/premium', [CateringController::class, 'storePremiumCatering'])->name('sub.storePremium');
         Route::get('sub/premium/edit/{id}', [CateringController::class, 'editPremiumCatering'])->name('sub.editPremium');
         Route::put('sub/premium/update/{id}', [CateringController::class, 'updatePremiumCatering'])->name('sub.updatePremium');
-        Route::delete('/sub/premium/{destroy/id}', [CateringController::class, 'destroyPremiumCatering'])->name('sub.destroyPremium');
+        Route::delete('/sub/premium/{id}', [CateringController::class, 'destroyPremiumCatering'])->name('sub.destroyPremium');
         Route::post('/sub/premium/upload-image/', [CateringController::class, 'uploadImagePremium'])->name('upload.imagePremium');
         Route::post('/sub/premium/delete-image/', [CateringController::class, 'deleteImagePremium'])->name('delete.imagePremium');
         Route::delete('/sub/gallery-image/{id}', [CateringController::class, 'deleteGalleryImage'])->name('delete.premiumGallery.image');
 
 
         // MEDIUM CATERING
+        Route::get('sub/view/medium/{id}', [CateringController::class, 'viewMedium'])->name('sub.viewMedium');
+
         Route::get('sub/medium/create', [CateringController::class, 'createMediumCatering'])->name('sub.createMedium');
         Route::post('sub/medium/store', [CateringController::class, 'storeMediumCatering'])->name('sub.storeMedium');
         Route::get('sub/medium/edit/{id}', [CateringController::class, 'editMediumCatering'])->name('sub.editMedium');
@@ -310,6 +320,15 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/albums/{id}', [AlbumController::class, 'update'])->name('albums.update');
 
 
+
     Route::view('/insert-code', 'back.pages.insert-code.index')->name('insert-code');
     Route::view('/indexing', 'back.pages.indexing.index')->name('indexing');
+
+    Route::prefix('gallery')->name('gallery.')->group(function () {
+        Route::resource('/', GalleryController::class);
+        Route::get('add-foto-gallery', [GalleryController::class, 'addFotoGallery'])->name('add-foto.gallery');
+        Route::post('store-foto-gallery', [GalleryController::class, 'storeFotoGallery'])->name('store-foto.gallery');
+        Route::post('/gallery', [GalleryController::class, 'storeGallery'])->name('store');
+        Route::post('/gallery/{id}', [GalleryController::class, 'updateGallery'])->name('update');
+    });
 });

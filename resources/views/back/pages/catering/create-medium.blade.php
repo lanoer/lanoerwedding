@@ -1,12 +1,12 @@
 @extends('back.layouts.pages-layout')
 
-@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Edit Premium Catering')
+@section('pageTitle', isset($pageTitle) ? $pageTitle : 'Create')
 
 
 @section('pageHeader')
 <div class="col-12">
     <div class="page-title-box d-flex align-items-center justify-content-between">
-        <h4 class="page-title mb-0 font-size-18">Edit Premium Catering</h4>
+        <h4 class="page-title mb-0 font-size-18">Create</h4>
 
         <div class="page-title-right">
             @include('components.breadcrumbs')
@@ -20,22 +20,41 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0">Edit Premium Catering</h4>
+                <h4 class="card-title mb-0">Create</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('catering.sub.updatePremium', $premiums->id) }}" method="POST"
-                    enctype="multipart/form-data" id="premiumform">
+                <form action="{{ route('catering.sub.storeMedium') }}" method="POST" enctype="multipart/form-data"
+                    id="mediumform">
                     @csrf
-                    @method('PUT')
-                    <div class="form-group">
+                    <!-- Catering Package Dropdown -->
+                    <div class="form-group mb-3">
+                        <label for="catering_package_id">Category</label>
+                        <select class="form-control @error('catering_packages_id') is-invalid @enderror"
+                            name="catering_packages_id" id="catering_packages_id">
+                            <option value="">-- Pilih Category --</option>
+                            @foreach ($catering as $package)
+                            <option value="{{ $package->id }}" {{ old('catering_packages_id')==$package->id ? 'selected'
+                                : '' }}>
+                                {{ $package->name }}
+                                <!-- Assuming 'name' is the column for the package name -->
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('catering_package_id')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-3">
                         <label for="name">Name</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                            name="name" value="{{ $premiums->name }}">
+                            name="name" value="{{ old('name') }}">
                         @error('name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group">
+
+                    <!-- Main Image -->
+                    <div class="form-group mb-3">
                         <label for="main_image">Main Image</label>
                         <input type="file" class="form-control @error('main_image') is-invalid @enderror"
                             id="main_image" name="main_image" accept="image/*">
@@ -43,28 +62,11 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="image_holder mb-2" style="max-width: 250px">
-                        @if($premiums->image)
-                        <img src="{{ asset('storage/back/images/catering/premium/' . $premiums->image) }}" alt=""
-                            class="img-thumbnail" id="image-previewer">
-                        @else
-                        <p>No image available.</p>
-                        @endif
-                    </div>
-                    <!-- Gallery Images -->
+
+                    <!-- Dropzone untuk gallery -->
                     <div class="form-group mb-3">
                         <label>Gallery Images</label>
                         <div class="dropzone" id="gallery-dropzone"></div>
-                        <div class="row mt-2">
-                            @foreach ($premiums->images as $img)
-                            <div class="col-3 mb-2" id="gallery-img-{{ $img->id }}">
-                                <img src="{{ asset('storage/back/images/catering/premium/gallery/thumbnails/thumb_800_' . $img->image) }}"
-                                    class="img-thumbnail" style="width:100%">
-                                <button type="button" class="btn btn-danger btn-sm btn-block mt-1 delete-gallery-img"
-                                    data-id="{{ $img->id }}">Delete</button>
-                            </div>
-                            @endforeach
-                        </div>
                         @error('gallery')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -73,10 +75,10 @@
                         @enderror
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label for="description">Description</label>
                         <textarea class=" form-control @error('description') is-invalid @enderror" name="description"
-                            rows="6" placeholder="Content.." id="description">{!! $premiums->description !!}</textarea>
+                            rows="6" placeholder="Content.." id="description">{!! old('description') !!}</textarea>
                         @error('description')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -84,7 +86,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_description">Meta Description</label>
                         <input type="text" class="form-control @error('meta_description') is-invalid @enderror"
-                            id="meta_description" name="meta_description" value="{{ $premiums->meta_description }}">
+                            id="meta_description" name="meta_description" value="{{ old('meta_description') }}">
                         @error('meta_description')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -92,7 +94,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_keywords">Meta Keywords</label>
                         <input type="text" class="form-control @error('meta_keywords') is-invalid @enderror"
-                            id="meta_keywords" name="meta_keywords" value="{{ $premiums->meta_keywords }}">
+                            id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords') }}">
                         @error('meta_keywords')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -100,7 +102,7 @@
                     <div class="form-group mb-3 mt-3">
                         <label for="meta_tags">Meta Tags</label>
                         <input type="text" class="form-control @error('meta_tags') is-invalid @enderror" id="meta_tags"
-                            name="meta_tags" value="{{ $premiums->meta_tags }}">
+                            name="meta_tags" value="{{ old('meta_tags') }}">
                         @error('meta_tags')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -111,7 +113,7 @@
                         <button type="submit" id="submitBtn" class="btn btn-primary mt-3">
                             <i class="bx bx-loader bx-spin font-size-16 align-middle me-2 d-none"
                                 id="loadingSpinner"></i>
-                            <span id="buttonText">Update</span>
+                            <span id="buttonText">Create</span>
                         </button>
                     </div>
                 </form>
@@ -131,8 +133,8 @@
 <script src="{{ asset('back/assets/vendor/dropzone/dropzone.min.js') }}"></script>
 <script>
     $('input[name="meta_tags"]').amsifySuggestags({
-    type: 'amsify'
-    });
+            type: 'amsify'
+        });
 </script>
 <script>
     $.ajaxSetup({
@@ -157,7 +159,7 @@
             previewsContainer: "#gallery-dropzone",
         });
 
-        document.getElementById('premiumform').addEventListener('submit', function(e) {
+        document.getElementById('mediumform').addEventListener('submit', function(e) {
             e.preventDefault();
 
             var formData = new FormData(this);
@@ -181,16 +183,26 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    toastr.success(data.success);
+                    console.log(data); // Debugging respons server
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(function(field) {
+                            $('#' + field).addClass('is-invalid');
+                            $('#' + field).siblings('.text-danger').text(data.errors[field][0]);
+                        });
+                    } else if (data.error) {
+                        toastr.error(data.error);
+                    } else {
+                        toastr.success(data.success);
+                    }
                     submitBtn.disabled = false;
                     loadingSpinner.classList.add('d-none');
-                    buttonText.textContent = 'Update';
+                    buttonText.textContent = 'Create';
                 })
                 .catch(error => {
                     toastr.error('Terjadi kesalahan saat menyimpan data');
                     submitBtn.disabled = false;
                     loadingSpinner.classList.add('d-none');
-                    buttonText.textContent = 'Update';
+                    buttonText.textContent = 'Create';
                 });
         });
 
@@ -199,7 +211,8 @@
             var imgId = $(this).data('id');
             if (confirm('Delete this image?')) {
                 $.ajax({
-                    url: '{{ route('catering.delete.premiumGallery.image', ':id') }}'.replace(':id', imgId),
+                    url: '{{ route('catering.delete.premiumGallery.image', ':id') }}'.replace(':id',
+                        imgId),
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -209,7 +222,7 @@
                         toastr.success('Image deleted successfully');
                     },
                     error: function(xhr, status, error) {
-                    console.error('Error deleting image:', error);
+                        console.error('Error deleting image:', error);
                     }
                 });
             }
@@ -286,5 +299,4 @@
             });
         });
 </script>
-
 @endpush

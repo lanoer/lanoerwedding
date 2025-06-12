@@ -28,6 +28,9 @@
             <li @if (request()->is('catering/*')) class="pwe-active" @endif><a
                     href="{{ route('catering.list') }}">Catering</a>
             </li>
+            <li @if (request()->is('gallery') || request()->is('gallery/*')) class="pwe-active" @endif>
+                <a href="{{ route('galleri') }}">Our Gallery</a>
+            </li>
             {{--
             <li @if (request()->is('services')) class="pwe-active" @endif><a
                     href="{{ route('servicesHome') }}">Services</a></li> --}}

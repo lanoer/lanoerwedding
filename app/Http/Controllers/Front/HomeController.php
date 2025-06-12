@@ -25,6 +25,9 @@ use App\Models\WeddingMakeups;
 use App\Models\PremiumCatering;
 use App\Models\MediumCatering;
 use App\Models\Weddings;
+use App\Models\GalleryFoto;
+use App\Models\VideoGallery;
+use App\Models\FotoGallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -589,16 +592,42 @@ class HomeController extends Controller
         }
         return view('front.pages.home.documentation.show', compact('album', 'fotos', 'videos'));
     }
+    public function galleryMain()
+    {
+        $gallery = GalleryFoto::with('FotoGallery')->paginate(6);
+        $videosGallery = VideoGallery::paginate(3);
+
+        return view('front.pages.home.gallery.index', compact('gallery', 'videosGallery'));
+    }
+
+
+    public function showFotoGallery($slug)
+    {
+        $gallery = GalleryFoto::where('slug', $slug)->first();
+        $fotosGallery = $gallery ? $gallery->FotoGallery()->paginate(3) : collect(); // paginate 6 per page
+        $videosGallery = Video::get();
+        if ($gallery) {
+            views($gallery)->record();
+        }
+        return view('front.pages.home.gallery.show', compact('gallery', 'fotosGallery', 'videosGallery'));
+    }
 
 
     public function cateringList()
     {
-        $premium = PremiumCatering::get();
-        $medium = MediumCatering::get();
+        // Mengambil semua catering packages beserta relasi mediumCaterings dan premiumCaterings
+        $cateringList = CateringPackages::with(['premiumCaterings', 'mediumCaterings'])->get();
 
+        // Memeriksa jika data kosong
+        if ($cateringList->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data catering packages');
+        }
 
-        return view('front.pages.home.catering.list', compact('premium', 'medium'));
+        // Mengirim data ke view
+        return view('front.pages.home.catering.list', compact('cateringList'));
     }
+
+
 
 
 

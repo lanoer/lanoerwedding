@@ -47,7 +47,7 @@ class CateringController extends Controller
         $request->validate(
             [
                 'name' => 'required|unique:sound_systems,name',
-                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
                 'description' => 'required',
                 'meta_description' => 'required',
                 'meta_keywords' => 'required',
@@ -572,5 +572,171 @@ class CateringController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan']);
+    }
+
+    public function viewPremium($id)
+    {
+        // Retrieve the CateringPackage with related premiumCaterings
+        $catering = CateringPackages::with('premiumCaterings')->findOrFail($id);
+
+        // Set pageTitle to the name of the CateringPackage
+        $pageTitle = $catering->name;
+
+        // Return the view with catering data and pageTitle
+        return view('back.pages.catering.view-premium', compact('catering', 'pageTitle'));
+    }
+
+    public function destroyPremiumCatering($id)
+    {
+        $premiumCatering = PremiumCatering::findOrFail($id);
+        $premiumCatering->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'deleted successfully.');
+    }
+    public function createPremiumCatering()
+    {
+        $catering = CateringPackages::all();
+        return view('back.pages.catering.create-premium', compact('catering'));
+    }
+
+    public function storePremiumCatering(Request $request)
+    {
+        // dd($request->all());
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255|unique:premium_caterings,name',
+            'description' => 'required|string',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'meta_tags' => 'nullable|string',
+            'catering_packages_id' => 'required|exists:catering_packages,id', // Add this validation
+        ]);
+        try {
+            // Create a new PremiumCatering record
+            $premiumCatering = new PremiumCatering();
+            $premiumCatering->catering_packages_id = $request->catering_packages_id;
+            $premiumCatering->name = $request->name;
+            $premiumCatering->slug = Str::slug($request->name);
+            $premiumCatering->description = $request->description;
+            $premiumCatering->meta_description = $request->meta_description;
+            $premiumCatering->meta_keywords = $request->meta_keywords;
+            $premiumCatering->meta_tags = $request->meta_tags;
+            if ($request->hasFile('main_image')) {
+                $mainImage = $request->file('main_image');
+                $mainImageName = 'premium-' . time() . '-' . $mainImage->getClientOriginalName();
+                $mainImagePath = 'back/images/catering/premium/' . $mainImageName;
+                Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
+                $premiumCatering->image = $mainImageName;
+            }
+            $premiumCatering->save(); // Make sure to link it to the specific CateringPackage
+
+            // Store gallery images
+            if ($request->hasFile('gallery')) {
+                foreach ($request->file('gallery') as $file) {
+                    $galleryImageName = 'premium-gallery-' . time() . '-' . $file->getClientOriginalName();
+                    $galleryImagePath = 'back/images/catering/premium/gallery/' . $galleryImageName;
+                    Storage::disk('public')->put($galleryImagePath, file_get_contents($file));
+
+                    PremiumCateringImage::create([
+                        'premium_caterings_id' => $premiumCatering->id,
+                        'image' => $galleryImageName,
+                    ]);
+                }
+            }
+
+            // Log activity (optional)
+            activity()->causedBy(auth()->user())->log('Created new: ' . $premiumCatering->name);
+
+            return response()->json(['success' => 'created successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+
+
+
+    public function viewMedium($id)
+    {
+        // Retrieve the CateringPackage with related premiumCaterings
+        $catering = CateringPackages::with('mediumCaterings')->findOrFail($id);
+
+        // Set pageTitle to the name of the CateringPackage
+        $pageTitle = $catering->name;
+
+        // Return the view with catering data and pageTitle
+        return view('back.pages.catering.view-medium', compact('catering', 'pageTitle'));
+    }
+
+    public function destroyMediumCatering($id)
+    {
+        $mediumCatering = MediumCatering::findOrFail($id);
+        $mediumCatering->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'deleted successfully.');
+    }
+    public function createMediumCatering()
+    {
+        $catering = CateringPackages::all();
+        return view('back.pages.catering.create-medium', compact('catering'));
+    }
+
+    public function storeMediumCatering(Request $request)
+    {
+        // dd($request->all());
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255|unique:medium_caterings,name',
+            'description' => 'required|string',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'meta_tags' => 'nullable|string',
+            'catering_packages_id' => 'required|exists:catering_packages,id', // Add this validation
+        ]);
+        try {
+            // Create a new PremiumCatering record
+            $mediumCatering = new MediumCatering();
+            $mediumCatering->catering_packages_id = $request->catering_packages_id;
+            $mediumCatering->name = $request->name;
+            $mediumCatering->slug = Str::slug($request->name);
+            $mediumCatering->description = $request->description;
+            $mediumCatering->meta_description = $request->meta_description;
+            $mediumCatering->meta_keywords = $request->meta_keywords;
+            $mediumCatering->meta_tags = $request->meta_tags;
+            if ($request->hasFile('main_image')) {
+                $mainImage = $request->file('main_image');
+                $mainImageName = 'medium-' . time() . '-' . $mainImage->getClientOriginalName();
+                $mainImagePath = 'back/images/catering/medium/' . $mainImageName;
+                Storage::disk('public')->put($mainImagePath, file_get_contents($mainImage));
+                $mediumCatering->image = $mainImageName;
+            }
+            $mediumCatering->save(); // Make sure to link it to the specific CateringPackage
+
+            // Store gallery images
+            if ($request->hasFile('gallery')) {
+                foreach ($request->file('gallery') as $file) {
+                    $galleryImageName = 'medium-gallery-' . time() . '-' . $file->getClientOriginalName();
+                    $galleryImagePath = 'back/images/catering/medium/gallery/' . $galleryImageName;
+                    Storage::disk('public')->put($galleryImagePath, file_get_contents($file));
+
+                    MediumCateringImage::create([
+                        'medium_caterings_id' => $mediumCatering->id,
+                        'image' => $galleryImageName,
+                    ]);
+                }
+            }
+
+            // Log activity (optional)
+            activity()->causedBy(auth()->user())->log('Created new: ' . $mediumCatering->name);
+
+            return response()->json(['success' => 'created successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
 }

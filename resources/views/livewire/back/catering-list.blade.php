@@ -1,182 +1,62 @@
 <div>
-    {{-- <div class="app-container container-xxl">
-
-
-        <div class="row row-cards">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <div class="card-title">
-                        <!--begin::Search-->
-                        <div class="d-flex align-items-center position-relative my-1 me-5">
-                            All Catering
-                        </div>
-                        <!--end::Search-->
-                    </div>
-                    <div class="card-toolbar">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search..." wire:model='search'
-                                style="padding-right: 40px;">
-                            <span class="input-group-text"
-                                style="position: absolute; right: 10px; border: none; background: transparent; z-index: 1000;">
-                                <i class="mdi mdi-magnify"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="card-body border-bottom py-3">
-                    <div class="d-flex">
-                        <div class="text-muted">
-                            Show
-                            <div class="mx-2 d-inline-block ">
-                                <select wire:model.live='perPage' class="form-select">
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </div>
-                            entries
-                        </div>
-                        <div class="ms-auto">
-                            <a href="{{ route('catering.main.create') }}" class="btn btn-primary">Add
-                                Catering</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-striped gy-7 gs-7">
-                        <thead>
-                            <tr class="fw-semibold fs-6 text-gray-800 border-bottom-2 border-gray-200">
-                                <th>No</th>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th class="w-1">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($caterings as $c=>$catering)
-                            <tr>
-                                <td>{{ $c + 1 }}</td>
-                                <td>
-                                    <div class="d-flex py-1 align-items-center">
-                                        <span class="avatar me-2"
-                                            style="background-image: url('{{ asset('storage/back/images/catering/' . $catering->image) }}');
-                                    width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="">
-                                        {!! Str::limit($catering->name, 15, ' ...') !!}
-                                    </div>
-                                </td>
-                                <td class="text-muted">
-                                    {!! Str::limit($catering->description, 15, ' ...') !!}
-                                </td>
-                                <td>
-                                    <div class="d-flex py-1 align-items-center">
-
-                                        <a href="{{ route('catering.detail.show', $catering->slug) }}"
-                                            class="btn btn-sm btn-primary mx-1" target="_blank" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <button class="btn btn-sm btn-info mx-1"
-                                            onclick="copyToClipboard('{{ route('catering.detail.show', $catering->slug) }}')"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Copy URL">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                        <a href="{{ route('catering.main.edit', [$catering->id]) }}"
-                                            class="btn btn-sm btn-warning ">Edit</a>
-
-                                        <a href=""
-                                            wire:click.prevent='deleteCatering({{ $catering->id }}, "{{ $catering->name }}")'
-                                            class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-danger">No Catering found.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-        </div>
-        <div class="row mt-4">
-            {{ $caterings->links() }}
-        </div>
-    </div> --}}
-
-
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <img src="{{ asset('storage/back/images/catering/premium/' . $premiumCaterings['image']) }}"
-                    class="card-img-top" alt="Thumbnail 1" style="height: 200px; object-fit: cover;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ $premiumCaterings['name'] }}</h5>
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <a href="{{ route('premium.detail.show', $premiumCaterings->slug) }}" target="_blank"
-                            class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Show Details"><i class="bx bx-show"></i></a>
-                        <a href="{{ route('catering.sub.editPremium', $premiumCaterings['id']) }}"
-                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Edit"><i class="bx bx-edit"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div> <!-- Card 1 -->
-
-        <!-- Card 2 -->
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <img src="{{ asset('storage/back/images/catering/medium/' . $mediumCaterings['image']) }}"
-                    class="card-img-top" alt="Thumbnail 1" style="height: 200px; object-fit: cover;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ $mediumCaterings['name'] }}</h5>
-
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <a href="{{ route('medium.detail.show', $mediumCaterings->slug) }}" target="_blank"
-                            class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Show Details"><i class="bx bx-show"></i></a>
-                        <a href="{{ route('catering.sub.editMedium', $mediumCaterings['id']) }}"
-                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Edit"><i class="bx bx-edit"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Display flash messages (Success/Error) -->
+    <!-- Add New CateringPackage Button -->
+    <div class="mb-3">
+        <a href="{{ route('catering.main.create') }}" class="btn btn-success btn-sm">
+            <i class="bx bx-plus"></i> Add New Catering Package
+        </a>
     </div>
 
-</div>
+    <!-- Table -->
+    <div class="row">
+        @foreach ($caterings as $item)
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <!-- Thumbnail image -->
+                <img src="{{ asset('storage/back/images/event/eventmakeup/') }}" class="card-img-top" alt="Thumbnail"
+                    style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ $item->name }}</h5>
+                    <p class="card-text">{!! $item->description !!}</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <!-- Display the count for premiumCaterings if greater than 0 -->
+                        @if ($item->premium_caterings_count > 0)
+                        <button class="btn btn-info btn-sm">
+                            <span class="badge bg-primary">{{ $item->premium_caterings_count }}</span>
+                        </button>
+                        <a href="{{ route('catering.sub.viewPremium', $item->id) }}" class="btn btn-primary btn-sm mx-2"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                            <i class="bx bx-show"></i> View
+                        </a>
+                        @endif
 
-{{-- @push('scripts')
-<script>
-    function copyToClipboard(url) {
-            // Buat elemen textarea sementara
-            var textarea = document.createElement("textarea");
-            textarea.value = url;
-            document.body.appendChild(textarea);
-            textarea.select();
-           try {
-            // Salin teks ke clipboard
-            document.execCommand('copy');
-            toastr.success('URL copied to clipboard');
-            } catch (err) {
-            toastr.error('Failed to copy URL');
-            }
-            // Hapus elemen textarea sementara
-            document.body.removeChild(textarea);
-        }
-</script>
-@endpush --}}
+                        <!-- Display the count for mediumCaterings if greater than 0 -->
+                        @if ($item->medium_caterings_count > 0)
+                        <button class="btn btn-info btn-sm">
+                            <span class="badge bg-primary">{{ $item->medium_caterings_count }}</span>
+                        </button>
+                        <a href="{{ route('catering.sub.viewMedium', $item->id) }}" class="btn btn-primary btn-sm mx-2"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                            <i class="bx bx-show"></i> View
+                        </a>
+                        @endif
+
+                        <!-- Edit Catering Package -->
+                        <a href="{{ route('catering.main.edit', $item->id) }}" class="btn btn-warning btn-sm"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                            <i class="bx bx-edit"></i>
+                        </a>
+
+                        <!-- Delete Catering Package -->
+                        <button wire:click="delete({{ $item->id }})" class="btn btn-danger btn-sm"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                            <i class="bx bx-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End of Card -->
+        @endforeach
+    </div> <!-- End of Row -->
+
+</div>

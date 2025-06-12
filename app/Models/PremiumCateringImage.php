@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PremiumCateringImage extends Model
 {
     use HasFactory;
-    protected $guarded = [];
-    protected $protected = ['premium_caterings_id', 'image'];
+    protected $guarded = []; // atau sesuaikan dengan field aslinya
+
 }

@@ -126,7 +126,8 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $premiumCaterings['name'] }}</h5>
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <a href="" class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                        <a href="{{ route('premium.detail.show', $premiumCaterings->slug) }}" target="_blank"
+                            class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
                             title="Show Details"><i class="bx bx-show"></i></a>
                         <a href="{{ route('catering.sub.editPremium', $premiumCaterings['id']) }}"
                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -145,7 +146,8 @@
                     <h5 class="card-title">{{ $mediumCaterings['name'] }}</h5>
 
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <a href="" class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                        <a href="{{ route('medium.detail.show', $mediumCaterings->slug) }}" target="_blank"
+                            class="btn btn-primary btn-sm mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
                             title="Show Details"><i class="bx bx-show"></i></a>
                         <a href="{{ route('catering.sub.editMedium', $mediumCaterings['id']) }}"
                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"

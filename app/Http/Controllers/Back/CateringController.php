@@ -371,7 +371,7 @@ class CateringController extends Controller
 
     public function deleteGalleryImageMedium($id)
     {
-        $image = MediumCatering::findOrFail($id);
+        $image = MediumCateringImage::find($id);
 
         Log::info('Deleting image: ' . $image->image);
         Storage::disk('public')->delete('back/images/catering/medium/gallery/' . $image->image);
@@ -423,7 +423,7 @@ class CateringController extends Controller
     }
     public function editPremiumCatering($id)
     {
-        $premiums = PremiumCatering::with('images')->find($id);
+        $premiums = PremiumCatering::with('images')->findOrFail($id);
         return view('back.pages.catering.edit-premium', compact('premiums'));
     }
 
@@ -518,7 +518,12 @@ class CateringController extends Controller
 
     public function deleteGalleryImage($id)
     {
-        $image = PremiumCatering::findOrFail($id);
+        $image = PremiumCateringImage::find($id);
+        if (!$image) {
+            // Tambahkan log agar tahu ID berapa yang error
+            \Log::error("PremiumCatering ID {$id} tidak ditemukan.");
+            abort(404, 'Premium Catering tidak ditemukan.');
+        }
 
         Log::info('Deleting image: ' . $image->image);
         Storage::disk('public')->delete('back/images/catering/premium/gallery/' . $image->image);

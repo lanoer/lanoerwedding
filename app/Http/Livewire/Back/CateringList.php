@@ -14,8 +14,8 @@ class CateringList extends Component
     public function mount()
     {
         // Store the necessary attributes only as an array
-        $this->premiumCaterings = PremiumCatering::first(['id', 'name', 'image', 'description']);
-        $this->mediumCaterings = MediumCatering::first(['id', 'name', 'image', 'description']);
+        $this->premiumCaterings = PremiumCatering::first(['id', 'name', 'image', 'description', 'slug']);
+        $this->mediumCaterings = MediumCatering::first(['id', 'name', 'image', 'description', 'slug']);
     }
 
     public function render()

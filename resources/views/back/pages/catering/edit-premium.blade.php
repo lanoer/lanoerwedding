@@ -206,6 +206,7 @@
                     },
                     success: function(res) {
                         $('#gallery-img-' + imgId).remove();
+                        toastr.success('Image deleted successfully');
                     },
                     error: function(xhr, status, error) {
                     console.error('Error deleting image:', error);

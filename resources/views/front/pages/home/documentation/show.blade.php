@@ -69,7 +69,6 @@
     <!-- Clients -->
     @include('front.layouts.inc.clients')
 
-    @include('front.layouts.inc.testimonial')
     @include('front.layouts.inc.footer')
 </div>
 @endsection

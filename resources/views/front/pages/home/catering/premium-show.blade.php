@@ -50,8 +50,18 @@
                     <div class="row mt-4">
                         @foreach ($galleryImages as $image)
                         <div class="col-4 mb-3">
-                            <img src="{{ asset('storage/back/images/catering/premium/gallery/' . $image->image) }}"
-                                class="img-fluid animate-box" data-animate-effect="fadeInLeft" alt="">
+                            <a href="{{ asset('storage/back/images/catering/premium/gallery/' . $image->image) }}"
+                                title="" class="img-zoom">
+                                <div class="gallery-box">
+                                    <div class="gallery-img">
+                                        <img src="{{ asset('storage/back/images/catering/premium/gallery/' . $image->image) }}"
+                                            class="img-fluid mx-auto d-block" alt="work-img" loading="lazy">
+                                    </div>
+                                    <div class="gallery-detail text-center">
+                                        <i class="ti-fullscreen"></i>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                         @endforeach
                         <div class="d-flex justify-content-center">
@@ -74,3 +84,8 @@
     @include('front.layouts.inc.footer')
 </div>
 @endsection
+
+@push('js')
+<script src="{{ asset('back/assets/vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('back/assets/vendor/fancybox/dist/jquery.fancybox.css') }}">
+@endpush

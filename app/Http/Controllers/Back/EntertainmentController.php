@@ -726,6 +726,8 @@ class EntertainmentController extends Controller
         $ceremonialEvent = new CeremonialEvent();
         $ceremonialEvent->ceremonial_id = $request->ceremonial_id;
         $ceremonialEvent->name = $request->name;
+        $ceremonialEvent->slug = Str::slug($request->name);
+
         $ceremonialEvent->description = $request->description;
         $ceremonialEvent->meta_description = $request->meta_description;
         $ceremonialEvent->meta_keywords = $request->meta_keywords;
@@ -804,6 +806,7 @@ class EntertainmentController extends Controller
         // Update name if provided
         if ($request->has('name')) {
             $ceremonialEvent->name = $request->name;
+            $ceremonialEvent->slug = Str::slug($request->name);
         }
 
         // Update image if provided

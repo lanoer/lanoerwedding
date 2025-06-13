@@ -21,6 +21,8 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Back\EntertainmentController;
 use App\Http\Controllers\Back\GalleryController;
 use App\Http\Controllers\Back\LiveController;
+use App\Http\Controllers\Back\PinterestAuthController;
+use App\Http\Controllers\Back\PinterestController;
 use App\Http\Controllers\Back\PostController;
 use App\Http\Controllers\Back\SliderController;
 use App\Http\Controllers\Back\TeamLanoerController;
@@ -97,6 +99,8 @@ Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('glo
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [HomeController::class, 'robotsTxt']);
 Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
+
+
 
 
 
@@ -332,4 +336,15 @@ Route::middleware('auth:web')->group(function () {
         Route::post('/gallery', [GalleryController::class, 'storeGallery'])->name('store');
         Route::post('/gallery/{id}', [GalleryController::class, 'updateGallery'])->name('update');
     });
+
+
+
+    Route::get('/admin/pinterest/login', [PinterestAuthController::class, 'redirect'])->name('pinterest.login');
+    Route::get('/pinterest/callback', [PinterestAuthController::class, 'callback'])->name('pinterest.callback');
+
+    Route::get('/admin/pinterest/post-to-pinterest/{type}/{id}', [PinterestController::class, 'postToPinterest'])
+        ->name('pinterest.post');
+
+    Route::get('/admin/pinterest/boards', [PinterestController::class, 'listBoards'])->name('admin.pinterest.boards');
+    Route::view('/admin/pinterest/access-token', 'back.pages.pinterest.access')->name('pinterest.accessToken');
 });

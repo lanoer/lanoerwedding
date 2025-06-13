@@ -30,5 +30,13 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'pinterest' => [
+        'client_id' => env('PINTEREST_CLIENT_ID'),
+        'client_secret' => env('PINTEREST_CLIENT_SECRET'),
+        'redirect_uri' => env('PINTEREST_REDIRECT_URI'),
+        'board_id' => env('PINTEREST_BOARD_ID'),
+        'access_token' => env('PINTEREST_ACCESS_TOKEN'),
+    ],
+
 
 ];

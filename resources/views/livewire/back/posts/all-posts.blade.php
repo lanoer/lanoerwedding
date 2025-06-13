@@ -85,6 +85,7 @@
                                 <th>Categori</th>
                                 <th>view</th>
                                 <th>Visibility</th>
+                                {{-- <th>Send To Pinterest</th> --}}
                                 <th class="w-1">Action</th>
                             </tr>
                         </thead>
@@ -126,6 +127,15 @@
                                         Public
                                     </span>
                                     @endif
+                                </td>
+                                <td>
+                                    <!-- Tombol kirim ke Pinterest via pin-builder -->
+                                    {{-- <a disabled target="_blank"
+                                        href="https://www.pinterest.com/pin-builder/?url={{ urlencode($post->url) }}&media={{ urlencode($post->image_url) }}&description={{ urlencode($post->title) }}"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Yakin kirim ke Pinterest?')">
+                                        Post to Pinterest
+                                    </a> --}}
                                 </td>
                                 <td>
                                     <div class="d-flex py-1 align-items-center">

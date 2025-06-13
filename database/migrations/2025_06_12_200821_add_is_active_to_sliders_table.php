@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::table('sliders', function (Blueprint $table) {
             $table->dropColumn('isActive_slider');
             $table->dropColumn('isActive_card');
-            $table->integer('ordering');
+            $table->dropColumn('ordering');
         });
     }
 };

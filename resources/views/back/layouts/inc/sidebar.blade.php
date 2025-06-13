@@ -160,7 +160,7 @@
                             </a>
 
                         </li>
-                        <li class="{{ Route::is('admin/pinterest.*') ? 'mm-active' : '' }}">
+                        {{-- <li class="{{ Route::is('admin/pinterest.*') ? 'mm-active' : '' }}">
                             <a href="{{ route('admin.pinterest.boards') }}" class=" waves-effect">
                                 <span>Pinterest boards</span>
                             </a>
@@ -171,7 +171,7 @@
                                 <span>Pinterest Access Token</span>
                             </a>
 
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
                 <li>

@@ -96,6 +96,7 @@ Route::get('/search', [BlogController::class, 'showSearchResults'])->name('blog.
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [HomeController::class, 'robotsTxt']);
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
 
 
 

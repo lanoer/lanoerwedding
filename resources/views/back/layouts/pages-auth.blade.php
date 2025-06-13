@@ -40,7 +40,7 @@
     }
 </style>
 
-<body class="bg-animate" style="background-image: url('{{ asset('back/assets/images/log.jpg') }}');">
+<body class="bg-animate" style="background-image: url('{{ asset('back/assets/images/21.jpg') }}');">
     <div class="home-btn d-none d-sm-block">
         <a href="/home" class="text-reset"><i class="fas fa-home h2"></i></a>
     </div>

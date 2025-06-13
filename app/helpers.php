@@ -258,12 +258,7 @@ if (! function_exists('unread_inbox')) {
         return Contact::where('isActive', false)->count();
     }
 }
-if (! function_exists('slider')) {
-    function slider()
-    {
-        return Slider::get();
-    }
-}
+
 if (! function_exists('testimonials')) {
     function testimonials()
     {
@@ -281,9 +276,10 @@ if (! function_exists('clients')) {
     if (! function_exists('slider')) {
         function slider()
         {
-            return Slider::get();
+            return Slider::orderBy('ordering', 'asc')->get();
         }
     }
+
     if (! function_exists('teamCreative')) {
         function teamCreative()
         {

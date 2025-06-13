@@ -11,9 +11,9 @@ use Intervention\Image\Facades\Image;
 class SliderController extends Controller
 {
     public function __construct()
-     {
-         $this->middleware('can:read content');
-     }
+    {
+        $this->middleware('can:read content');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -40,7 +40,7 @@ class SliderController extends Controller
             'category' => 'required',
             'title' => 'required',
             'desc_short' => 'required',
-            'action_link' => 'required|url',
+            'action_link' => 'required',
             'action_text' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ], [

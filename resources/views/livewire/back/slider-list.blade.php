@@ -1,7 +1,10 @@
 <div>
+    <style>
+        #sortable_slider tr.dragging {
+            opacity: 0.5;
+        }
+    </style>
     <div class="app-container container-xxl">
-
-
         <div class="row row-cards">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -47,108 +50,66 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped gy-7 gs-7">
+                    <table class="table table-vcenter card-table table-striped">
                         <thead>
                             <tr class="fw-semibold fs-6 text-gray-800 border-bottom-2 border-gray-200">
-                                <th>No</th>
                                 <th>Image</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Action Link</th>
+                                <th>Active Slider</th>
+                                <th>Active Card</th>
                                 <th class="w-1">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse ($sliders as $s=>$slider)
-                                <tr>
-                                    <td>{{ $s + 1 }}</td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-                                            <span class="avatar me-2"
-                                                style="background-image: url('{{ asset('storage/back/images/slider/' . $slider->image) }}');
-                                    width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {!! Str::limit($slider->title, 15, ' ...') !!}
-                                        </div>
-                                    </td>
-                                    <td class="text-muted">
-                                        {!! Str::limit($slider->desc_short, 15, ' ...') !!}
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <a href="{{ $slider->action_link }}" target="_blank">
-                                                {{ $slider->action_text }}
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex py-1 align-items-center">
-
-                                            <a href="#" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal"
-                                                data-bs-target="#sliderModal{{ $slider->id }}" data-bs-placement="top"
-                                                title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('slider.edit', [$slider->id]) }}"
-                                                class="btn btn-sm btn-warning ">Edit</a>
-
-                                            <a href=""
-                                                wire:click.prevent='deleteSlider({{ $slider->id }}, "{{ $slider->title }}")'
-                                                class="btn btn-sm btn-danger" style="margin-left: 3px">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Modal untuk event ini -->
-                                <div class="modal fade" id="sliderModal{{ $slider->id }}" tabindex="-1"
-                                    aria-labelledby="sliderModalLabel{{ $slider->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="sliderModalLabel{{ $slider->id }}">
-                                                    {{ $slider->title }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <img src="{{ asset('storage/back/images/slider/' . $slider->image) }}"
-                                                            class="img-fluid rounded" alt="{{ $slider->title }}">
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <h4 class="mb-3">{{ $slider->title }}</h4>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Description:</h6>
-                                                            <p>{!! $slider->desc_short !!}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Created At:</h6>
-                                                            <p>{{ $slider->created_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <h6 class="text-muted">Updated At:</h6>
-                                                            <p>{{ $slider->updated_at->format('d M Y H:i') }}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
+                        <tbody id="sortable_slider" wire:ignore>
+                            @forelse ($sliders as $slider)
+                            <tr data-index="{{ $slider->id }}" data-ordering="{{ $slider->ordering }}" draggable="true"
+                                wire:key="slider-{{ $slider->id }}">
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                            style="background-image: url('{{ asset('storage/back/images/slider/' . $slider->image) }}');
+                                                                                        width: 50px; height: 50px; background-size: cover; background-position: center;"></span>
                                     </div>
-                                </div>
+                                </td>
+                                <td>{{ $slider->title }}</td>
+                                <td>{!! Str::limit($slider->desc_short, 15, ' ...') !!}</td>
+                                <td>
+                                    <div>
+                                        <a href="{{ $slider->action_link }}" target="_blank">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    @livewire('back.slider-status', ['model' => $slider, 'field' => 'isActive_slider'],
+                                    key($slider->id))
+                                </td>
+                                <td>
+                                    @livewire('back.slider-status-card', ['model' => $slider, 'field' =>
+                                    'isActive_card'], key($slider->id))
+                                </td>
+                                <td>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <a href="{{ route('slider.edit', [$slider->id]) }}"
+                                            class="btn btn-sm btn-warning me-2" data-bs-toggle="tooltip" title="Edit">
+                                            Edit
+                                        </a>
+                                        <a href=""
+                                            wire:click.prevent="deleteSlider({{ $slider->id }}, '{{ $slider->title }}')"
+                                            class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">No Slider found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="4"><span class="text-danger">Slider Not Found!</span></td>
+                            </tr>
                             @endforelse
+
                         </tbody>
                     </table>
                 </div>
@@ -162,3 +123,28 @@
     </div>
 
 </div>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const el = document.getElementById('sortable_slider');
+        if (!el) return;
+
+        new Sortable(el, {
+            animation: 150,
+            handle: 'td',
+            onEnd: function () {
+                const positions = [];
+                el.querySelectorAll('tr').forEach((row, index) => {
+                    positions.push([
+                        row.getAttribute('data-index'),
+                        index + 1
+                    ]);
+                });
+                console.log(positions);
+                Livewire.emit('updateSliderOrdering', positions);
+            }
+        });
+    });
+</script>
+@endpush

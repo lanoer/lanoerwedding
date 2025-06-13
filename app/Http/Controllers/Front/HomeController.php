@@ -888,4 +888,9 @@ class HomeController extends Controller
 
         return response(implode("\n", $lines), 200, ['Content-Type' => 'text/plain']);
     }
+
+    public function privacyPolicy()
+    {
+        return view('front.pages.home.privay-policy');
+    }
 }

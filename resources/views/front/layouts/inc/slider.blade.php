@@ -56,7 +56,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6 js-fullheight slider-text">
-                            @if ($slide->isActive_slider)
+                            @if ($slide->isActive_card)
                             <div class="slider-text-inner">
                                 <div class="desc">
                                     <h6>{{ $slide->category }}</h6>

@@ -25,14 +25,16 @@
         <div class="container-fluid">
 
             <div class="row mb-60">
+
                 @foreach ($fotos as $f)
+
                 <div class="col-md-4 gallery-item animate-box" data-animate-effect="fadeInLeft">
                     <a href="{{ asset('storage/back/images/album/foto/' . $f->image) }}"
                         title="{{ $album->album_name }}" class="img-zoom">
                         <div class="gallery-box">
                             <div class="gallery-img">
                                 <img src="{{ asset('storage/back/images/album/foto/' . $f->image) }}"
-                                    class="img-fluid mx-auto d-block" alt="work-img" loading="lazy">
+                                    class="img-fluid mx-auto d-block gallery-img-size" alt="work-img" loading="lazy">
                             </div>
                             <div class="gallery-detail text-center">
                                 <i class="ti-fullscreen"></i>

@@ -47,7 +47,7 @@
 
             }).then(function(result) {
                 if (result.value) {
-                    window.Livewire.emit('deletGalleryAction', event.detail.id)
+                    window.Livewire.emit('deleteGalleryAction', event.detail.id)
                 }
             });
         })

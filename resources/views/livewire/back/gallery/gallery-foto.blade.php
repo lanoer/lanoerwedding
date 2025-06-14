@@ -96,8 +96,10 @@
                                                     $loop->iteration }}
                                                 </td>
                                                 <td>{{ $a->gallery_name }}</td>
-                                                <td><img src="{{ asset('back/images/gallery/thumbnails/thumb_800_gallery-/' . $a->image) }}"
-                                                        width="60"></td>
+                                                <td>
+                                                    <img src="{{ asset('storage/back/images/gallery/thumbnails/thumb_800_' . $a->image) }}"
+                                                        width="60">
+                                                </td>
                                                 <td class="text-muted">
                                                     {{ $a->FotoGallery->count() }}
                                                 </td>

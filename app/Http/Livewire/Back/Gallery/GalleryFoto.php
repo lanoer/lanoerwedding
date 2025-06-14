@@ -202,7 +202,7 @@ class GalleryFoto extends Component
     public function deleteGalleryAction($id)
     {
         $gallery = ModelsGalleryFoto::where('id', $id)->first();
-        $foto = FotoGallery::where('gallery_id', $gallery->id)->get()->toArray();
+        $foto = FotoGallery::where('gallery_fotos_id', $gallery->id)->get()->toArray();
         if (!empty($foto) && count($foto) > 0) {
             flash()->addError('This Gallery has (' . count($foto) . ') foto related it, cannot be deleted.');
         } else {

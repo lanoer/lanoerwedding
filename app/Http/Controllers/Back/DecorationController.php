@@ -86,6 +86,8 @@ class DecorationController extends Controller
         // Simpan data decoration
         $decoration = new Decorations();
         $decoration->name = $request->name;
+        $decoration->slug = Str::slug($request->name);
+
         $decoration->description = $request->description;
         $decoration->image = $mainImageName;
         $decoration->meta_description = $request->meta_description;

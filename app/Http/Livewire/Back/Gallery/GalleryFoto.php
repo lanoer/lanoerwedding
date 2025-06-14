@@ -189,7 +189,7 @@ class GalleryFoto extends Component
     //     }
     // }
 
-    public function deleteAlbum($id)
+    public function deleteGallery($id)
     {
         $gallery = ModelsGalleryFoto::find($id);
         $this->dispatchBrowserEvent('deleteGallery', [

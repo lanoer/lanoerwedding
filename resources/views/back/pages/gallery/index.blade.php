@@ -31,7 +31,7 @@
             Livewire.emit('resetModalForm')
         });
 
-        window.addEventListener('deletGallery', function(event) {
+        window.addEventListener('deleteGallery', function(event) {
             swal.fire({
                 title: event.detail.title,
                 imageWidth: 48,

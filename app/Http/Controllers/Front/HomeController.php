@@ -131,7 +131,7 @@ class HomeController extends Controller
 
         $teamCreative = TeamLanoer::get();
 
-        // schema.org
+        // schema.or
         $logoUrl = $event->image ? asset('back/images/event/eventmakeup/' . $event->image) : '';
         $featuredImage = $event->image ? asset('/storage/back/images/event/eventmakeup/' . $event->image) : '';
         $articleSchema = Schema::article()

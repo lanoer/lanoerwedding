@@ -29,7 +29,6 @@
         </div>
     </div>
 
-    <!-- About Us -->
     <style>
         .about-section ul,
         .about-section ol {
@@ -47,9 +46,10 @@
                 }
             </style>
             <div class="row">
-                <div class="col-md-5 animate-box" data-animate-effect="fadeInLeft"> <img
-                        src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
-                        class="img-fluid mb-30" alt="{{ $wedding->image_alt_text }}"> </div>
+                <div class="col-md-5 animate-box" data-animate-effect="fadeInLeft">
+                    <img src="{{ asset('storage/back/images/wedding/weddingmakeup/' . $wedding->image) }}"
+                        class="img-fluid mb-30" alt="{{ $wedding->image_alt_text }}">
+                </div>
                 <div class="col-md-7 animate-box description" data-animate-effect="fadeInLeft">
                     <p>{!! $wedding->description ?? '' !!}</p>
                 </div>

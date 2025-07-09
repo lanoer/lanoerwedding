@@ -21,8 +21,9 @@
                         @foreach ($wedding as $wed)
                         <div class="item">
                             <div class="position-re o-hidden">
-                                <img src="{{ asset('storage/back/images/wedding/weddingmakeup/thumbnails/thumb_271_' . $wed->image) }}"
-                                    alt="{{ $wed->name }}">
+                                <img loading="lazy" width="400" height="300"
+                                    src="{{ asset('storage/back/images/wedding/weddingmakeup/thumbnails/thumb_271_' . $wedding->image) }}"
+                                    alt="{{ $wedding->name }}">
                             </div>
                             <div class="con">
                                 <span class="category">

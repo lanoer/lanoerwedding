@@ -256,6 +256,7 @@ Route::middleware('auth:web')->group(function () {
         Route::post('/sub/premium/delete-image/', [CateringController::class, 'deleteImagePremium'])->name('delete.imagePremium');
         Route::delete('/sub/gallery-image/{id}', [CateringController::class, 'deleteGalleryImage'])->name('delete.premiumGallery.image');
 
+        
 
         // MEDIUM CATERING
         Route::get('sub/view/medium/{id}', [CateringController::class, 'viewMedium'])->name('sub.viewMedium');

@@ -43,6 +43,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // Home
         $event = Event::inRandomOrder()->get();
         $wedding = Weddings::inRandomOrder()->get();
         $eventMakeup = EventMakeups::inRandomOrder()->get();

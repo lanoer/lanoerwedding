@@ -258,7 +258,7 @@ Route::middleware('auth:web')->group(function () {
 
 
 
-        // MED CATERING
+        // MEDIUM CATERING
         Route::get('sub/view/medium/{id}', [CateringController::class, 'viewMedium'])->name('sub.viewMedium');
 
         Route::get('sub/medium/create', [CateringController::class, 'createMediumCatering'])->name('sub.createMedium');

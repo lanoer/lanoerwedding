@@ -15,85 +15,7 @@ use Artesaos\SEOTools\Facades\JsonLdMulti;
 
 class BlogController extends Controller
 {
-    // public function searchBlog(Request $request)
-    // {
-    //     // Validasi input query
-    //     $request->validate([
-    //         'query' => 'required|string|min:1|max:255',  // Validasi query
-    //     ]);
 
-    //     // Mengambil dan mensanitasi input query
-    //     $query = filter_var($request->input('query'), FILTER_SANITIZE_STRING);
-
-    //     // Jika query valid dan panjangnya lebih dari 1 karakter
-    //     if ($query && strlen($query) >= 1) {
-    //         $searchValue = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
-    //         $posts = Post::query();
-
-    //         // Proses pencarian
-    //         $posts->where(function ($q) use ($searchValue) {
-    //             foreach ($searchValue as $value) {
-    //                 $q->orWhere('post_title', 'LIKE', "%{$value}%");
-    //                 $q->orWhere('post_tags', 'LIKE', "%{$value}%");
-    //                 $q->orWhere('meta_keywords', 'LIKE', "%{$value}%");
-    //             }
-    //         });
-
-    //         $posts = $posts->where('isActive', 1)
-    //             ->with('subcategory')
-    //             ->with('author')
-    //             ->orderBy('created_at', 'desc')
-    //             ->paginate(4);
-
-    //         // Menyusun SEO dan Schema
-    //         SEOMeta::setTitle('Search results for: ' . $query);
-    //         SEOMeta::setDescription('Search results for: ' . $query);
-    //         SEOMeta::setCanonical(url('/search?query=' . urlencode($query)));
-
-    //         OpenGraph::setTitle('Search results for: ' . $query)
-    //             ->setDescription('Search results for: ' . $query)
-    //             ->setUrl(url('/search?query=' . urlencode($query)))
-    //             ->setType('website');
-
-    //         JsonLdMulti::setTitle('Search results for: ' . $query);
-    //         JsonLdMulti::setDescription('Search results for: ' . $query);
-    //         JsonLdMulti::setType('WebPage');
-
-    //         // Schema.org untuk halaman pencarian
-    //         $searchSchema = Schema::webPage()
-    //             ->name('Search results for: ' . $query)
-    //             ->description('Search results for: ' . $query)
-    //             ->url(url('/search?query=' . urlencode($query)));
-
-    //         // Menampilkan saran jika tidak ada hasil
-    //         $suggestions = [];
-    //         if ($posts->isEmpty()) {
-    //             $allKeywords = Post::pluck('meta_keywords')->toArray();
-    //             $allKeywords = array_unique(array_merge(...array_map(function ($keywords) {
-    //                 return explode(',', $keywords);
-    //             }, $allKeywords)));
-
-    //             foreach ($allKeywords as $keyword) {
-    //                 if (levenshtein($query, $keyword) <= 3) {
-    //                     $suggestions[] = $keyword;
-    //                 }
-    //             }
-    //         }
-
-    //         // Data untuk tampilan
-    //         $data = [
-    //             'pageTitle' => 'Search results for: ' . $query,
-    //             'posts' => $posts,
-    //             'searchSchema' => $searchSchema,
-    //             'query' => $query,
-    //             'suggestions' => $suggestions,
-    //         ];
-
-    //         return view('front.pages.home.blog.search', $data);
-    //     } else {
-    //         return abort(404);  // Menampilkan halaman 404 jika query kosong atau tidak valid
-    //     }
-    // }
     public function searchBlog(Request $request)
     {
         // Validasi input query
@@ -314,37 +236,57 @@ class BlogController extends Controller
         libxml_use_internal_errors(true);
 
         $dom = new \DOMDocument();
-        @$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
-
+        @$dom->loadHTML(
+            mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'),
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+        );
 
         $xpath = new \DOMXPath($dom);
         $headings = $xpath->query('//h2 | //h3 | //h4 | //h5');
         $headingArray = [];
+
+        // Generate HTML Related Posts
         $relatedPostsHtml = $this->generateRelatedPostsHtml($relatedPosts);
 
         foreach ($headings as $index => $heading) {
-            $id = 'heading-' . ($index + 1);
+            // Buat ID heading SEO-friendly
+            $id = \Illuminate\Support\Str::slug($heading->textContent, '-') . '-' . ($index + 1);
             $heading->setAttribute('id', $id);
+
             $headingArray[] = $heading->textContent;
 
-            if ($index == 0) {
+            // Sisipkan related posts setelah heading pertama
+            if ($index == 0 && !empty($relatedPostsHtml)) {
                 $relatedPostsFragment = $dom->createDocumentFragment();
-                $relatedPostsFragment->appendXML($relatedPostsHtml);
-                $heading->parentNode->insertBefore($relatedPostsFragment, $heading->nextSibling);
+
+                // Tambah hanya jika valid XML
+                if (@$relatedPostsFragment->appendXML($relatedPostsHtml)) {
+                    if ($relatedPostsFragment->hasChildNodes()) {
+                        $heading->parentNode->insertBefore($relatedPostsFragment, $heading->nextSibling);
+                    }
+                }
             }
         }
 
-
         return [$dom->saveHTML(), $headingArray];
     }
-
     private function generateRelatedPostsHtml($relatedPosts)
     {
-        $html = '<div class="related-posts"><span style="font-size: 16px; font-weight: bold;">Baca juga : </span><ul>';
-        foreach ($relatedPosts as $post) {
-            $html .= '<li><a href="' . route('blog.detail', $post->slug) . '">' . $post->post_title . '</a></li>';
+        if ($relatedPosts->isEmpty()) {
+            return '';
         }
+
+        $html = '<div class="related-posts" style="margin:20px 0">';
+        $html .= '<span style="font-size: 16px; font-weight: bold;">Baca juga :</span>';
+        $html .= '<ul>';
+
+        foreach ($relatedPosts as $post) {
+            $html .= '<li><a href="' . e(route('blog.detail', $post->slug)) . '" title="' . e($post->post_title) . '">'
+                . e($post->post_title) . '</a></li>';
+        }
+
         $html .= '</ul></div>';
+
         return $html;
     }
 
